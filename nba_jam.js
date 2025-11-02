@@ -4,8 +4,93 @@
 load("sbbsdefs.js");
 load("frame.js");
 load("sprite.js");
+load("shoe_colors.js");
 
 var COURT_SCREEN_Y_OFFSET = 1;
+
+var ShoeColorConfig = (typeof SHOE_COLOR_CONFIG === "object" && SHOE_COLOR_CONFIG) ? SHOE_COLOR_CONFIG : {
+    threshold: 45,
+    palettes: [
+        { name: "ember", high: LIGHTRED, low: RED },
+        { name: "surf", high: LIGHTCYAN, low: CYAN },
+        { name: "forest", high: LIGHTGREEN, low: GREEN },
+        { name: "solar", high: YELLOW, low: BROWN },
+        { name: "amethyst", high: LIGHTMAGENTA, low: MAGENTA },
+        { name: "polar", high: WHITE, low: LIGHTGRAY },
+        { name: "storm", high: LIGHTBLUE, low: BLUE },
+        { name: "charcoal", high: DARKGRAY, low: BLACK }
+    ]
+};
+
+var SHOE_TURBO_THRESHOLD = (typeof ShoeColorConfig.threshold === "number") ? ShoeColorConfig.threshold : 45;
+var shoePalettePool = [];
+
+function cloneShoePalette(entry) {
+    if (!entry) return null;
+    return {
+        name: entry.name,
+        high: entry.high,
+        low: entry.low
+    };
+}
+
+function buildShoePalettePool() {
+    var pool = [];
+    if (ShoeColorConfig && ShoeColorConfig.palettes && ShoeColorConfig.palettes.length) {
+        for (var i = 0; i < ShoeColorConfig.palettes.length; i++) {
+            pool.push(cloneShoePalette(ShoeColorConfig.palettes[i]));
+        }
+    }
+    return pool;
+}
+
+function bgToFg(bgValue) {
+    if (typeof bgValue !== "number") return null;
+    return (bgValue & BG_MASK) >> 4;
+}
+
+function paletteConflictsWithTeam(palette, teamColors) {
+    if (!palette || !teamColors) return false;
+    var blocked = [];
+    if (typeof teamColors.fg === "number") blocked.push(teamColors.fg & FG_MASK);
+    if (typeof teamColors.fg_accent === "number") blocked.push(teamColors.fg_accent & FG_MASK);
+    if (typeof teamColors.bg === "number") blocked.push(bgToFg(teamColors.bg));
+    if (typeof teamColors.bg_alt === "number") blocked.push(bgToFg(teamColors.bg_alt));
+    for (var i = 0; i < blocked.length; i++) {
+        var color = blocked[i];
+        if (color === null || color === undefined) continue;
+        if (palette.high === color || palette.low === color) {
+            return true;
+        }
+    }
+    return false;
+}
+
+function resetShoePaletteAssignments() {
+    shoePalettePool = buildShoePalettePool();
+}
+
+function assignShoePalette(teamColors) {
+    if (!shoePalettePool || !shoePalettePool.length) {
+        shoePalettePool = buildShoePalettePool();
+    }
+    var fallbackIndex = -1;
+    for (var i = 0; i < shoePalettePool.length; i++) {
+        var candidate = shoePalettePool[i];
+        if (!candidate) continue;
+        if (paletteConflictsWithTeam(candidate, teamColors)) {
+            if (fallbackIndex === -1) fallbackIndex = i;
+            continue;
+        }
+        shoePalettePool.splice(i, 1);
+        return cloneShoePalette(candidate);
+    }
+    if (fallbackIndex >= 0) {
+        var fallback = shoePalettePool.splice(fallbackIndex, 1)[0];
+        return cloneShoePalette(fallback);
+    }
+    return null;
+}
 
 (function patchAerialBearing() {
     if (typeof Sprite === "undefined" || !Sprite.Aerial || !Sprite.Aerial.prototype || Sprite.__bearingPatched) {
@@ -155,7 +240,84 @@ function getTeamBaselineColors(teamKey) {
     };
 }
 
+function buryCursor() {
+    if (typeof console === "undefined") return;
+    if (typeof console.gotoxy !== "function") return;
+    if (typeof console.screen_columns !== "number" || typeof console.screen_rows !== "number") return;
+    console.gotoxy(console.screen_columns, console.screen_rows);
+}
+
+function cycleFrame(frame) {
+    if (!frame || typeof frame.cycle !== "function") return false;
+    var updated = frame.cycle();
+    if (updated) buryCursor();
+    return updated;
+}
+
+function composeAttrWithColor(originalAttr, newFg, newBg) {
+    var attr = (typeof originalAttr === "number") ? originalAttr : 0;
+    var preserved = attr & ~(FG_MASK | BG_MASK);
+    var fgPart = (newFg !== undefined && newFg !== null) ? (newFg & FG_MASK) : (attr & FG_MASK);
+    var bgPart = (newBg !== undefined && newBg !== null) ? (newBg & BG_MASK) : (attr & BG_MASK);
+    return preserved | fgPart | bgPart;
+}
+
+function applyShoeColorToSprite(sprite, color) {
+    if (!sprite || !sprite.frame || !sprite.__shoeCells || !sprite.__shoeCells.length) return;
+    var jerseyBg = (typeof sprite.__shoeBg === "number") ? sprite.__shoeBg : BG_BLACK;
+    for (var i = 0; i < sprite.__shoeCells.length; i++) {
+        var cell = sprite.__shoeCells[i];
+        var data = sprite.frame.getData(cell.x, cell.y, false);
+        var ch = (data && data.ch !== undefined) ? data.ch : ascii(220);
+        var baseAttr = (data && typeof data.attr === "number") ? data.attr : jerseyBg;
+        var updatedAttr = composeAttrWithColor(baseAttr, color, jerseyBg);
+        sprite.frame.setData(cell.x, cell.y, ch, updatedAttr);
+    }
+    sprite.frame.invalidate();
+}
+
+function getPlayerShoePalette(player) {
+    if (!player || !player.playerData || !player.playerData.shoeColors) return null;
+    return player.playerData.shoeColors;
+}
+
+function getPlayerTurboColor(player) {
+    var palette = getPlayerShoePalette(player);
+    if (!palette) return null;
+    var turbo = (player && player.playerData && typeof player.playerData.turbo === "number") ? player.playerData.turbo : 0;
+    var isFlashing = player && player.playerData && player.playerData.turboActive && turbo > 0;
+    if (isFlashing) {
+        var tick = (gameState && typeof gameState.tickCounter === "number") ? gameState.tickCounter : 0;
+        return (tick % 4 < 2) ? palette.high : palette.low;
+    }
+    return (turbo >= SHOE_TURBO_THRESHOLD) ? palette.high : palette.low;
+}
+
+function updatePlayerShoeColor(player) {
+    if (!player || !player.playerData) return;
+    var palette = getPlayerShoePalette(player);
+    if (!palette) return;
+    var desired = getPlayerTurboColor(player);
+    if (desired === null) desired = palette.high;
+    if (player.playerData.currentShoeColor === desired) return;
+    applyShoeColorToSprite(player, desired);
+    player.playerData.currentShoeColor = desired;
+}
+
+function applyShoePaletteToPlayer(sprite) {
+    if (!sprite || !sprite.playerData || !sprite.assignedShoePalette) return;
+    var palette = sprite.assignedShoePalette;
+    sprite.playerData.shoeColors = {
+        high: palette.high,
+        low: palette.low,
+        name: palette.name
+    };
+    sprite.playerData.currentShoeColor = palette.high;
+}
+
 var WAS_BROWN = BG_BLACK;
+var FG_MASK = 0x0F;
+var BG_MASK = 0x70;
 // Add drawBorder method to Frame prototype
 Frame.prototype.drawBorder = function (color) {
     var theColor = color;
@@ -224,6 +386,8 @@ var MAX_TURBO = 100;
 var TURBO_DRAIN_RATE = 2;
 var TURBO_RECHARGE_RATE = 3; // Increased from 1 to 3 for faster recharge
 var TURBO_SPEED_MULTIPLIER = 3;
+if (SHOE_TURBO_THRESHOLD < 0) SHOE_TURBO_THRESHOLD = 0;
+if (SHOE_TURBO_THRESHOLD > MAX_TURBO) SHOE_TURBO_THRESHOLD = MAX_TURBO;
 var TURBO_ACTIVATION_THRESHOLD = 200; // ms between same key presses
 
 // Passing balance tweaks
@@ -355,10 +519,6 @@ function createDefaultGameState() {
         inboundAlternateIndex: { red: 0, blue: 0 },
         backcourtTimer: 0,
         frontcourtEstablished: false,
-        debugOverlay: {
-            enabled: false,
-            last: {}
-        },
         // Defensive assignments (man-to-man)
         defensiveAssignments: {
             // Maps defender to offensive player they're guarding
@@ -892,9 +1052,6 @@ function applyUniformMask(sprite, options) {
     var bearingCount = (sprite.ini.bearings && sprite.ini.bearings.length) ? sprite.ini.bearings.length : 1;
     var positionCount = (sprite.ini.positions && sprite.ini.positions.length) ? sprite.ini.positions.length : 1;
 
-    var FG_MASK = 0x0F;
-    var BG_MASK = 0x70;
-
     function getAttrValue(cell, fallback) {
         if (cell && typeof cell.attr === "number") {
             return cell.attr;
@@ -902,18 +1059,9 @@ function applyUniformMask(sprite, options) {
         return fallback;
     }
 
-    function composeAttr(originalAttr, newFg, newBg) {
-        var attr = originalAttr || 0;
-        var preserved = attr & ~(FG_MASK | BG_MASK);
-        var fgPart = (newFg !== undefined && newFg !== null) ? (newFg & FG_MASK) : (attr & FG_MASK);
-        var bgPart;
-        if (newBg !== undefined && newBg !== null) {
-            bgPart = newBg;
-        } else {
-            bgPart = attr & BG_MASK;
-        }
-        return preserved | fgPart | bgPart;
-    }
+    sprite.__shoeCells = [];
+    sprite.__shoeBg = jerseyBg;
+    sprite.__shoeChar = shortsChar;
 
     for (var bearingIndex = 0; bearingIndex < bearingCount; bearingIndex++) {
         var yOffset = height * bearingIndex;
@@ -927,7 +1075,7 @@ function applyUniformMask(sprite, options) {
             var neckData = sprite.frame.getData(xOffset + 2, yOffset + 2, false);
             var neckAttrRaw = getAttrValue(neckData, digitsAttr);
             var skinFg = neckAttrRaw & FG_MASK;
-            var neckAttr = composeAttr(neckAttrRaw, skinFg, jerseyBg);
+            var neckAttr = composeAttrWithColor(neckAttrRaw, skinFg, jerseyBg);
             sprite.frame.setData(xOffset + 2, yOffset + 2, topNeckChar, neckAttr);
 
             // Row 3, col 4 (second digit)
@@ -936,16 +1084,17 @@ function applyUniformMask(sprite, options) {
             // Row 4, col 2 (left leg/shorts)
             var leftLegData = sprite.frame.getData(xOffset + 1, yOffset + 3, false);
             var leftLegAttrRaw = getAttrValue(leftLegData, jerseyBg);
-            var leftLegFg = leftLegAttrRaw & FG_MASK;
-            var leftLegAttr = composeAttr(leftLegAttrRaw, leftLegFg, jerseyBg);
+            var initialShoeColor = (options && typeof options.shoeColor === "number") ? options.shoeColor : (leftLegAttrRaw & FG_MASK);
+            var leftLegAttr = composeAttrWithColor(leftLegAttrRaw, initialShoeColor, jerseyBg);
             sprite.frame.setData(xOffset + 1, yOffset + 3, shortsChar, leftLegAttr);
+            sprite.__shoeCells.push({ x: xOffset + 1, y: yOffset + 3 });
 
             // Row 4, col 4 (right leg/shorts)
             var rightLegData = sprite.frame.getData(xOffset + 3, yOffset + 3, false);
             var rightLegAttrRaw = getAttrValue(rightLegData, jerseyBg);
-            var rightLegFg = rightLegAttrRaw & FG_MASK;
-            var rightLegAttr = composeAttr(rightLegAttrRaw, rightLegFg, jerseyBg);
+            var rightLegAttr = composeAttrWithColor(rightLegAttrRaw, initialShoeColor, jerseyBg);
             sprite.frame.setData(xOffset + 3, yOffset + 3, shortsChar, rightLegAttr);
+            sprite.__shoeCells.push({ x: xOffset + 3, y: yOffset + 3 });
         }
     }
 
@@ -1147,22 +1296,8 @@ function drawCourt() {
     // Draw court background (brown wood)
     courtFrame.clear();
 
-    // Draw court lines (white on brown)
-    // Sidelines
-    for (var y = 1; y <= COURT_HEIGHT; y++) {
-        courtFrame.gotoxy(1, y);
-        courtFrame.putmsg(ascii(179), WHITE | WAS_BROWN);
-        courtFrame.gotoxy(COURT_WIDTH, y);
-        courtFrame.putmsg(ascii(179), WHITE | WAS_BROWN);
-    }
-
-    // Baselines
-    for (var x = 1; x <= COURT_WIDTH; x++) {
-        courtFrame.gotoxy(x, 1);
-        courtFrame.putmsg(ascii(196), WHITE | WAS_BROWN);
-        courtFrame.gotoxy(x, COURT_HEIGHT);
-        courtFrame.putmsg(ascii(196), WHITE | WAS_BROWN);
-    }
+    // Draw court border (sidelines and baselines)
+    courtFrame.drawBorder(WHITE | WAS_BROWN);
 
     // Center court divider (two-column half blocks for even split)
     var centerLeft = Math.floor(COURT_WIDTH / 2);
@@ -1296,8 +1431,7 @@ function drawCourt() {
         ballFrame.top();
     }
 
-    drawDebugOverlay();
-    courtFrame.cycle();
+    cycleFrame(courtFrame);
 }
 
 function drawJerseyNumbers() {
@@ -1533,20 +1667,24 @@ function drawScore() {
 
     // Draw turbo bars (line 2)
     if (bluePlayer1 && bluePlayer1.playerData) {
+        updatePlayerShoeColor(bluePlayer1);
         scoreFrame.gotoxy(3, 2);
-        drawTurboBar(bluePlayer1.playerData.turbo, bluePlayer1.playerData.jersey);
+        drawTurboBar(bluePlayer1);
     }
     if (bluePlayer2 && bluePlayer2.playerData) {
+        updatePlayerShoeColor(bluePlayer2);
         scoreFrame.gotoxy(14, 2);
-        drawTurboBar(bluePlayer2.playerData.turbo, bluePlayer2.playerData.jersey);
+        drawTurboBar(bluePlayer2);
     }
     if (redPlayer1 && redPlayer1.playerData) {
+        updatePlayerShoeColor(redPlayer1);
         scoreFrame.gotoxy(56, 2);
-        drawTurboBar(redPlayer1.playerData.turbo, redPlayer1.playerData.jersey);
+        drawTurboBar(redPlayer1);
     }
     if (redPlayer2 && redPlayer2.playerData) {
+        updatePlayerShoeColor(redPlayer2);
         scoreFrame.gotoxy(67, 2);
-        drawTurboBar(redPlayer2.playerData.turbo, redPlayer2.playerData.jersey);
+        drawTurboBar(redPlayer2);
     }
 
     var firePalette = [LIGHTRED, YELLOW, WHITE, LIGHTRED];
@@ -1581,7 +1719,7 @@ function drawScore() {
     renderPlayerSlot(55, redPlayer1, "red", 0);
     renderPlayerSlot(66, redPlayer2, "red", 3);
 
-    scoreFrame.cycle();
+    cycleFrame(scoreFrame);
     drawAnnouncerLine();
 }
 
@@ -1600,22 +1738,30 @@ function drawAnnouncerLine() {
         announcerFrame.putmsg(text, getAnnouncerColor() | BG_BLACK);
     }
 
-    announcerFrame.cycle();
+    cycleFrame(announcerFrame);
 }
 
-function drawTurboBar(turbo, jersey) {
-    // Draw jersey number and turbo bar
-    scoreFrame.putmsg("#" + jersey + " ", LIGHTGRAY | BG_BLACK);
+function drawTurboBar(player) {
+    if (!player || !player.playerData) return;
+    var turbo = (typeof player.playerData.turbo === "number") ? player.playerData.turbo : 0;
+    var rawJersey = (player.playerData.jerseyString !== undefined && player.playerData.jerseyString !== null)
+        ? player.playerData.jerseyString
+        : player.playerData.jersey;
+    var jerseyValue = (rawJersey !== undefined && rawJersey !== null) ? String(rawJersey) : "";
+    scoreFrame.putmsg("#" + jerseyValue + " ", LIGHTGRAY | BG_BLACK);
+
+    var palette = getPlayerShoePalette(player);
+    var highColor = palette ? palette.high : LIGHTGREEN;
+    var lowColor = palette ? palette.low : LIGHTRED;
+    var displayColor = (turbo >= SHOE_TURBO_THRESHOLD) ? highColor : lowColor;
 
     var barLength = 6;
     var filled = Math.floor((turbo / MAX_TURBO) * barLength);
 
-    var color = turbo > 66 ? LIGHTGREEN : (turbo > 33 ? YELLOW : LIGHTRED);
-
     scoreFrame.putmsg("[", LIGHTGRAY | BG_BLACK);
     for (var i = 0; i < barLength; i++) {
         if (i < filled) {
-            scoreFrame.putmsg(ascii(219), color | BG_BLACK);
+            scoreFrame.putmsg(ascii(219), displayColor | BG_BLACK);
         } else {
             scoreFrame.putmsg(" ", BG_BLACK);
         }
@@ -1630,7 +1776,7 @@ function initFrames() {
 
     announcerFrame = new Frame(1, 1, 80, 1, LIGHTGRAY | BG_BLACK);
     courtFrame = new Frame(1, 2, COURT_WIDTH, COURT_HEIGHT, WHITE | WAS_BROWN);
-    scoreFrame = new Frame(1, COURT_HEIGHT + 2, 80, 4, LIGHTGRAY | BG_BLACK);
+    scoreFrame = new Frame(1, COURT_HEIGHT + 3, 80, 4, LIGHTGRAY | BG_BLACK);
 
     announcerFrame.open();
     courtFrame.open();
@@ -1695,6 +1841,8 @@ function initSprites(redTeamName, blueTeamName, redPlayerIndices, bluePlayerIndi
         };
     }
 
+    resetShoePaletteAssignments();
+
     // Default to first two players if no indices provided
     if (!redPlayerIndices) {
         redPlayerIndices = { player1: 0, player2: 1 };
@@ -1751,6 +1899,8 @@ function initSprites(redTeamName, blueTeamName, redPlayerIndices, bluePlayerIndi
 
         var jerseyBgColor = resolveJerseyBackground(teamColors, fallbackBg);
         var accentColor = sanitizeAccentColor(teamColors && teamColors.fg_accent);
+        var shoePalette = assignShoePalette(teamColors);
+        sprite.assignedShoePalette = shoePalette ? cloneShoePalette(shoePalette) : null;
         var jerseyDigits = "";
         if (playerInfo.jerseyString !== undefined && playerInfo.jerseyString !== null && String(playerInfo.jerseyString).trim() !== "") {
             jerseyDigits = String(playerInfo.jerseyString);
@@ -1761,12 +1911,14 @@ function initSprites(redTeamName, blueTeamName, redPlayerIndices, bluePlayerIndi
         applyUniformMask(sprite, {
             jerseyBg: jerseyBgColor,
             accentFg: accentColor,
-            jerseyNumber: jerseyDigits
+            jerseyNumber: jerseyDigits,
+            shoeColor: shoePalette ? shoePalette.high : undefined
         });
 
         sprite.moveTo(startX, startY);
         sprite.frame.open();
         sprite.isHuman = !!isHuman;
+        sprite.initialShoeColor = shoePalette ? shoePalette.high : null;
         return sprite;
     }
 
@@ -1783,6 +1935,7 @@ function initSprites(redTeamName, blueTeamName, redPlayerIndices, bluePlayerIndi
     redPlayer1Data.skin = redInfo1.skin || "brown";
     redPlayer1Data.jerseyString = redInfo1.jerseyString !== undefined ? String(redInfo1.jerseyString) : String(redPlayer1Data.jersey);
     redPlayer1Data.hasDribble = true;
+    applyShoePaletteToPlayer(redPlayer1);
 
     var redInfo2 = getPlayerInfo(redTeam.players, redPlayerIndices.player2);
     redPlayer2 = createSpriteForPlayer(redInfo2, 18, 12, "e", gameState.teamColors.red, false, BG_RED);
@@ -1796,6 +1949,7 @@ function initSprites(redTeamName, blueTeamName, redPlayerIndices, bluePlayerIndi
     redPlayer2Data.skin = redInfo2.skin || "brown";
     redPlayer2Data.jerseyString = redInfo2.jerseyString !== undefined ? String(redInfo2.jerseyString) : String(redPlayer2Data.jersey);
     redPlayer2Data.hasDribble = true;
+    applyShoePaletteToPlayer(redPlayer2);
 
     // Create BLUE TEAM (right side)
     var blueInfo1 = getPlayerInfo(blueTeam.players, bluePlayerIndices.player1);
@@ -1810,6 +1964,7 @@ function initSprites(redTeamName, blueTeamName, redPlayerIndices, bluePlayerIndi
     bluePlayer1Data.skin = blueInfo1.skin || "brown";
     bluePlayer1Data.jerseyString = blueInfo1.jerseyString !== undefined ? String(blueInfo1.jerseyString) : String(bluePlayer1Data.jersey);
     bluePlayer1Data.hasDribble = true;
+    applyShoePaletteToPlayer(bluePlayer1);
 
     var blueInfo2 = getPlayerInfo(blueTeam.players, bluePlayerIndices.player2);
     bluePlayer2 = createSpriteForPlayer(blueInfo2, 58, 12, "w", gameState.teamColors.blue, false, BG_BLUE);
@@ -1823,6 +1978,7 @@ function initSprites(redTeamName, blueTeamName, redPlayerIndices, bluePlayerIndi
     bluePlayer2Data.skin = blueInfo2.skin || "brown";
     bluePlayer2Data.jerseyString = blueInfo2.jerseyString !== undefined ? String(blueInfo2.jerseyString) : String(bluePlayer2Data.jersey);
     bluePlayer2Data.hasDribble = true;
+    applyShoePaletteToPlayer(bluePlayer2);
 
     ensureBallFrame();
 
@@ -2560,64 +2716,6 @@ function chooseBackcourtAdvanceTarget(player, teamName) {
     }
 
     return { x: desiredX, y: bestY };
-}
-
-function updateDebugInfo(teamKey, info) {
-    if (!gameState.debugOverlay) return;
-    if (!gameState.debugOverlay.last) {
-        gameState.debugOverlay.last = {};
-    }
-    gameState.debugOverlay.last[teamKey] = info;
-}
-
-function buildDebugLine(teamKey) {
-    var info = gameState.debugOverlay && gameState.debugOverlay.last ? gameState.debugOverlay.last[teamKey] : null;
-    var labelName = (gameState.teamNames && gameState.teamNames[teamKey]) ? gameState.teamNames[teamKey] : teamKey.toUpperCase();
-    var role = (teamKey === "red") ? "P1" : "CPU";
-    var parts = [];
-    if (info) {
-        if (info.state) parts.push(info.state);
-        if (info.decision) parts.push(info.decision);
-        if (info.note) parts.push(info.note);
-        if (info.inBackcourt !== undefined) parts.push("bc:" + (info.inBackcourt ? "Y" : "N"));
-        if (info.passChance !== undefined) parts.push("pass:" + info.passChance);
-        if (info.driveX !== undefined && info.driveY !== undefined) parts.push("tgt:" + info.driveX + "," + info.driveY);
-        if (info.distance !== undefined) parts.push("dist:" + info.distance);
-        if (info.stuck !== undefined) parts.push("stk:" + info.stuck);
-        if (info.turbo !== undefined) parts.push("tu:" + Math.round(info.turbo));
-    }
-    var text = parts.length ? parts.join(" ") : "--";
-    var label = labelName.toUpperCase() + " (" + role + ")" + ": " + text;
-    return label;
-}
-
-function fitDebugText(text, width) {
-    if (text.length > width) {
-        return text.substring(0, width);
-    }
-    if (text.length < width) {
-        return text + Array(width - text.length + 1).join(" ");
-    }
-    return text;
-}
-
-function drawDebugOverlay() {
-    if (!courtFrame) return;
-    var width = COURT_WIDTH - 4;
-    var baseY = COURT_HEIGHT - 1;
-    if (baseY < 2) return;
-
-    var show = gameState.debugOverlay && gameState.debugOverlay.enabled;
-    var redLine = show ? buildDebugLine("red") : "";
-    var blueLine = show ? buildDebugLine("blue") : "";
-
-    courtFrame.gotoxy(3, baseY);
-    courtFrame.putmsg(fitDebugText(redLine, width), LIGHTGRAY | WAS_BROWN);
-
-    if (baseY + 1 <= COURT_HEIGHT) {
-        courtFrame.gotoxy(3, baseY + 1);
-        courtFrame.putmsg(fitDebugText(blueLine, width), LIGHTGRAY | WAS_BROWN);
-    }
 }
 
 function activateAITurbo(player, drainMultiplier, distanceToTarget) {
@@ -3669,15 +3767,6 @@ function handleAIBallCarrier(player, teamName) {
     // Move toward target even without turbo
     moveAITowards(player, driveTargetX, driveTargetY);
 
-    updateDebugInfo(teamName, {
-        state: "handle",
-        carrier: player.playerData.name || teamName,
-        shotProb: myShotProb.toFixed(1),
-        inBackcourt: inBackcourt,
-        stuck: gameState.ballHandlerStuckTimer,
-        turbo: playerData.turbo.toFixed(0),
-        defDist: defenderDist.toFixed(1)
-    });
 }
 
 /**
@@ -4167,7 +4256,7 @@ function showHalftimeScreen() {
     if (typeof Sprite !== "undefined" && typeof Sprite.cycle === "function") {
         Sprite.cycle();
     }
-    courtFrame.cycle();
+    cycleFrame(courtFrame);
 
     // Wait for user input (auto-advance for CPU-only games)
     var halftimeStart = Date.now();
@@ -4244,7 +4333,7 @@ function showSubstitutionScreen() {
     courtFrame.center("Player substitutions will be available\r\n");
     courtFrame.center("in a future update!\r\n\r\n");
     courtFrame.center("\1h[SPACE]\1n Continue to 2nd Half\r\n");
-    courtFrame.cycle();
+    cycleFrame(courtFrame);
 
     while (true) {
         var key = console.getkey();
@@ -4595,16 +4684,6 @@ function handleInput(key) {
         return;
     }
 
-    if (keyUpper === 'V') {
-        gameState.debugOverlay.enabled = !gameState.debugOverlay.enabled;
-        if (gameState.debugOverlay.enabled) {
-            announce("DEBUG HUD ON", LIGHTGRAY);
-        } else {
-            announce("DEBUG HUD OFF", LIGHTGRAY);
-        }
-        return;
-    }
-
     // Detect turbo (rapid repeated arrow key presses)
     var now = Date.now();
     var isArrowKey = (key == KEY_UP || key == KEY_DOWN || key == KEY_LEFT || key == KEY_RIGHT);
@@ -4704,7 +4783,7 @@ function animatePass(passer, receiver) {
         }
 
         Sprite.cycle();
-        courtFrame.cycle();
+        cycleFrame(courtFrame);
         mswait(msPerStep);
     }
 
@@ -5212,7 +5291,7 @@ function createLooseBall(defender, victim) {
         var by = Math.round(startY + (endY - startY) * t - Math.sin(t * Math.PI) * 2);
         if (moveBallFrameTo) moveBallFrameTo(bx, by);
         Sprite.cycle();
-        courtFrame.cycle();
+        cycleFrame(courtFrame);
         mswait(25);
     }
 
@@ -5465,7 +5544,7 @@ function createRebound(x, y) {
             }
 
             Sprite.cycle();
-            courtFrame.cycle();
+            cycleFrame(courtFrame);
             mswait(40);
         }
 
@@ -6073,7 +6152,7 @@ function animateDunk(player, dunkInfo, targetX, targetY, made) {
         }, dunkInfo, style);
 
         Sprite.cycle();
-        courtFrame.cycle();
+        cycleFrame(courtFrame);
 
         if (blockCheck) {
             blocked = true;
@@ -6107,7 +6186,7 @@ function animateDunk(player, dunkInfo, targetX, targetY, made) {
         gameState.ballX = deflectX;
         gameState.ballY = deflectY;
         Sprite.cycle();
-        courtFrame.cycle();
+        cycleFrame(courtFrame);
         mswait(70);
 
         gameState.reboundActive = true;
@@ -6134,7 +6213,7 @@ function animateDunk(player, dunkInfo, targetX, targetY, made) {
             gameState.ballX = targetX;
             gameState.ballY = dropY;
             Sprite.cycle();
-            courtFrame.cycle();
+            cycleFrame(courtFrame);
             mswait(45);
         }
         moveBallFrameTo(targetX, clamp(targetY + 3, 1, COURT_HEIGHT));
@@ -6146,7 +6225,7 @@ function animateDunk(player, dunkInfo, targetX, targetY, made) {
         gameState.ballX = targetX;
         gameState.ballY = targetY;
         Sprite.cycle();
-        courtFrame.cycle();
+        cycleFrame(courtFrame);
         mswait(60);
         var ricochetX = clamp(targetX - attackDir * 2, 1, COURT_WIDTH);
         var ricochetY = clamp(targetY + 2, 1, COURT_HEIGHT);
@@ -6154,7 +6233,7 @@ function animateDunk(player, dunkInfo, targetX, targetY, made) {
         gameState.ballX = ricochetX;
         gameState.ballY = ricochetY;
         Sprite.cycle();
-        courtFrame.cycle();
+        cycleFrame(courtFrame);
         mswait(80);
         moveBallFrameTo(targetX, targetY + 1);
         gameState.ballX = targetX;
@@ -6234,7 +6313,7 @@ function animateShot(startX, startY, targetX, targetY, made) {
         }
 
         Sprite.cycle();
-        courtFrame.cycle();
+        cycleFrame(courtFrame);
         mswait(msPerStep);
     }
 
@@ -6249,7 +6328,7 @@ function animateShot(startX, startY, targetX, targetY, made) {
             courtFrame.putmsg("*", YELLOW | WAS_BROWN);
             courtFrame.gotoxy(targetX + 1, targetY);
             courtFrame.putmsg("*", YELLOW | WAS_BROWN);
-            courtFrame.cycle();
+            cycleFrame(courtFrame);
             mswait(100);
             drawCourt();
             mswait(100);
@@ -6762,7 +6841,7 @@ function showGameOver(isDemoMode) {
     if (typeof Sprite !== "undefined" && typeof Sprite.cycle === "function") {
         Sprite.cycle();
     }
-    courtFrame.cycle();
+    cycleFrame(courtFrame);
 
     if (isDemoMode) {
         // Demo mode: wait 15 seconds or until user presses Q
@@ -6854,7 +6933,7 @@ function showIntro() {
     courtFrame.center("Q: Quit\r\n\r\n");
     courtFrame.center("\1h Press any key to start...\1n\r\n");
 
-    courtFrame.cycle();
+    cycleFrame(courtFrame);
 
     if (typeof console !== 'undefined' && typeof console.getkey === 'function') {
         console.getkey();
@@ -6879,7 +6958,7 @@ function mainMenu() {
 
     courtFrame.center("Select an option:\r\n");
 
-    courtFrame.cycle();
+    cycleFrame(courtFrame);
 
     // Wait for user selection
     while (true) {
