@@ -577,7 +577,7 @@ var ATTR_STEAL = 4;
 var ATTR_BLOCK = 5;
 
 // Turbo constants
-var MAX_TURBO = 100;
+var MAX_TURBO = 50;
 var TURBO_DRAIN_RATE = 2;
 var TURBO_RECHARGE_RATE = 3; // Increased from 1 to 3 for faster recharge
 var TURBO_SPEED_MULTIPLIER = 3;
@@ -2773,6 +2773,25 @@ function clampSpriteFeetToCourt(sprite) {
         var newX = clamp(sprite.x + shift, minX, maxX);
         sprite.moveTo(newX, sprite.y);
     }
+}
+
+function applyMovementCommand(sprite, key, counters) {
+    if (!sprite || typeof sprite.getcmd !== "function") return false;
+    if (!counters) {
+        sprite.getcmd(key);
+        return true;
+    }
+    var horizontal = (key === KEY_LEFT || key === KEY_RIGHT);
+    var vertical = (key === KEY_UP || key === KEY_DOWN);
+    if (horizontal) {
+        if (counters.horizontal <= 0) return false;
+        counters.horizontal--;
+    } else if (vertical) {
+        if (counters.vertical <= 0) return false;
+        counters.vertical--;
+    }
+    sprite.getcmd(key);
+    return true;
 }
 
 function ensureScoreFontLoaded() {
@@ -5365,33 +5384,46 @@ function moveAITowards(sprite, targetX, targetY) {
     var movesPerUpdate = 2;
     if (sprite.playerData && sprite.playerData.turboActive) {
         movesPerUpdate = 4;
+        var teamName = getPlayerTeamName(sprite);
+        if (teamName && gameState.ballCarrier && sprite === gameState.ballCarrier) {
+            movesPerUpdate = Math.max(3, Math.floor(movesPerUpdate * 0.75));
+        }
     }
 
     var startX = sprite.x;
     var startY = sprite.y;
     var axisToggle = sprite.playerData ? (sprite.playerData.axisToggle || false) : false;
+    var turboActive = sprite.playerData && sprite.playerData.turboActive;
+    var movementCounters = {
+        horizontal: movesPerUpdate,
+        vertical: turboActive ? Math.max(1, Math.ceil(movesPerUpdate / 2)) : movesPerUpdate
+    };
 
     for (var m = 0; m < movesPerUpdate; m++) {
         dx = targetX - sprite.x;
         dy = targetY - sprite.y;
+
+        if (movementCounters.horizontal <= 0 && movementCounters.vertical <= 0) break;
 
         if (Math.abs(dx) <= 1 && Math.abs(dy) <= 1) {
             break;
         }
 
         if (Math.abs(dx) > 1 && Math.abs(dy) > 1) {
-            if (axisToggle) {
-                sprite.getcmd(dy < 0 ? KEY_UP : KEY_DOWN);
-            } else {
-                sprite.getcmd(dx < 0 ? KEY_LEFT : KEY_RIGHT);
+            var primaryKey = axisToggle ? (dy < 0 ? KEY_UP : KEY_DOWN) : (dx < 0 ? KEY_LEFT : KEY_RIGHT);
+            var moved = applyMovementCommand(sprite, primaryKey, movementCounters);
+            if (!moved) {
+                var altKey = axisToggle ? (dx < 0 ? KEY_LEFT : KEY_RIGHT) : (dy < 0 ? KEY_UP : KEY_DOWN);
+                moved = applyMovementCommand(sprite, altKey, movementCounters);
             }
             axisToggle = !axisToggle;
+            if (!moved) continue;
         } else {
             if (Math.abs(dx) > 1) {
-                sprite.getcmd(dx < 0 ? KEY_LEFT : KEY_RIGHT);
+                applyMovementCommand(sprite, dx < 0 ? KEY_LEFT : KEY_RIGHT, movementCounters);
             }
             if (Math.abs(dy) > 1) {
-                sprite.getcmd(dy < 0 ? KEY_UP : KEY_DOWN);
+                applyMovementCommand(sprite, dy < 0 ? KEY_UP : KEY_DOWN, movementCounters);
             }
         }
     }
@@ -5626,27 +5658,36 @@ function gameLoop() {
                 gameState.ballHandlerLastX = ballHandler.x;
                 gameState.ballHandlerLastY = ballHandler.y;
 
-        if (ballHandler.playerData && ballHandler.playerData.hasDribble === false) {
-            if (!gameState.ballHandlerDeadSince) {
-                gameState.ballHandlerDeadSince = now;
-                gameState.ballHandlerDeadFrames = 1;
-            } else {
-                gameState.ballHandlerDeadFrames++;
-                var deadElapsed = now - gameState.ballHandlerDeadSince;
-                if (!gameState.ballHandlerDeadForcedShot && deadElapsed >= 4500) {
-                    if (ballHandler && !ballHandler.isHuman) {
-                        gameState.ballHandlerDeadForcedShot = true;
-                        attemptShot();
-                        gameState.ballHandlerDeadSince = now;
+                if (ballHandler.playerData && ballHandler.playerData.hasDribble === false) {
+                    var opponentTeamName = (gameState.currentTeam === "red") ? "blue" : "red";
+                    var closestDefender = getClosestPlayer(ballHandler.x, ballHandler.y, opponentTeamName);
+                    var guardDistance = closestDefender ? getSpriteDistance(ballHandler, closestDefender) : 999;
+                    var closelyGuarded = guardDistance <= 4;
+
+                    if (!closelyGuarded) {
+                        gameState.ballHandlerDeadSince = null;
                         gameState.ballHandlerDeadFrames = 0;
-                        continue;
+                        gameState.ballHandlerDeadForcedShot = false;
+                    } else if (!gameState.ballHandlerDeadSince) {
+                        gameState.ballHandlerDeadSince = now;
+                        gameState.ballHandlerDeadFrames = 1;
+                    } else {
+                        gameState.ballHandlerDeadFrames++;
+                        var deadElapsed = now - gameState.ballHandlerDeadSince;
+                        if (!gameState.ballHandlerDeadForcedShot && deadElapsed >= 4500) {
+                            if (ballHandler && !ballHandler.isHuman) {
+                                gameState.ballHandlerDeadForcedShot = true;
+                                attemptShot();
+                                gameState.ballHandlerDeadSince = now;
+                                gameState.ballHandlerDeadFrames = 0;
+                                continue;
+                            }
+                        }
+                        if (!violationTriggeredThisFrame && deadElapsed >= 5000) {
+                            enforceFiveSecondViolation();
+                            violationTriggeredThisFrame = true;
+                        }
                     }
-                }
-                if (!violationTriggeredThisFrame && (now - gameState.ballHandlerDeadSince) >= 5000) {
-                    enforceFiveSecondViolation();
-                    violationTriggeredThisFrame = true;
-                }
-            }
                 } else {
                     resetDeadDribbleTimer();
                 }
@@ -5938,14 +5979,21 @@ function handleInput(key) {
     if (redPlayer1 && isArrowKey) {
         var movesPerInput = 2; // Base speed: 2 moves per input (was 1)
 
-        // Turbo speed boost
         if (redPlayer1.playerData && redPlayer1.playerData.turboActive) {
-            movesPerInput = 4; // Turbo speed: 4 moves per input
+            movesPerInput = 4;
+            if (gameState.ballCarrier === redPlayer1) {
+                movesPerInput = Math.max(3, Math.floor(movesPerInput * 0.75));
+            }
         }
 
         // Execute multiple movement commands for increased speed
+        var turboActive = redPlayer1.playerData && redPlayer1.playerData.turboActive;
+        var counters = {
+            horizontal: movesPerInput,
+            vertical: turboActive ? Math.max(1, Math.ceil(movesPerInput / 2)) : movesPerInput
+        };
         for (var m = 0; m < movesPerInput; m++) {
-            redPlayer1.getcmd(key);
+            if (!applyMovementCommand(redPlayer1, key, counters)) break;
         }
     } else if (redPlayer1 && !recovering) {
         // Non-movement keys (pass, shoot, etc)
@@ -8633,33 +8681,97 @@ function teamSelectionScreen() {
         return a.name.localeCompare(b.name);
     });
 
+    var columnRows = Math.ceil(teamList.length / 2);
+    var rightColumnRows = teamList.length - columnRows;
+
+    function indexToCoord(index) {
+        if (index < columnRows) return { col: 0, row: index };
+        return { col: 1, row: index - columnRows };
+    }
+
+    function coordToIndex(col, row) {
+        return col === 0 ? row : columnRows + row;
+    }
+
+    function columnLength(col) {
+        return col === 0 ? columnRows : rightColumnRows;
+    }
+
+    function renderTeamMenu(currentSelection, title) {
+        console.clear();
+        console.putmsg("\1h\1y=== NBA JAM - TEAM SELECTION ===\1n\r\n\r\n");
+        console.putmsg(title + "\r\n\r\n");
+
+        for (var row = 0; row < columnRows; row++) {
+            var line = "";
+
+            var leftIndex = row;
+            if (leftIndex < teamList.length) {
+                var leftTeam = NBATeams[teamList[leftIndex].key];
+                var leftSelected = (currentSelection === leftIndex);
+                var leftPrefix = leftSelected ? "> " : "  ";
+                var leftColor = getMenuColorCodes(leftTeam, leftSelected);
+                line += leftColor + leftPrefix + teamList[leftIndex].name;
+                var leftPad = 32 - (leftPrefix.length + teamList[leftIndex].name.length);
+                if (leftPad < 2) leftPad = 2;
+                line += repeatChar(' ', leftPad);
+            } else {
+                line += repeatChar(' ', 34);
+            }
+
+            var rightIndex = row + columnRows;
+            if (rightIndex < teamList.length) {
+                var rightTeam = NBATeams[teamList[rightIndex].key];
+                var rightSelected = (currentSelection === rightIndex);
+                var rightPrefix = rightSelected ? "> " : "  ";
+                var rightColor = getMenuColorCodes(rightTeam, rightSelected);
+                line += rightColor + rightPrefix + teamList[rightIndex].name;
+            }
+
+            line += "\1n\r\n";
+            console.putmsg(line);
+        }
+
+        console.putmsg("\r\n\1h[UP/DOWN]\1n Navigate  \1h[LEFT/RIGHT]\1n Column  \1h[ENTER]\1n Select  \1h[Q]\1n Quit\r\n");
+    }
+
     // STEP 1: Select YOUR team
     var currentSelection = 0;
     var userTeamKey = null;
 
     while (userTeamKey === null) {
-        console.clear();
-        console.putmsg("\1h\1y=== NBA JAM - TEAM SELECTION ===\1n\r\n\r\n");
-        console.putmsg("\1h\1rYOUR TEAM\1n - Select your team:\r\n\r\n");
-
-        // Display team list
-        for (var i = 0; i < teamList.length; i++) {
-            var team = NBATeams[teamList[i].key];
-            var colorSequence = getMenuColorCodes(team, i === currentSelection);
-            var prefix = (i === currentSelection) ? "> " : "  ";
-            console.putmsg(colorSequence + prefix + teamList[i].name + "\1n\r\n");
-        }
-
-        console.putmsg("\r\n\1h[UP/DOWN]\1n Navigate  \1h[ENTER]\1n Select  \1h[Q]\1n Quit\r\n");
-
+        renderTeamMenu(currentSelection, "\1h\1rYOUR TEAM\1n - Select your team:");
         var key = console.getkey();
 
         if (key.toUpperCase() === 'Q') {
             return null;
-        } else if (key === KEY_UP && currentSelection > 0) {
-            currentSelection--;
-        } else if (key === KEY_DOWN && currentSelection < teamList.length - 1) {
-            currentSelection++;
+        } else if (key === KEY_UP) {
+            var coordUp = indexToCoord(currentSelection);
+            if (coordUp.row > 0) {
+                coordUp.row--;
+                currentSelection = coordToIndex(coordUp.col, coordUp.row);
+            }
+        } else if (key === KEY_DOWN) {
+            var coordDown = indexToCoord(currentSelection);
+            var colLenDown = columnLength(coordDown.col);
+            if (coordDown.row + 1 < colLenDown) {
+                coordDown.row++;
+                currentSelection = coordToIndex(coordDown.col, coordDown.row);
+            }
+        } else if (key === KEY_LEFT) {
+            var coordLeft = indexToCoord(currentSelection);
+            if (coordLeft.col === 1) {
+                coordLeft.col = 0;
+                var leftLen = columnLength(0);
+                if (coordLeft.row >= leftLen) coordLeft.row = leftLen - 1;
+                currentSelection = coordToIndex(coordLeft.col, coordLeft.row);
+            }
+        } else if (key === KEY_RIGHT) {
+            var coordRight = indexToCoord(currentSelection);
+            if (rightColumnRows > 0 && coordRight.col === 0 && coordRight.row < rightColumnRows) {
+                coordRight.col = 1;
+                currentSelection = coordToIndex(coordRight.col, coordRight.row);
+            }
         } else if (key === '\r' || key === '\n') {
             userTeamKey = teamList[currentSelection].key;
         }
@@ -8678,28 +8790,38 @@ function teamSelectionScreen() {
     var opponentTeamKey = null;
 
     while (opponentTeamKey === null) {
-        console.clear();
-        console.putmsg("\1h\1y=== NBA JAM - TEAM SELECTION ===\1n\r\n\r\n");
-        console.putmsg("\1h\1cOPPONENT TEAM\1n - Select opponent:\r\n\r\n");
-
-        // Display team list
-        for (var i = 0; i < teamList.length; i++) {
-            var team = NBATeams[teamList[i].key];
-            var colorSequence = getMenuColorCodes(team, i === currentSelection);
-            var prefix = (i === currentSelection) ? "> " : "  ";
-            console.putmsg(colorSequence + prefix + teamList[i].name + "\1n\r\n");
-        }
-
-        console.putmsg("\r\n\1h[UP/DOWN]\1n Navigate  \1h[ENTER]\1n Select  \1h[Q]\1n Quit\r\n");
-
+        renderTeamMenu(currentSelection, "\1h\1cOPPONENT TEAM\1n - Select opponent:");
         var key = console.getkey();
 
         if (key.toUpperCase() === 'Q') {
             return null;
-        } else if (key === KEY_UP && currentSelection > 0) {
-            currentSelection--;
-        } else if (key === KEY_DOWN && currentSelection < teamList.length - 1) {
-            currentSelection++;
+        } else if (key === KEY_UP) {
+            var oCoordUp = indexToCoord(currentSelection);
+            if (oCoordUp.row > 0) {
+                oCoordUp.row--;
+                currentSelection = coordToIndex(oCoordUp.col, oCoordUp.row);
+            }
+        } else if (key === KEY_DOWN) {
+            var oCoordDown = indexToCoord(currentSelection);
+            var oLenDown = columnLength(oCoordDown.col);
+            if (oCoordDown.row + 1 < oLenDown) {
+                oCoordDown.row++;
+                currentSelection = coordToIndex(oCoordDown.col, oCoordDown.row);
+            }
+        } else if (key === KEY_LEFT) {
+            var oCoordLeft = indexToCoord(currentSelection);
+            if (oCoordLeft.col === 1) {
+                oCoordLeft.col = 0;
+                var oLeftLen = columnLength(0);
+                if (oCoordLeft.row >= oLeftLen) oCoordLeft.row = oLeftLen - 1;
+                currentSelection = coordToIndex(oCoordLeft.col, oCoordLeft.row);
+            }
+        } else if (key === KEY_RIGHT) {
+            var oCoordRight = indexToCoord(currentSelection);
+            if (rightColumnRows > 0 && oCoordRight.col === 0 && oCoordRight.row < rightColumnRows) {
+                oCoordRight.col = 1;
+                currentSelection = coordToIndex(oCoordRight.col, oCoordRight.row);
+            }
         } else if (key === '\r' || key === '\n') {
             opponentTeamKey = teamList[currentSelection].key;
         }
