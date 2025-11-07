@@ -61,6 +61,7 @@ try {
     load(js.exec_dir + "lib/multiplayer/mp_network.js");
     load(js.exec_dir + "lib/multiplayer/mp_sessions.js");
     load(js.exec_dir + "lib/multiplayer/mp_lobby.js");
+    load(js.exec_dir + "lib/multiplayer/mp_failover.js");
     load(js.exec_dir + "lib/multiplayer/mp_coordinator.js");
     load(js.exec_dir + "lib/multiplayer/mp_client.js");
     multiplayerEnabled = true;
