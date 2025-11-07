@@ -261,6 +261,13 @@ function gameLoop() {
                 } else {
                     // Ball handler is moving, reset timer
                     gameState.ballHandlerStuckTimer = 0;
+                    // If moving and not closely guarded, restore dribble
+                    if (ballHandler.playerData && ballHandler.playerData.hasDribble === false && !closelyGuarded) {
+                        ballHandler.playerData.hasDribble = true;
+                        gameState.ballHandlerDeadSince = null;
+                        gameState.ballHandlerDeadFrames = 0;
+                        gameState.ballHandlerDeadForcedShot = false;
+                    }
                 }
 
                 // Update last position
