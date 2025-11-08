@@ -678,11 +678,14 @@ function main() {
     var systems = initializeSystems({
         gameState: gameState,
         animationSystem: animationSystem,
-        players: {
-            teamAPlayer1: teamAPlayer1,
-            teamAPlayer2: teamAPlayer2,
-            teamBPlayer1: teamBPlayer1,
-            teamBPlayer2: teamBPlayer2
+        getPlayers: function () {
+            // Lazy evaluation - returns current player references
+            return {
+                teamAPlayer1: teamAPlayer1,
+                teamAPlayer2: teamAPlayer2,
+                teamBPlayer1: teamBPlayer1,
+                teamBPlayer2: teamBPlayer2
+            };
         },
         helpers: {
             getPlayerTeamName: getPlayerTeamName,
