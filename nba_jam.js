@@ -205,7 +205,7 @@ function gameLoop(systems) {
         stateManager.set("lastUpdateTime", Date.now(), "game_loop_start");
         stateManager.set("lastSecondTime", Date.now(), "game_loop_start");
         stateManager.set("lastAIUpdateTime", Date.now(), "game_loop_start");
-        clearPotentialAssist();
+        clearPotentialAssist(systems);
 
         var tempo = getSinglePlayerTempo();
         var frameDelay = tempo.frameDelayMs;
