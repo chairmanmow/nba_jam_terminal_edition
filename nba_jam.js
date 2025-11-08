@@ -23,9 +23,11 @@ load(js.exec_dir + "lib/utils/validation.js");  // WAVE 21: Input validation uti
 // Wave 23: Architecture Foundation - Load new core systems
 load(js.exec_dir + "lib/core/state-manager.js");
 load(js.exec_dir + "lib/core/event-bus.js");
+load(js.exec_dir + "lib/core/system-init.js");  // Centralized system initialization
 
 // Wave 23: Load new systems (testable architecture)
 load(js.exec_dir + "lib/systems/passing-system.js");
+load(js.exec_dir + "lib/systems/possession-system.js");
 
 load(js.exec_dir + "lib/rendering/sprite-utils.js");
 load(js.exec_dir + "lib/rendering/uniform-system.js");
@@ -672,23 +674,19 @@ function main() {
     resetGameState();
 
     // Wave 23: Initialize architecture foundation systems
-    // Wrap gameState with state manager for change tracking and testability
-    var stateManager = createStateManager(gameState);
-
-    // Create event bus for decoupled system communication
-    var eventBus = createEventBus();
-
-    // Wave 23: Create passing system with explicit dependencies
-    var passingSystem = createPassingSystem({
-        state: stateManager,
-        animations: animationSystem,
-        events: eventBus,
-        rules: {
-            COURT_WIDTH: COURT_WIDTH,
-            COURT_HEIGHT: COURT_HEIGHT
+    // Wave 23: Initialize all game systems with dependency injection
+    var systems = initializeSystems({
+        gameState: gameState,
+        animationSystem: animationSystem,
+        players: {
+            teamAPlayer1: teamAPlayer1,
+            teamAPlayer2: teamAPlayer2,
+            teamBPlayer1: teamBPlayer1,
+            teamBPlayer2: teamBPlayer2
         },
         helpers: {
             getPlayerTeamName: getPlayerTeamName,
+            getAllPlayers: getAllPlayers,
             recordTurnover: recordTurnover,
             triggerPossessionBeep: triggerPossessionBeep,
             resetBackcourtState: resetBackcourtState,
@@ -698,24 +696,15 @@ function main() {
             primeInboundOffense: primeInboundOffense,
             assignDefensiveMatchups: assignDefensiveMatchups,
             announceEvent: announceEvent
+        },
+        constants: {
+            COURT_WIDTH: COURT_WIDTH,
+            COURT_HEIGHT: COURT_HEIGHT
         }
     });
 
-    // TODO: Wire up event handlers (announcer, stats, etc) to eventBus
-    // Example: eventBus.on('pass_complete', function(data) { announceEvent('pass', data); });
-
-    // Store in global scope for now (will be passed as deps in migrated systems)
-    // TODO: Remove these globals once all systems migrated to dependency injection
-    if (typeof globalThis !== 'undefined') {
-        globalThis.stateManager = stateManager;
-        globalThis.eventBus = eventBus;
-        globalThis.passingSystem = passingSystem;
-    } else {
-        // Fallback for older JavaScript engines
-        this.stateManager = stateManager;
-        this.eventBus = eventBus;
-        this.passingSystem = passingSystem;
-    }
+    // Expose systems globally (temporary during migration to dependency injection)
+    exposeSystemsGlobally(systems);
 
     // Subscribe to game events (Observer pattern)
     setupEventSubscriptions();    // Show ANSI splash screen first
