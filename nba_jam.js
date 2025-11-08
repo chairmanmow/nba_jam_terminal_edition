@@ -184,17 +184,19 @@ function cleanupSprites() {
 
 // Violation checking (checkViolations, enforceBackcourtViolation, etc.) loaded from lib/game-logic/violations.js
 
-function gameLoop() {
-    // Wave 23: State manager is REQUIRED - fail loudly if not initialized
-    if (!globalThis.stateManager) {
-        throw new Error("ARCHITECTURE ERROR: stateManager not initialized. Check main() initialization order.");
+function gameLoop(systems) {
+    // Wave 23: Systems are REQUIRED - fail loudly if not provided
+    if (!systems || !systems.stateManager) {
+        throw new Error("ARCHITECTURE ERROR: gameLoop requires systems parameter with stateManager");
     }
-    
+
+    var stateManager = systems.stateManager;
+
     // Use state manager for all state changes
-    globalThis.stateManager.set("gameRunning", true, "game_loop_start");
-    globalThis.stateManager.set("lastUpdateTime", Date.now(), "game_loop_start");
-    globalThis.stateManager.set("lastSecondTime", Date.now(), "game_loop_start");
-    globalThis.stateManager.set("lastAIUpdateTime", Date.now(), "game_loop_start");
+    stateManager.set("gameRunning", true, "game_loop_start");
+    stateManager.set("lastUpdateTime", Date.now(), "game_loop_start");
+    stateManager.set("lastSecondTime", Date.now(), "game_loop_start");
+    stateManager.set("lastAIUpdateTime", Date.now(), "game_loop_start");
     clearPotentialAssist();
 
     var tempo = getSinglePlayerTempo();
@@ -212,7 +214,7 @@ function gameLoop() {
     while (gameState.gameRunning && gameState.timeRemaining > 0) {
         var now = Date.now();
         var violationTriggeredThisFrame = false;
-        globalThis.stateManager.set("tickCounter", (gameState.tickCounter + 1) % 1000000, "game_tick");
+        stateManager.set("tickCounter", (gameState.tickCounter + 1) % 1000000, "game_tick");
 
         var recoveryList = getAllPlayers();
         for (var r = 0; r < recoveryList.length; r++) {
@@ -223,11 +225,11 @@ function gameLoop() {
         if (now - gameState.lastSecondTime >= 1000) {
             gameState.timeRemaining--;
             gameState.shotClock--;
-            globalThis.stateManager.set("lastSecondTime", now, "timer_tick");
+            stateManager.set("lastSecondTime", now, "timer_tick");
 
             // Check for halftime (when first half time expires)
             if (gameState.currentHalf === 1 && gameState.timeRemaining <= gameState.totalGameTime / 2) {
-                globalThis.stateManager.set("currentHalf", 2, "halftime");
+                stateManager.set("currentHalf", 2, "halftime");
                 showHalftimeScreen();
                 if (!gameState.gameRunning) break; // User quit during halftime
 
@@ -237,9 +239,9 @@ function gameLoop() {
                 }
                 drawCourt();
                 drawScore();
-                globalThis.stateManager.set("lastUpdateTime", Date.now(), "halftime_reset");
-                globalThis.stateManager.set("lastSecondTime", Date.now(), "halftime_reset");
-                globalThis.stateManager.set("lastAIUpdateTime", Date.now(), "halftime_reset");
+                stateManager.set("lastUpdateTime", Date.now(), "halftime_reset");
+                stateManager.set("lastSecondTime", Date.now(), "halftime_reset");
+                stateManager.set("lastAIUpdateTime", Date.now(), "halftime_reset");
                 continue;
             }
 
@@ -248,7 +250,7 @@ function gameLoop() {
                 announceEvent("shot_clock_violation", { team: gameState.currentTeam });
                 mswait(1000);
                 switchPossession();
-                globalThis.stateManager.set("shotClock", 24, "shot_clock_reset"); // Reset for new possession
+                stateManager.set("shotClock", 24, "shot_clock_reset"); // Reset for new possession
             }
 
             // Track ball handler movement to detect stuck AI
@@ -277,21 +279,21 @@ function gameLoop() {
                     }
                 } else {
                     // Ball handler is moving, reset timer
-                    globalThis.stateManager.set("ballHandlerStuckTimer", 0, "ball_handler_moving");
+                    stateManager.set("ballHandlerStuckTimer", 0, "ball_handler_moving");
                 }
 
                 // Update last position
-                globalThis.stateManager.set("ballHandlerLastX", ballHandler.x, "ball_handler_track");
-                globalThis.stateManager.set("ballHandlerLastY", ballHandler.y, "ball_handler_track");
+                stateManager.set("ballHandlerLastX", ballHandler.x, "ball_handler_track");
+                stateManager.set("ballHandlerLastY", ballHandler.y, "ball_handler_track");
 
                 if (ballHandler.playerData && ballHandler.playerData.hasDribble === false) {
                     if (!closelyGuarded) {
-                        globalThis.stateManager.set("ballHandlerDeadSince", null, "dead_dribble_clear");
-                        globalThis.stateManager.set("ballHandlerDeadFrames", 0, "dead_dribble_clear");
-                        globalThis.stateManager.set("ballHandlerDeadForcedShot", false, "dead_dribble_clear");
+                        stateManager.set("ballHandlerDeadSince", null, "dead_dribble_clear");
+                        stateManager.set("ballHandlerDeadFrames", 0, "dead_dribble_clear");
+                        stateManager.set("ballHandlerDeadForcedShot", false, "dead_dribble_clear");
                     } else if (!gameState.ballHandlerDeadSince) {
-                        globalThis.stateManager.set("ballHandlerDeadSince", now, "dead_dribble_start");
-                        globalThis.stateManager.set("ballHandlerDeadFrames", 1, "dead_dribble_start");
+                        stateManager.set("ballHandlerDeadSince", now, "dead_dribble_start");
+                        stateManager.set("ballHandlerDeadFrames", 1, "dead_dribble_start");
                     } else {
                         gameState.ballHandlerDeadFrames++;
 
@@ -312,10 +314,10 @@ function gameLoop() {
                         var deadElapsed = now - gameState.ballHandlerDeadSince;
                         if (!gameState.ballHandlerDeadForcedShot && deadElapsed >= 4500) {
                             if (ballHandler && !ballHandler.isHuman) {
-                                globalThis.stateManager.set("ballHandlerDeadForcedShot", true, "dead_dribble_force_shot");
+                                stateManager.set("ballHandlerDeadForcedShot", true, "dead_dribble_force_shot");
                                 attemptShot();
-                                globalThis.stateManager.set("ballHandlerDeadSince", now, "dead_dribble_reset");
-                                globalThis.stateManager.set("ballHandlerDeadFrames", 0, "dead_dribble_reset");
+                                stateManager.set("ballHandlerDeadSince", now, "dead_dribble_reset");
+                                stateManager.set("ballHandlerDeadFrames", 0, "dead_dribble_reset");
                                 continue;
                             }
                         }
@@ -331,32 +333,32 @@ function gameLoop() {
                 // Track frontcourt progress for smarter passing
                 var attackDir = (gameState.currentTeam === "teamA") ? 1 : -1;
                 if (gameState.ballHandlerProgressOwner !== ballHandler) {
-                    globalThis.stateManager.set("ballHandlerProgressOwner", ballHandler, "progress_owner_change");
-                    globalThis.stateManager.set("ballHandlerFrontcourtStartX", ballHandler.x, "progress_owner_change");
-                    globalThis.stateManager.set("ballHandlerAdvanceTimer", 0, "progress_owner_change");
+                    stateManager.set("ballHandlerProgressOwner", ballHandler, "progress_owner_change");
+                    stateManager.set("ballHandlerFrontcourtStartX", ballHandler.x, "progress_owner_change");
+                    stateManager.set("ballHandlerAdvanceTimer", 0, "progress_owner_change");
                 }
 
                 var handlerInBackcourt = isInBackcourt(ballHandler, gameState.currentTeam);
 
                 if (!gameState.frontcourtEstablished || handlerInBackcourt) {
-                    globalThis.stateManager.set("ballHandlerFrontcourtStartX", ballHandler.x, "backcourt_progress");
-                    globalThis.stateManager.set("ballHandlerAdvanceTimer", 0, "backcourt_progress");
+                    stateManager.set("ballHandlerFrontcourtStartX", ballHandler.x, "backcourt_progress");
+                    stateManager.set("ballHandlerAdvanceTimer", 0, "backcourt_progress");
                 } else {
                     var forwardDelta = (ballHandler.x - gameState.ballHandlerFrontcourtStartX) * attackDir;
                     if (forwardDelta < -1) {
-                        globalThis.stateManager.set("ballHandlerFrontcourtStartX", ballHandler.x, "retreat_reset");
+                        stateManager.set("ballHandlerFrontcourtStartX", ballHandler.x, "retreat_reset");
                         forwardDelta = 0;
                     }
                     if (forwardDelta < 4) {
                         gameState.ballHandlerAdvanceTimer++;
                     } else {
-                        globalThis.stateManager.set("ballHandlerFrontcourtStartX", ballHandler.x, "advance_progress");
-                        globalThis.stateManager.set("ballHandlerAdvanceTimer", 0, "advance_progress");
+                        stateManager.set("ballHandlerFrontcourtStartX", ballHandler.x, "advance_progress");
+                        stateManager.set("ballHandlerAdvanceTimer", 0, "advance_progress");
                     }
                 }
             } else {
-                globalThis.stateManager.set("ballHandlerAdvanceTimer", 0, "no_ball_carrier");
-                globalThis.stateManager.set("ballHandlerProgressOwner", null, "no_ball_carrier");
+                stateManager.set("ballHandlerAdvanceTimer", 0, "no_ball_carrier");
+                stateManager.set("ballHandlerProgressOwner", null, "no_ball_carrier");
                 resetDeadDribbleTimer();
             }
 
@@ -365,8 +367,8 @@ function gameLoop() {
         }
 
         if (violationTriggeredThisFrame) {
-            globalThis.stateManager.set("lastAIUpdateTime", now, "violation_triggered");
-            globalThis.stateManager.set("lastUpdateTime", now, "violation_triggered");
+            stateManager.set("lastAIUpdateTime", now, "violation_triggered");
+            stateManager.set("lastUpdateTime", now, "violation_triggered");
             continue;
         }
 
@@ -421,13 +423,13 @@ function gameLoop() {
                     blocker.moveTo(blocker.x, blocker.blockOriginalY);
                     blocker.prevJumpBottomY = null;
                     blocker.blockJumpHeightBoost = 0;
-                    globalThis.stateManager.set("activeBlock", null, "block_complete");
-                    globalThis.stateManager.set("activeBlockDuration", null, "block_complete");
+                    stateManager.set("activeBlock", null, "block_complete");
+                    stateManager.set("activeBlockDuration", null, "block_complete");
                 }
             } else {
-                globalThis.stateManager.set("blockJumpTimer", 0, "block_invalid");
-                globalThis.stateManager.set("activeBlock", null, "block_invalid");
-                globalThis.stateManager.set("activeBlockDuration", null, "block_invalid");
+                stateManager.set("blockJumpTimer", 0, "block_invalid");
+                stateManager.set("activeBlock", null, "block_invalid");
+                stateManager.set("activeBlockDuration", null, "block_invalid");
             }
         }
 
@@ -482,7 +484,7 @@ function gameLoop() {
         if (gameState.ballCarrier && !gameState.inbounding && !gameState.frontcourtEstablished) {
             if (!isInBackcourt(gameState.ballCarrier, gameState.currentTeam)) {
                 setFrontcourtEstablished(gameState.currentTeam);
-                globalThis.stateManager.set("backcourtTimer", 0, "frontcourt_established");
+                stateManager.set("backcourtTimer", 0, "frontcourt_established");
             }
         }
 
@@ -495,7 +497,7 @@ function gameLoop() {
         // Update AI (slower than rendering)
         if (now - gameState.lastAIUpdateTime >= aiInterval) {
             updateAI();
-            globalThis.stateManager.set("lastAIUpdateTime", now, "ai_update");
+            stateManager.set("lastAIUpdateTime", now, "ai_update");
         }
 
         // Update turbo for all players
@@ -538,7 +540,7 @@ function gameLoop() {
         if (now - gameState.lastUpdateTime >= 60 && !animationSystem.isBallAnimating()) {
             drawCourt();
             drawScore();
-            globalThis.stateManager.set("lastUpdateTime", now, "render_update");
+            stateManager.set("lastUpdateTime", now, "render_update");
         }
 
         // Cycle trail frame AFTER drawCourt so trails appear on top
@@ -553,10 +555,14 @@ function gameLoop() {
         mswait(frameDelay);
     }
 
-    globalThis.stateManager.set("gameRunning", false, "game_loop_end");
+    stateManager.set("gameRunning", false, "game_loop_end");
 }
 
-function runCPUDemo() {
+function runCPUDemo(systems) {
+    if (!systems || !systems.stateManager) {
+        throw new Error("ARCHITECTURE ERROR: runCPUDemo requires systems parameter");
+    }
+    var stateManager = systems.stateManager;
     while (true) {
         // Pick random teams for demo
         var teamKeys = Object.keys(NBATeams);
@@ -621,9 +627,9 @@ function runCPUDemo() {
         initSprites(redTeamKey, blueTeamKey, redPlayerIndices, bluePlayerIndices, true);
 
         // Match player game length for demo as well
-        globalThis.stateManager.set("timeRemaining", DEMO_GAME_SECONDS, "demo_init");
-        globalThis.stateManager.set("totalGameTime", DEMO_GAME_SECONDS, "demo_init");
-        globalThis.stateManager.set("currentHalf", 1, "demo_init");
+        stateManager.set("timeRemaining", DEMO_GAME_SECONDS, "demo_init");
+        stateManager.set("totalGameTime", DEMO_GAME_SECONDS, "demo_init");
+        stateManager.set("currentHalf", 1, "demo_init");
 
         // Show matchup screen with betting enabled
         var bettingSlip = showMatchupScreen(true);
@@ -633,7 +639,7 @@ function runCPUDemo() {
         mswait(1500);
 
         // Run the game loop (all AI controlled)
-        gameLoop();
+        gameLoop(systems);
 
         // After game ends, show betting results if user placed bets
         if (bettingSlip && typeof showBettingResults === "function") {
@@ -735,7 +741,7 @@ function main() {
 
     if (menuChoice === "demo") {
         // Run CPU vs CPU demo
-        runCPUDemo();
+        runCPUDemo(systems);
     } else if (menuChoice === "multiplayer") {
         // Run multiplayer
         if (multiplayerEnabled) {
@@ -788,7 +794,7 @@ function main() {
 
             showMatchupScreen();
 
-            gameLoop();
+            gameLoop(systems);
             var choice = showGameOver(false); // Pass false for player mode
 
             if (choice === "quit") {
@@ -888,7 +894,7 @@ function main() {
         showMatchupScreen();
 
         // Run multiplayer game loop
-        runMultiplayerGameLoop(coordinator, playerClient, myId);
+        runMultiplayerGameLoop(coordinator, playerClient, myId, systems);
 
         // Cleanup
         mpCoordinator = null; // Clear global reference
@@ -1162,15 +1168,21 @@ function main() {
         return map;
     }
 
-    function runMultiplayerGameLoop(coordinator, playerClient, myId) {
+    function runMultiplayerGameLoop(coordinator, playerClient, myId, systems) {
+        // Wave 23: Systems are REQUIRED
+        if (!systems || !systems.stateManager) {
+            throw new Error("ARCHITECTURE ERROR: runMultiplayerGameLoop requires systems parameter");
+        }
+
+        var stateManager = systems.stateManager;
         var frameNumber = 0;
-        gameState.gameRunning = true;
+        stateManager.set("gameRunning", true, "mp_game_start");
         var lastSecond = Date.now();
 
         while (gameState.gameRunning && !js.terminated) {
             var frameStart = Date.now();
 
-            gameState.tickCounter = (gameState.tickCounter + 1) % 1000000;
+            stateManager.set("tickCounter", (gameState.tickCounter + 1) % 1000000, "mp_game_tick");
 
             // Handle input
             var key = console.inkey(K_NONE, 0);
@@ -1182,13 +1194,13 @@ function main() {
                     if (upperKey === 'Y') {
                         break;  // Quit game
                     } else if (upperKey === 'N' || upperKey === 'Q') {
-                        gameState.quitMenuOpen = false;  // Resume game
+                        stateManager.set("quitMenuOpen", false, "mp_quit_cancel");
                     }
                 }
                 // Draw quit confirmation overlay (will be rendered after game frame)
             } else if (key) {
                 if (key.toUpperCase() === 'Q') {
-                    gameState.quitMenuOpen = true;
+                    stateManager.set("quitMenuOpen", true, "mp_quit_open");
                 } else {
                     // Send input to client for prediction
                     playerClient.handleInput(key, frameNumber);
@@ -1212,7 +1224,7 @@ function main() {
 
                     // Handle halftime transition
                     if (gameState.currentHalf === 1 && gameState.timeRemaining <= gameState.totalGameTime / 2) {
-                        gameState.currentHalf = 2;
+                        stateManager.set("currentHalf", 2, "mp_halftime");
                         showHalftimeScreen();
                         if (!gameState.gameRunning) {
                             break;
