@@ -28,6 +28,7 @@ load(js.exec_dir + "lib/rendering/ball.js");
 load(js.exec_dir + "lib/rendering/court-rendering.js");
 load(js.exec_dir + "lib/rendering/jump-indicators.js");
 load(js.exec_dir + "lib/game-logic/game-state.js");
+load(js.exec_dir + "lib/game-logic/phase-handler.js");  // Wave 22B: State machine phase handler
 load(js.exec_dir + "lib/game-logic/player-class.js");
 load(js.exec_dir + "lib/game-logic/movement-physics.js");
 load(js.exec_dir + "lib/game-logic/passing.js");
@@ -507,6 +508,9 @@ function gameLoop() {
 
         // Update non-blocking animations
         animationSystem.update();
+
+        // Wave 22B: Update game phase (handles shot animations, scoring, rebounds, inbound)
+        updateGamePhase(frameDelay);
 
         // Update non-blocking rebound scramble
         updateReboundScramble();
