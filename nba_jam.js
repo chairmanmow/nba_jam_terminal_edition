@@ -1243,7 +1243,7 @@ function main() {
                 // Shot clock violation handling (authoritative on coordinator)
                 if (gameState.shotClock <= 0) {
                     announceEvent("shot_clock_violation", { team: gameState.currentTeam });
-                    switchPossession();
+                    switchPossession(systems);
                     gameState.shotClock = 24;
                 }
 
@@ -1293,7 +1293,7 @@ function main() {
                             if (!gameState.ballHandlerDeadForcedShot && deadElapsed >= 4500) {
                                 if (ballHandler && !ballHandler.isHuman) {
                                     gameState.ballHandlerDeadForcedShot = true;
-                                    attemptShot();
+                                    attemptShot(systems);
                                     gameState.ballHandlerDeadSince = now;
                                     gameState.ballHandlerDeadFrames = 0;
                                     continue;
