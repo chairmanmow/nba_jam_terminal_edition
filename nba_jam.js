@@ -19,6 +19,11 @@ if (typeof GAME_BALANCE === "undefined") {
 
 load(js.exec_dir + "lib/utils/helpers.js");
 load(js.exec_dir + "lib/utils/validation.js");  // WAVE 21: Input validation utilities
+
+// Wave 23: Architecture Foundation - Load new core systems
+load(js.exec_dir + "lib/core/state-manager.js");
+load(js.exec_dir + "lib/core/event-bus.js");
+
 load(js.exec_dir + "lib/rendering/sprite-utils.js");
 load(js.exec_dir + "lib/rendering/uniform-system.js");
 load(js.exec_dir + "lib/rendering/animation-system.js");
