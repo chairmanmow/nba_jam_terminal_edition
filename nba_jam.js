@@ -184,14 +184,28 @@ function cleanupSprites() {
 
 // Violation checking (checkViolations, enforceBackcourtViolation, etc.) loaded from lib/game-logic/violations.js
 
-function gameLoop() {
-    gameState.gameRunning = true;
-    clearPotentialAssist();
+// Wave 23: Helper to use state manager if available, fall back to direct assignment
+function setState(path, value, reason) {
+    if (typeof globalThis !== 'undefined' && globalThis.stateManager) {
+        globalThis.stateManager.set(path, value, reason || "game_logic");
+    } else {
+        // Fallback: direct mutation (during early init before systems loaded)
+        var keys = path.split('.');
+        var obj = gameState;
+        for (var i = 0; i < keys.length - 1; i++) {
+            obj = obj[keys[i]];
+        }
+        obj[keys[keys.length - 1]] = value;
+    }
+}
 
-    // Initialize timing in gameState (Bug #25 fix - move from local vars to state)
-    gameState.lastUpdateTime = Date.now();
-    gameState.lastSecondTime = Date.now();
-    gameState.lastAIUpdateTime = Date.now();
+function gameLoop() {
+    // Wave 23: Use state manager for state changes
+    setState("gameRunning", true, "game_loop_start");
+    setState("lastUpdateTime", Date.now(), "game_loop_start");
+    setState("lastSecondTime", Date.now(), "game_loop_start");
+    setState("lastAIUpdateTime", Date.now(), "game_loop_start");
+    clearPotentialAssist();
 
     var tempo = getSinglePlayerTempo();
     var frameDelay = tempo.frameDelayMs;
@@ -208,7 +222,7 @@ function gameLoop() {
     while (gameState.gameRunning && gameState.timeRemaining > 0) {
         var now = Date.now();
         var violationTriggeredThisFrame = false;
-        gameState.tickCounter = (gameState.tickCounter + 1) % 1000000;
+        setState("tickCounter", (gameState.tickCounter + 1) % 1000000, "game_tick");
 
         var recoveryList = getAllPlayers();
         for (var r = 0; r < recoveryList.length; r++) {
@@ -219,11 +233,11 @@ function gameLoop() {
         if (now - gameState.lastSecondTime >= 1000) {
             gameState.timeRemaining--;
             gameState.shotClock--;
-            gameState.lastSecondTime = now;
+            setState("lastSecondTime", now, "timer_tick");
 
             // Check for halftime (when first half time expires)
             if (gameState.currentHalf === 1 && gameState.timeRemaining <= gameState.totalGameTime / 2) {
-                gameState.currentHalf = 2;
+                setState("currentHalf", 2, "halftime");
                 showHalftimeScreen();
                 if (!gameState.gameRunning) break; // User quit during halftime
 
@@ -233,9 +247,9 @@ function gameLoop() {
                 }
                 drawCourt();
                 drawScore();
-                gameState.lastUpdateTime = Date.now();
-                gameState.lastSecondTime = Date.now();
-                gameState.lastAIUpdateTime = Date.now();
+                setState("lastUpdateTime", Date.now(), "halftime_reset");
+                setState("lastSecondTime", Date.now(), "halftime_reset");
+                setState("lastAIUpdateTime", Date.now(), "halftime_reset");
                 continue;
             }
 
@@ -244,7 +258,7 @@ function gameLoop() {
                 announceEvent("shot_clock_violation", { team: gameState.currentTeam });
                 mswait(1000);
                 switchPossession();
-                gameState.shotClock = 24; // Reset for new possession
+                setState("shotClock", 24, "shot_clock_reset"); // Reset for new possession
             }
 
             // Track ball handler movement to detect stuck AI
@@ -273,21 +287,21 @@ function gameLoop() {
                     }
                 } else {
                     // Ball handler is moving, reset timer
-                    gameState.ballHandlerStuckTimer = 0;
+                    setState("ballHandlerStuckTimer", 0, "ball_handler_moving");
                 }
 
                 // Update last position
-                gameState.ballHandlerLastX = ballHandler.x;
-                gameState.ballHandlerLastY = ballHandler.y;
+                setState("ballHandlerLastX", ballHandler.x, "ball_handler_track");
+                setState("ballHandlerLastY", ballHandler.y, "ball_handler_track");
 
                 if (ballHandler.playerData && ballHandler.playerData.hasDribble === false) {
                     if (!closelyGuarded) {
-                        gameState.ballHandlerDeadSince = null;
-                        gameState.ballHandlerDeadFrames = 0;
-                        gameState.ballHandlerDeadForcedShot = false;
+                        setState("ballHandlerDeadSince", null, "dead_dribble_clear");
+                        setState("ballHandlerDeadFrames", 0, "dead_dribble_clear");
+                        setState("ballHandlerDeadForcedShot", false, "dead_dribble_clear");
                     } else if (!gameState.ballHandlerDeadSince) {
-                        gameState.ballHandlerDeadSince = now;
-                        gameState.ballHandlerDeadFrames = 1;
+                        setState("ballHandlerDeadSince", now, "dead_dribble_start");
+                        setState("ballHandlerDeadFrames", 1, "dead_dribble_start");
                     } else {
                         gameState.ballHandlerDeadFrames++;
 
@@ -308,10 +322,10 @@ function gameLoop() {
                         var deadElapsed = now - gameState.ballHandlerDeadSince;
                         if (!gameState.ballHandlerDeadForcedShot && deadElapsed >= 4500) {
                             if (ballHandler && !ballHandler.isHuman) {
-                                gameState.ballHandlerDeadForcedShot = true;
+                                setState("ballHandlerDeadForcedShot", true, "dead_dribble_force_shot");
                                 attemptShot();
-                                gameState.ballHandlerDeadSince = now;
-                                gameState.ballHandlerDeadFrames = 0;
+                                setState("ballHandlerDeadSince", now, "dead_dribble_reset");
+                                setState("ballHandlerDeadFrames", 0, "dead_dribble_reset");
                                 continue;
                             }
                         }
@@ -327,32 +341,32 @@ function gameLoop() {
                 // Track frontcourt progress for smarter passing
                 var attackDir = (gameState.currentTeam === "teamA") ? 1 : -1;
                 if (gameState.ballHandlerProgressOwner !== ballHandler) {
-                    gameState.ballHandlerProgressOwner = ballHandler;
-                    gameState.ballHandlerFrontcourtStartX = ballHandler.x;
-                    gameState.ballHandlerAdvanceTimer = 0;
+                    setState("ballHandlerProgressOwner", ballHandler, "progress_owner_change");
+                    setState("ballHandlerFrontcourtStartX", ballHandler.x, "progress_owner_change");
+                    setState("ballHandlerAdvanceTimer", 0, "progress_owner_change");
                 }
 
                 var handlerInBackcourt = isInBackcourt(ballHandler, gameState.currentTeam);
 
                 if (!gameState.frontcourtEstablished || handlerInBackcourt) {
-                    gameState.ballHandlerFrontcourtStartX = ballHandler.x;
-                    gameState.ballHandlerAdvanceTimer = 0;
+                    setState("ballHandlerFrontcourtStartX", ballHandler.x, "backcourt_progress");
+                    setState("ballHandlerAdvanceTimer", 0, "backcourt_progress");
                 } else {
                     var forwardDelta = (ballHandler.x - gameState.ballHandlerFrontcourtStartX) * attackDir;
                     if (forwardDelta < -1) {
-                        gameState.ballHandlerFrontcourtStartX = ballHandler.x;
+                        setState("ballHandlerFrontcourtStartX", ballHandler.x, "retreat_reset");
                         forwardDelta = 0;
                     }
                     if (forwardDelta < 4) {
                         gameState.ballHandlerAdvanceTimer++;
                     } else {
-                        gameState.ballHandlerFrontcourtStartX = ballHandler.x;
-                        gameState.ballHandlerAdvanceTimer = 0;
+                        setState("ballHandlerFrontcourtStartX", ballHandler.x, "advance_progress");
+                        setState("ballHandlerAdvanceTimer", 0, "advance_progress");
                     }
                 }
             } else {
-                gameState.ballHandlerAdvanceTimer = 0;
-                gameState.ballHandlerProgressOwner = null;
+                setState("ballHandlerAdvanceTimer", 0, "no_ball_carrier");
+                setState("ballHandlerProgressOwner", null, "no_ball_carrier");
                 resetDeadDribbleTimer();
             }
 
@@ -361,8 +375,8 @@ function gameLoop() {
         }
 
         if (violationTriggeredThisFrame) {
-            gameState.lastAIUpdateTime = now;
-            gameState.lastUpdateTime = now;
+            setState("lastAIUpdateTime", now, "violation_triggered");
+            setState("lastUpdateTime", now, "violation_triggered");
             continue;
         }
 
@@ -417,13 +431,13 @@ function gameLoop() {
                     blocker.moveTo(blocker.x, blocker.blockOriginalY);
                     blocker.prevJumpBottomY = null;
                     blocker.blockJumpHeightBoost = 0;
-                    gameState.activeBlock = null;
-                    gameState.activeBlockDuration = null;
+                    setState("activeBlock", null, "block_complete");
+                    setState("activeBlockDuration", null, "block_complete");
                 }
             } else {
-                gameState.blockJumpTimer = 0;
-                gameState.activeBlock = null;
-                gameState.activeBlockDuration = null;
+                setState("blockJumpTimer", 0, "block_invalid");
+                setState("activeBlock", null, "block_invalid");
+                setState("activeBlockDuration", null, "block_invalid");
             }
         }
 
@@ -478,7 +492,7 @@ function gameLoop() {
         if (gameState.ballCarrier && !gameState.inbounding && !gameState.frontcourtEstablished) {
             if (!isInBackcourt(gameState.ballCarrier, gameState.currentTeam)) {
                 setFrontcourtEstablished(gameState.currentTeam);
-                gameState.backcourtTimer = 0;
+                setState("backcourtTimer", 0, "frontcourt_established");
             }
         }
 
@@ -491,7 +505,7 @@ function gameLoop() {
         // Update AI (slower than rendering)
         if (now - gameState.lastAIUpdateTime >= aiInterval) {
             updateAI();
-            gameState.lastAIUpdateTime = now;
+            setState("lastAIUpdateTime", now, "ai_update");
         }
 
         // Update turbo for all players
@@ -534,7 +548,7 @@ function gameLoop() {
         if (now - gameState.lastUpdateTime >= 60 && !animationSystem.isBallAnimating()) {
             drawCourt();
             drawScore();
-            gameState.lastUpdateTime = now;
+            setState("lastUpdateTime", now, "render_update");
         }
 
         // Cycle trail frame AFTER drawCourt so trails appear on top
@@ -549,7 +563,7 @@ function gameLoop() {
         mswait(frameDelay);
     }
 
-    gameState.gameRunning = false;
+    setState("gameRunning", false, "game_loop_end");
 }
 
 function runCPUDemo() {
@@ -617,9 +631,9 @@ function runCPUDemo() {
         initSprites(redTeamKey, blueTeamKey, redPlayerIndices, bluePlayerIndices, true);
 
         // Match player game length for demo as well
-        gameState.timeRemaining = DEMO_GAME_SECONDS;
-        gameState.totalGameTime = DEMO_GAME_SECONDS;
-        gameState.currentHalf = 1;
+        setState("timeRemaining", DEMO_GAME_SECONDS, "demo_init");
+        setState("totalGameTime", DEMO_GAME_SECONDS, "demo_init");
+        setState("currentHalf", 1, "demo_init");
 
         // Show matchup screen with betting enabled
         var bettingSlip = showMatchupScreen(true);

@@ -197,13 +197,13 @@ function createMockPlayer(x, y, attributes, teamName) {
 
 function testSystemCreation() {
     console.log("\n=== Test 1: System Creation ===");
-    
+
     var state = createStateManager({ shotInProgress: false });
     var events = createEventBus();
     var animations = createMockAnimations();
     var rules = createMockRules();
     var helpers = createMockHelpers();
-    
+
     var system = createShootingSystem({
         state: state,
         events: events,
@@ -211,7 +211,7 @@ function testSystemCreation() {
         rules: rules,
         helpers: helpers
     });
-    
+
     assert(typeof system.calculateShotProbability === "function", "Should have calculateShotProbability");
     assert(typeof system.attemptShot === "function", "Should have attemptShot");
     assert(typeof system.animateShot === "function", "Should have animateShot");
@@ -221,13 +221,13 @@ function testSystemCreation() {
 
 function testShotProbabilityCalculation() {
     console.log("\n=== Test 2: Shot Probability Calculation ===");
-    
+
     var state = createStateManager({});
     var events = createEventBus();
     var animations = createMockAnimations();
     var rules = createMockRules();
     var helpers = createMockHelpers();
-    
+
     var system = createShootingSystem({
         state: state,
         events: events,
@@ -235,17 +235,17 @@ function testShotProbabilityCalculation() {
         rules: rules,
         helpers: helpers
     });
-    
+
     // Test close range shot (high probability)
     var shooter = createMockPlayer(60, 20, { "dunk": 8, "3pt": 5, "block": 5 });
     var prob1 = system.calculateShotProbability(shooter, 64, 20, null);
     assert(prob1 > 60, "Close range shot should have high probability: " + prob1);
-    
+
     // Test long range shot (lower probability)
     var shooter2 = createMockPlayer(40, 20, { "dunk": 5, "3pt": 8, "block": 5 });
     var prob2 = system.calculateShotProbability(shooter2, 64, 20, null);
     assert(prob2 < prob1, "Long range shot should have lower probability than close range");
-    
+
     // Test with tight defense
     var defender = createMockPlayer(61, 20, { "dunk": 5, "3pt": 5, "block": 8 });
     var prob3 = system.calculateShotProbability(shooter, 64, 20, defender);
@@ -254,13 +254,13 @@ function testShotProbabilityCalculation() {
 
 function testCornerThreeDetection() {
     console.log("\n=== Test 3: Corner Three Detection ===");
-    
+
     var state = createStateManager({});
     var events = createEventBus();
     var animations = createMockAnimations();
     var rules = createMockRules();
     var helpers = createMockHelpers();
-    
+
     var system = createShootingSystem({
         state: state,
         events: events,
@@ -268,12 +268,12 @@ function testCornerThreeDetection() {
         rules: rules,
         helpers: helpers
     });
-    
+
     // Test corner position
     var cornerPlayer = createMockPlayer(10, 5, {}, "teamA");
     var isCorner = system.isCornerThreePosition(cornerPlayer, "teamA");
     assert(isCorner === true, "Should detect corner three position");
-    
+
     // Test non-corner position
     var midPlayer = createMockPlayer(30, 20, {}, "teamA");
     var isNotCorner = system.isCornerThreePosition(midPlayer, "teamA");
@@ -282,7 +282,7 @@ function testCornerThreeDetection() {
 
 function testShotAttemptValidation() {
     console.log("\n=== Test 4: Shot Attempt Validation ===");
-    
+
     var state = createStateManager({
         shotInProgress: false,
         ballX: 30,
@@ -293,7 +293,7 @@ function testShotAttemptValidation() {
     var animations = createMockAnimations();
     var rules = createMockRules();
     var helpers = createMockHelpers();
-    
+
     var system = createShootingSystem({
         state: state,
         events: events,
@@ -301,13 +301,13 @@ function testShotAttemptValidation() {
         rules: rules,
         helpers: helpers
     });
-    
+
     // Test normal shot attempt
     var shooter = createMockPlayer(30, 20, { "dunk": 5, "3pt": 7, "block": 5 }, "teamA");
     var result = system.attemptShot(shooter);
     assert(result.success === true, "Should allow normal shot attempt");
     assert(result.attemptType === "shot" || result.attemptType === "dunk", "Should have attempt type");
-    
+
     // Test duplicate shot prevention
     state.set("shotInProgress", true);
     var result2 = system.attemptShot(shooter);
@@ -317,7 +317,7 @@ function testShotAttemptValidation() {
 
 function testOutOfBoundsShotPrevention() {
     console.log("\n=== Test 5: Out of Bounds Shot Prevention ===");
-    
+
     var state = createStateManager({
         shotInProgress: false,
         ballX: 1,
@@ -328,7 +328,7 @@ function testOutOfBoundsShotPrevention() {
     var animations = createMockAnimations();
     var rules = createMockRules();
     var helpers = createMockHelpers();
-    
+
     var system = createShootingSystem({
         state: state,
         events: events,
@@ -336,7 +336,7 @@ function testOutOfBoundsShotPrevention() {
         rules: rules,
         helpers: helpers
     });
-    
+
     // Test out of bounds shot (x = 1, margin = 2)
     var shooter = createMockPlayer(1, 1, { "dunk": 5, "3pt": 5, "block": 5 }, "teamA");
     var result = system.attemptShot(shooter);
@@ -346,7 +346,7 @@ function testOutOfBoundsShotPrevention() {
 
 function test3PointerDetection() {
     console.log("\n=== Test 6: 3-Pointer Detection ===");
-    
+
     var state = createStateManager({
         shotInProgress: false,
         ballX: 40,
@@ -357,12 +357,12 @@ function test3PointerDetection() {
     var animations = createMockAnimations();
     var rules = createMockRules();
     var helpers = createMockHelpers();
-    
+
     var shotAttempts = [];
     events.on("shot_attempt", function (data) {
         shotAttempts.push(data);
     });
-    
+
     var system = createShootingSystem({
         state: state,
         events: events,
@@ -370,15 +370,15 @@ function test3PointerDetection() {
         rules: rules,
         helpers: helpers
     });
-    
+
     // Test 3-pointer (far from basket)
     var shooter = createMockPlayer(40, 20, { "dunk": 5, "3pt": 8, "block": 5 }, "teamA");
     var result = system.attemptShot(shooter);
-    
+
     assert(shotAttempts.length > 0, "Should emit shot_attempt event");
     var attemptData = shotAttempts[0];
     assert(attemptData.is3Pointer === true, "Should detect 3-pointer");
-    
+
     // Verify stats updated
     assert(shooter.playerData.stats.fga === 1, "Should increment FGA");
     assert(shooter.playerData.stats.tpa === 1, "Should increment 3PA");
@@ -386,7 +386,7 @@ function test3PointerDetection() {
 
 function testDunkDetection() {
     console.log("\n=== Test 7: Dunk Detection ===");
-    
+
     var state = createStateManager({
         shotInProgress: false,
         ballX: 62,
@@ -397,12 +397,12 @@ function testDunkDetection() {
     var animations = createMockAnimations();
     var rules = createMockRules();
     var helpers = createMockHelpers();
-    
+
     var shotAttempts = [];
     events.on("shot_attempt", function (data) {
         shotAttempts.push(data);
     });
-    
+
     var system = createShootingSystem({
         state: state,
         events: events,
@@ -410,23 +410,23 @@ function testDunkDetection() {
         rules: rules,
         helpers: helpers
     });
-    
+
     // Test dunk (very close to basket)
     var dunker = createMockPlayer(62, 20, { "dunk": 9, "3pt": 3, "block": 5 }, "teamA");
     var result = system.attemptShot(dunker);
-    
+
     assert(shotAttempts.length > 0, "Should emit shot_attempt event");
     var attemptData = shotAttempts[0];
     assert(attemptData.attemptType === "dunk", "Should detect dunk attempt");
     assert(attemptData.is3Pointer === false, "Dunk should not be 3-pointer");
-    
+
     // Verify dunk stats updated
     assert(dunker.playerData.stats.dunkAttempts === 1, "Should increment dunk attempts");
 }
 
 function testShotAnimation() {
     console.log("\n=== Test 8: Shot Animation ===");
-    
+
     var state = createStateManager({
         shotInProgress: false
     });
@@ -434,7 +434,7 @@ function testShotAnimation() {
     var animations = createMockAnimations();
     var rules = createMockRules();
     var helpers = createMockHelpers();
-    
+
     var system = createShootingSystem({
         state: state,
         events: events,
@@ -442,9 +442,9 @@ function testShotAnimation() {
         rules: rules,
         helpers: helpers
     });
-    
+
     var shooter = createMockPlayer(30, 20, { "dunk": 5, "3pt": 7, "block": 5 }, "teamA");
-    
+
     // Test successful shot animation
     var result = system.animateShot(30, 20, 64, 20, true, shooter);
     assert(result.made === true, "Should return made shot");
@@ -454,15 +454,15 @@ function testShotAnimation() {
 
 function testBlockedShot() {
     console.log("\n=== Test 9: Blocked Shot ===");
-    
+
     var state = createStateManager({
         shotInProgress: false
     });
     var events = createEventBus();
-    
+
     // Mock animations that returns blocked shot
     var animations = {
-        autoContestShot: function () {},
+        autoContestShot: function () { },
         animateShotArc: function (options) {
             return {
                 blocked: true,
@@ -470,11 +470,11 @@ function testBlockedShot() {
                 deflectionY: 22
             };
         },
-        flashBasket: function () {}
+        flashBasket: function () { }
     };
     var rules = createMockRules();
     var helpers = createMockHelpers();
-    
+
     var system = createShootingSystem({
         state: state,
         events: events,
@@ -482,9 +482,9 @@ function testBlockedShot() {
         rules: rules,
         helpers: helpers
     });
-    
+
     var shooter = createMockPlayer(30, 20, {}, "teamA");
-    
+
     // Test blocked shot
     var result = system.animateShot(30, 20, 64, 20, true, shooter);
     assert(result.made === false, "Blocked shot should not be made");
@@ -495,7 +495,7 @@ function testBlockedShot() {
 
 function testHotStreakBonus() {
     console.log("\n=== Test 10: Hot Streak Bonus ===");
-    
+
     var state = createStateManager({
         shotInProgress: false,
         ballX: 40,
@@ -506,12 +506,12 @@ function testHotStreakBonus() {
     var animations = createMockAnimations();
     var rules = createMockRules();
     var helpers = createMockHelpers();
-    
+
     var shotAttempts = [];
     events.on("shot_attempt", function (data) {
         shotAttempts.push(data);
     });
-    
+
     var system = createShootingSystem({
         state: state,
         events: events,
@@ -519,13 +519,13 @@ function testHotStreakBonus() {
         rules: rules,
         helpers: helpers
     });
-    
+
     // Test normal player
     var normalPlayer = createMockPlayer(40, 20, { "dunk": 5, "3pt": 5, "block": 5 }, "teamA");
     normalPlayer.playerData.heatStreak = 0;
     system.attemptShot(normalPlayer);
     var normalChance = shotAttempts[0].chance;
-    
+
     // Test hot player
     shotAttempts = [];
     // Create new event bus instead of trying to clear
@@ -533,10 +533,10 @@ function testHotStreakBonus() {
     events.on("shot_attempt", function (data) {
         shotAttempts.push(data);
     });
-    
+
     var hotPlayer = createMockPlayer(40, 20, { "dunk": 5, "3pt": 5, "block": 5 }, "teamA");
     hotPlayer.playerData.heatStreak = 3;
-    
+
     // Need to recreate system with new event bus
     var hotState = createStateManager({
         shotInProgress: false,
@@ -553,7 +553,7 @@ function testHotStreakBonus() {
     });
     hotSystem.attemptShot(hotPlayer);
     var hotChance = shotAttempts[0].chance;
-    
+
     assert(hotChance > normalChance, "Hot streak should increase shot chance");
 }
 
@@ -561,7 +561,7 @@ function testHotStreakBonus() {
 function runAllTests() {
     console.log("=== Wave 23: Shooting System Tests ===");
     console.log("Running tests...\n");
-    
+
     try {
         testSystemCreation();
         testShotProbabilityCalculation();
@@ -573,7 +573,7 @@ function runAllTests() {
         testShotAnimation();
         testBlockedShot();
         testHotStreakBonus();
-        
+
         console.log("\n=== All Tests Passed! ===");
         console.log("Tests run: " + testCount);
         console.log("Tests passed: " + passCount);
