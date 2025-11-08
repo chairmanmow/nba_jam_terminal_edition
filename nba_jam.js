@@ -656,7 +656,30 @@ function runCPUDemo(systems) {
         }
 
         // Reset state and initialize sprites with ALL CPU mode
-        var systems = initializeSystems();
+        var systems = initializeSystems({
+            gameState: gameState,
+            animationSystem: animationSystem,
+            getPlayers: function () {
+                return {
+                    teamAPlayer1: teamAPlayer1,
+                    teamAPlayer2: teamAPlayer2,
+                    teamBPlayer1: teamBPlayer1,
+                    teamBPlayer2: teamBPlayer2
+                };
+            },
+            helpers: {
+                getPlayerTeamName: getPlayerTeamName,
+                getAllPlayers: getAllPlayers,
+            },
+            constants: {
+                PHASE_NORMAL: PHASE_NORMAL,
+                PHASE_SHOT: PHASE_SHOT,
+                PHASE_REBOUND: PHASE_REBOUND,
+                PHASE_DUNK: PHASE_DUNK,
+                PHASE_STEAL: PHASE_STEAL,
+                PHASE_PASS: PHASE_PASS
+            }
+        });
         resetGameState({ allCPUMode: true }, systems);
         initSprites(redTeamKey, blueTeamKey, redPlayerIndices, bluePlayerIndices, true);
 
