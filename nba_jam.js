@@ -213,7 +213,7 @@ function gameLoop(systems) {
 
         // Initial draw
         drawCourt();
-        drawScore();
+        drawScore(systems);
         announceEvent("game_start", {
             teamA: (gameState.teamNames.teamA || "TEAM A").toUpperCase(),
             teamB: (gameState.teamNames.teamB || "TEAM B").toUpperCase()
@@ -246,7 +246,7 @@ function gameLoop(systems) {
                         startSecondHalfInbound();
                     }
                     drawCourt();
-                    drawScore();
+                    drawScore(systems);
                     stateManager.set("lastUpdateTime", Date.now(), "halftime_reset");
                     stateManager.set("lastSecondTime", Date.now(), "halftime_reset");
                     stateManager.set("lastAIUpdateTime", Date.now(), "halftime_reset");
@@ -547,7 +547,7 @@ function gameLoop(systems) {
             // Skip during active animations to allow trails to accumulate
             if (now - gameState.lastUpdateTime >= 60 && !animationSystem.isBallAnimating()) {
                 drawCourt();
-                drawScore();
+                drawScore(systems);
                 stateManager.set("lastUpdateTime", now, "render_update");
             }
 
@@ -1285,7 +1285,7 @@ function main() {
                             startSecondHalfInbound();
                         }
                         drawCourt();
-                        drawScore();
+                        drawScore(systems);
                         lastSecond = Date.now();
                     }
                 }
@@ -1419,7 +1419,7 @@ function main() {
                 drawCourt();
             }
 
-            drawScore();
+            drawScore(systems);
 
             // Draw network quality HUD
             drawMultiplayerNetworkHUD(playerClient);
