@@ -249,7 +249,7 @@ function gameLoop(systems) {
             if (gameState.shotClock <= 0) {
                 announceEvent("shot_clock_violation", { team: gameState.currentTeam });
                 mswait(1000);
-                switchPossession();
+                switchPossession(systems);
                 stateManager.set("shotClock", 24, "shot_clock_reset"); // Reset for new possession
             }
 
@@ -315,14 +315,14 @@ function gameLoop(systems) {
                         if (!gameState.ballHandlerDeadForcedShot && deadElapsed >= 4500) {
                             if (ballHandler && !ballHandler.isHuman) {
                                 stateManager.set("ballHandlerDeadForcedShot", true, "dead_dribble_force_shot");
-                                attemptShot();
+                                attemptShot(systems);
                                 stateManager.set("ballHandlerDeadSince", now, "dead_dribble_reset");
                                 stateManager.set("ballHandlerDeadFrames", 0, "dead_dribble_reset");
                                 continue;
                             }
                         }
                         if (!violationTriggeredThisFrame && deadElapsed >= 5000) {
-                            enforceFiveSecondViolation();
+                            enforceFiveSecondViolation(systems);
                             violationTriggeredThisFrame = true;
                         }
                     }
@@ -491,7 +491,7 @@ function gameLoop(systems) {
         // Get input
         var key = console.inkey(K_NONE, 50);
         if (key) {
-            handleInput(key);
+            handleInput(key, systems);
         }
 
         // Update AI (slower than rendering)
@@ -527,10 +527,10 @@ function gameLoop(systems) {
         animationSystem.update();
 
         // Wave 22B: Update game phase (handles shot animations, scoring, rebounds, inbound)
-        updateGamePhase(frameDelay);
+        updateGamePhase(frameDelay, systems);
 
         // Update non-blocking rebound scramble
-        updateReboundScramble();
+        updateReboundScramble(systems);
 
         // Update non-blocking knockback animations
         updateKnockbackAnimations();
@@ -623,7 +623,8 @@ function runCPUDemo(systems) {
         }
 
         // Reset state and initialize sprites with ALL CPU mode
-        resetGameState({ allCPUMode: true });
+        var systems = initializeSystems();
+        resetGameState({ allCPUMode: true }, systems);
         initSprites(redTeamKey, blueTeamKey, redPlayerIndices, bluePlayerIndices, true);
 
         // Match player game length for demo as well
@@ -657,7 +658,7 @@ function runCPUDemo(systems) {
 
         // Clean up sprites before starting new demo
         cleanupSprites();
-        resetGameState({ allCPUMode: true });
+        resetGameState({ allCPUMode: true }, systems);
     }
 }
 
@@ -682,9 +683,7 @@ function setupEventSubscriptions() {
 }
 
 function main() {
-    resetGameState();
-
-    // Wave 23: Initialize architecture foundation systems
+    // Wave 23: Initialize architecture foundation systems FIRST
     // Wave 23: Initialize all game systems with dependency injection
     var systems = initializeSystems({
         gameState: gameState,
@@ -716,6 +715,9 @@ function main() {
             COURT_HEIGHT: COURT_HEIGHT
         }
     });
+
+    // Now reset gameState with systems available
+    resetGameState(null, systems);
 
     // Subscribe to game events (Observer pattern)
     setupEventSubscriptions();    // Show ANSI splash screen first
@@ -780,7 +782,7 @@ function main() {
             // Clear screen before starting game to remove selection artifacts
             console.clear();
 
-            resetGameState({ allCPUMode: false });
+            resetGameState({ allCPUMode: false }, systems);
             initSprites(
                 selection.teamATeam,
                 selection.teamBTeam,
@@ -799,10 +801,10 @@ function main() {
             } else if (choice === "newteams") {
                 useNewTeams = true;
                 cleanupSprites(); // Clean up before new team selection
-                resetGameState();
+                resetGameState(null, systems);
             } else if (choice === "playagain") {
                 cleanupSprites(); // Clean up before restarting
-                resetGameState();
+                resetGameState(null, systems);
             }
         }
     }
@@ -837,7 +839,7 @@ function main() {
         playerClient.disablePrediction = coordinator.isCoordinator;
 
         // Reset game state for multiplayer
-        resetGameState({ allCPUMode: false });
+        resetGameState({ allCPUMode: false }, systems);
 
         // Refresh session data from game namespace to capture final team assignments
         var liveSession = client.read("nba_jam", "game." + sessionId + ".meta", 1);
