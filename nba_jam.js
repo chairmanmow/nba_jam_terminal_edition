@@ -5,6 +5,12 @@ load("sbbsdefs.js");
 load("frame.js");
 load("sprite.js");
 
+// WAVE 23: Load error handler FIRST for global error capture
+load(js.exec_dir + "lib/utils/error-handler.js");
+load(js.exec_dir + "lib/utils/safe-game-loop.js");
+initErrorHandler();
+setupGlobalErrorHandler();
+
 // WAVE 21: Load order guards for critical dependencies
 load(js.exec_dir + "lib/utils/constants.js");
 if (typeof COURT_WIDTH === "undefined") {
@@ -185,12 +191,14 @@ function cleanupSprites() {
 // Violation checking (checkViolations, enforceBackcourtViolation, etc.) loaded from lib/game-logic/violations.js
 
 function gameLoop(systems) {
-    // Wave 23: Systems are REQUIRED - fail loudly if not provided
-    if (!systems || !systems.stateManager) {
-        throw new Error("ARCHITECTURE ERROR: gameLoop requires systems parameter with stateManager");
-    }
+    // Wave 23: Wrap entire game loop with error handler for automatic logging
+    try {
+        // Wave 23: Systems are REQUIRED - fail loudly if not provided
+        if (!systems || !systems.stateManager) {
+            throw new Error("ARCHITECTURE ERROR: gameLoop requires systems parameter with stateManager");
+        }
 
-    var stateManager = systems.stateManager;
+        var stateManager = systems.stateManager;
 
     // Use state manager for all state changes
     stateManager.set("gameRunning", true, "game_loop_start");
@@ -556,6 +564,31 @@ function gameLoop(systems) {
     }
 
     stateManager.set("gameRunning", false, "game_loop_end");
+    
+    } catch (e) {
+        // Log error with full game state context
+        if (typeof logError === "function") {
+            logError(e, ErrorSeverity.FATAL, {
+                function: "gameLoop",
+                systems: systems,
+                tick: systems.stateManager ? systems.stateManager.get("tickCounter") : "unknown"
+            });
+        }
+        
+        // Show error to user
+        console.print("\r\n\1r\1hFATAL ERROR in game loop\1n\r\n");
+        console.print("Error: " + e.toString() + "\r\n");
+        console.print("Check error.log for details and state snapshot\r\n\r\n");
+        console.pause();
+        
+        // Set game as not running
+        if (systems && systems.stateManager) {
+            systems.stateManager.set("gameRunning", false, "game_loop_error");
+        }
+        
+        // Re-throw
+        throw e;
+    }
 }
 
 function runCPUDemo(systems) {
@@ -1473,4 +1506,15 @@ function main() {
     if (announcerFrame) announcerFrame.close();
 }
 
-main();
+// Wrap main() with error handler for automatic error logging
+var wrappedMain = wrapWithErrorHandler(main, "main");
+
+// Execute wrapped main
+try {
+    wrappedMain();
+} catch (e) {
+    // Error already logged by wrapper, show user-friendly message
+    console.print("\r\n\1r\1hFATAL ERROR: Game crashed. Check error.log for details.\1n\r\n");
+    console.print("Error: " + e.toString() + "\r\n");
+    console.pause();
+}
