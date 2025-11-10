@@ -546,14 +546,8 @@ function main() {
         // Tell client if we're coordinator (disables prediction to avoid double input)
         playerClient.setCoordinatorStatus(coordinator.isCoordinator);
 
-        // Draw court before matchup (may not be visible due to sprite z-order)
-        debugLog("[MP INIT] Drawing court before matchup screen (isCoordinator: " + coordinator.isCoordinator + ")");
-        debugLog("[MP INIT] courtFrame state: exists=" + !!courtFrame +
-            ", is_open=" + (courtFrame ? courtFrame.is_open : "N/A"));
-        systems.stateManager.set("courtNeedsRedraw", true, "mp_pre_game_init");
-        drawCourt(systems);
-        debugLog("[MP INIT] Court drawn, courtNeedsRedraw now=" +
-            systems.stateManager.get("courtNeedsRedraw"));
+        // Don't draw court before matchup - showMatchupScreen() calls console.clear() 
+        // which would wipe it out. Let game loop draw it fresh like single-player does.
 
         // Show matchup screen
         showMatchupScreen();
