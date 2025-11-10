@@ -5,4 +5,5 @@ data/error-snapshots/*
 data/*.log
 nba_jam.json
 visual_notes.md
-lib/text/*
+lib/text/*debug.log
+debug.log
