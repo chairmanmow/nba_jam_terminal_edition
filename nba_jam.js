@@ -385,7 +385,7 @@ function main() {
     } else if (menuChoice === "multiplayer") {
         // Run multiplayer
         if (multiplayerEnabled) {
-            runMultiplayerMode();
+            runMultiplayerMode(systems);
         } else {
             console.clear();
             console.print("\r\n\1r\1hMultiplayer not available!\1n\r\n\r\n");
@@ -451,7 +451,12 @@ function main() {
         }
     }
 
-    function runMultiplayerMode() {
+    function runMultiplayerMode(systems) {
+        // Wave 23D: Systems required for coordinator state serialization
+        if (!systems || !systems.stateManager) {
+            throw new Error("ARCHITECTURE ERROR: runMultiplayerMode requires systems parameter");
+        }
+
         // Run the lobby
         var lobbyResult = runMultiplayerLobby();
 
@@ -467,13 +472,13 @@ function main() {
         var myId = lobbyResult.myId;
         var serverConfig = lobbyResult.serverConfig;
 
-        // Initialize coordinator
-        var coordinator = new GameCoordinator(sessionId, client, serverConfig);
+        // Initialize coordinator (Wave 23D: Pass systems for state serialization)
+        var coordinator = new GameCoordinator(sessionId, client, serverConfig, systems);
         coordinator.init();
         mpCoordinator = coordinator; // Set global reference for event broadcasting
 
-        // Initialize client
-        var playerClient = new PlayerClient(sessionId, client, myId.globalId, serverConfig);
+        // Initialize client (Wave 23D: Pass systems for state management)
+        var playerClient = new PlayerClient(sessionId, client, myId.globalId, serverConfig, systems);
         playerClient.init();
 
         // Sync coordinator status to client (so client knows if it's authoritative)
@@ -947,7 +952,7 @@ function main() {
         console.print("\1h\1w|\1n      \1h\1wY\1n\1kes / \1h\1wN\1n\1ko / \1h\1wQ\1n\1k=Cancel      \1h\1w|\1n");
 
         console.gotoxy(centerX - 20, centerY + 4);
-        console.print("\1h\1w" + "=".repeat(40) + "\1n");
+        console.print("\1h\1w" + equals + "\1n");
     }
 
     // Cleanup
