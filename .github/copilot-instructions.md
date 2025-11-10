@@ -1,6 +1,180 @@
 # GitHub Copilot Instructions - NBA JAM Terminal Edition
 
-> **Project Context**: NBA JAM arcade-style basketball game for Synchronet BBS, implemented in JavaScript. Post-refactoring: 1,311 lines main file (down from 2,610), 34+ library modules, multiplayer support via JSON-DB.
+> **Project Context**: NBA JAM arcade-style basketball game for Synchronet BBS, implemented in JavaScript. Wave 23D: Unified game loop architecture with non-blocking animations, dependency injection, ~20 FPS tick rate.
+
+---
+
+## 🚨 WAVE 23D CRITICAL PATTERNS (READ FIRST!)
+
+**Last Updated**: Wave 23D - November 2025  
+**Architecture**: Unified game loop with systems-based dependency injection  
+**DO NOT follow patterns from pre-Wave23 code** - it used blocking model and global state
+
+### Current Architecture (Wave 23D)
+
+#### Core Pattern: Unified Game Loop
+```javascript
+// Single entry point for ALL game modes (single-player, multiplayer, demo)
+function runGameFrame(systems, config) {
+    // systems = { stateManager, eventBus, possessionSystem, passingSystem, ... }
+    // config = { isAuthority, handleInput, aiInterval, frameDelay }
+    
+    // Returns: "continue" | "halftime" | "violation" | "game_over"
+}
+```
+
+**Key principle**: `runGameFrame()` is PURE LOGIC - no blocking, no rendering side effects
+
+#### Systems-Based Dependency Injection
+```javascript
+// ✅ CORRECT Wave 23D pattern
+function gameLogicFunction(systems) {
+    var state = systems.stateManager;
+    var events = systems.eventBus;
+    var possession = systems.possessionSystem;
+    
+    state.set("currentTeam", "teamA", "reason");
+    events.emit("possession_change", { team: "teamA" });
+}
+
+// ❌ WRONG - Old pre-Wave23 pattern
+function gameLogicFunction() {
+    gameState.currentTeam = "teamA"; // Global mutation - DO NOT USE
+}
+```
+
+#### State Management: StateManager Only
+```javascript
+// ✅ CORRECT
+systems.stateManager.get("ballCarrier");
+systems.stateManager.set("shotClock", 24, "possession_change");
+
+// ❌ WRONG
+gameState.ballCarrier; // Direct access - DO NOT USE
+gameState.shotClock = 24; // Direct mutation - DO NOT USE
+```
+
+### Wave 23D Critical Knowledge
+
+#### 1. Timing Model
+- **Frame rate**: 20 FPS (50ms per frame)
+- **Timer types**:
+  - Real-time: `Date.now()` for game clock, shot clock
+  - Frame counters: `backcourtTimer`, `ballHandlerStuckTimer` (increment each frame)
+  - Animation frames: `msPerStep` for pass/shot/dunk animations
+
+#### 2. Non-Blocking Architecture
+```javascript
+// ✅ CORRECT - Return early, don't block
+function checkViolations(systems) {
+    if (violation) {
+        enforceViolation(systems);
+        return "violation"; // Caller handles wait
+    }
+    return "continue";
+}
+
+// ❌ WRONG - Blocking in game logic
+function checkViolations(systems) {
+    if (violation) {
+        enforceViolation(systems);
+        mswait(800); // DO NOT BLOCK IN runGameFrame!
+    }
+}
+```
+
+#### 3. Authority Pattern
+```javascript
+// Only authority runs timers, violations, AI
+if (config.isAuthority) {
+    checkViolations(systems);
+    updateTimers(systems);
+    runAI(systems);
+}
+
+// All clients run rendering, animations, input
+updateAnimations(systems);
+renderFrame(systems);
+```
+
+#### 4. Team Names: "teamA" and "teamB"
+```javascript
+// ✅ CORRECT
+if (team === "teamA" || team === "teamB") { ... }
+
+// ❌ WRONG - Old team names from pre-Wave23
+if (team === "red" || team === "blue") { ... } // DO NOT USE!
+```
+
+### Common Wave 23D Pitfalls
+
+#### Pitfall #1: Parameter Semantic Confusion
+```javascript
+// setupInbound() is designed for MADE BASKETS
+// Parameter name "scoringTeam" = team that SCORED
+// Function gives ball to the OTHER team
+
+// ✅ CORRECT usage after made basket
+setupInbound("teamA", systems); // Team A scored → Team B inbounds
+
+// ❌ WRONG usage after violation
+var violatingTeam = "teamA";
+var opposingTeam = "teamB"; // Should get ball
+setupInbound(opposingTeam, systems); // BUG! Function inverts it!
+
+// ✅ CORRECT for violations - pass violating team
+setupInbound(violatingTeam, systems); // Function inverts → correct team inbounds
+```
+
+#### Pitfall #2: State Desync
+```javascript
+// Always validate currentTeam matches ballCarrier's actual team
+function validatePossessionState(systems) {
+    var currentTeam = systems.stateManager.get("currentTeam");
+    var ballCarrier = systems.stateManager.get("ballCarrier");
+    var carrierTeam = getPlayerTeamName(ballCarrier);
+    
+    if (carrierTeam !== currentTeam) {
+        log(LOG_ERROR, "STATE DESYNC DETECTED!");
+        return false;
+    }
+    return true;
+}
+```
+
+#### Pitfall #3: Frame Counter Resets
+```javascript
+// Always reset ALL timers when possession changes
+function resetPossessionTimers(systems) {
+    systems.stateManager.set("backcourtTimer", 0, "reset");
+    systems.stateManager.set("ballHandlerStuckTimer", 0, "reset");
+    systems.stateManager.set("ballHandlerAdvanceTimer", 0, "reset");
+    systems.stateManager.set("inboundGracePeriod", 50, "reset"); // 2.5 seconds
+}
+```
+
+### Required Reading Before Coding
+1. `/docs/STATE-AND-TIMING-AUDIT.md` - Complete architecture documentation
+2. `/lib/core/game-loop-core.js` - Unified game loop implementation
+3. `/lib/systems/*.js` - Systems-based architecture examples
+
+### Critical Utilities
+
+#### Debug Logging: ALWAYS use `debugLog()` from `/lib/utils/debug-logger.js`
+```javascript
+// ✅ CORRECT - Writes to /sbbs/xtrn/nba_jam/debug.log
+debugLog("Message: " + variable);
+debugLogObject("Label", objectToInspect);
+
+// ❌ WRONG - Don't use these
+console.print("message");  // Wrong output target
+log(LOG_WARNING, "message");  // May not work correctly
+```
+
+**When to use**: ANY time you need to debug or trace code execution. The debugLog function:
+- Writes to `/sbbs/xtrn/nba_jam/debug.log` (checked with `tail debug.log`)
+- Always available, never fails silently
+- Timestamped automatically
 
 ---
 

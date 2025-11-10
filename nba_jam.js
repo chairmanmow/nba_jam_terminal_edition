@@ -148,6 +148,13 @@ function initFrames(systems) {
 
     ensureBallFrame(40, 10);
     drawAnnouncerLine(systems);
+
+    // Wave 23D: Verify trail frame initialized
+    if (typeof debugLog === "function") {
+        debugLog("[INIT] trailFrame initialized: " + (trailFrame ? "YES" : "NO") +
+            ", transparent=" + (trailFrame ? trailFrame.transparent : "N/A") +
+            ", open=" + (trailFrame && trailFrame.is_open ? "YES" : "NO"));
+    }
 }
 
 function cleanupSprites() {
