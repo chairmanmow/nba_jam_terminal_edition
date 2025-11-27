@@ -105,6 +105,15 @@ include both keys whenever the cue fires. Disable the cue globally by setting
 - **Turbo consumers:** helpers that drain, recharge, or render turbo must reference
   `playerData.turboCapacity` (not raw `MAX_TURBO`) when clamping values so rubber
   band boosts are reflected in gameplay and UI.
+- **Gameplay consumers:**
+  - `shooting-system.js` subtracts `contestBonus` from defender penalties before
+    applying tier multipliers and probability caps.
+  - `lib/game-logic/defense-actions.js` feeds `stealBonus` into both human and AI
+    steal resolvers, keeping caps tier-aware.
+  - `lib/game-logic/physical-play.js` adds `shoveBonus` to the shove success window,
+    adjusting both the chance and cap per tier.
+  - `lib/rendering/animation-system.js` adds `blockBonus` (converted to percentage)
+    to the block success roll during shot animations.
 - **Reason strings:** state mutations use explicit reasons such as
   `"rubber_band_enabled"`, `"rubber_band_tier_change"`, and
   `"rubber_band_disable"` for auditability.
