@@ -39,6 +39,8 @@ Domain | Keys | Notes |
 | Tempo presets | `DEMO.GAME_SECONDS`, `SINGLEPLAYER_TEMPO.frameDelayMs/aiIntervalMs` | `getSinglePlayerTempo()`, demo timers. |
 | Turbo | `TURBO.MAX`, `.DRAIN_RATE`, `.RECHARGE_RATE`, `.SPEED_MULTIPLIER`, `.ACTIVATION_THRESHOLD_MS`, `.SHOE_THRESHOLD` | Player class, HUD, shoe color logic. |
 | Shove / shake | `SHOVE.FAILURE_STUN_FRAMES`, `.COOLDOWN_FRAMES`, `SHAKE.*` | Physical play + AI punish logic. |
+| Shove direction | `SHOVE.DIRECTION.awayFromBasketWeight`, `.towardSidelineWeight`, `.minSidelineComponent`, `.randomJitter` | `knockback-system.js` calculates smart knockback direction that "clears the lane" by pushing victims away from their target basket + toward sideline. |
+| Shove recovery | `SHOVE.VICTIM_RECOVERY.baseFrames`, `.framesPerPushUnit`, `.turboDrain`, `.speedPenalty`, `.turboDisabledFrames` | Victim stun duration (AI skipped), movement speed penalty during recovery, turbo drain on impact, and turbo-disabled period after recovery ends. Used by `knockback-system.js`, `coordinator.js`, `movement-physics.js`. |
 | Block | `BLOCK.JUMP_DURATION_FRAMES`, `.JUMP_HEIGHT` | Block animations + shooting contest calculations. |
 | Clock | `CLOCK.SECOND_MS`, `.SHOT_CLOCK_SECONDS`, `.SHOT_CLOCK_RESET_PAUSE_MS`, `.REGULATION_SECONDS`, `.OVERTIME_SECONDS`, `.OVERTIME_INTRO.DISPLAY_MS`, `.OVERTIME_INTRO.COUNTDOWN_SECONDS`, `.TEST_OVERRIDES.FAST_OVERTIME` (`ENABLED`, `.REGULATION_SECONDS`, `.AUTO_TIE.ENABLED`, `.AUTO_TIE.SECONDS_REMAINING`, `.AUTO_TIE.SCORE`) | `runGameFrame`, violation handlers, scoreboard, and `maybeStartOvertime` for period resets, overtime length tuning, the overtime intro overlay countdown, and the fast-overtime developer toggle that collapses regulation length and auto-ties scores for testing (consumed after the first overtime start so later periods are authentic). Setting `AUTO_TIE.SECONDS_REMAINING` to the default `0` ties the score as regulation expires without truncating the clock; higher thresholds keep the period running after the auto-tie. |
 | Render cadence | `RENDER.COURT_THROTTLE_MS`, `.HUD_INTERVAL_MS` | `runGameFrame` dirty checks, scoreboard throttling. |
@@ -76,9 +78,11 @@ Additions that change how sprites move, collide, or buffer input belong here—n
 Contains tunables for AI state machines. Major sections:
 
 - `SHOT_PROBABILITY_THRESHOLD`, `SHOT_CLOCK_URGENT_SECONDS`, `BACKCOURT_URGENT_SECONDS`.
-- `OFFENSE_BALL` (decision weights, backcourt behavior, quick-three, drive/high-flyer/escape/pull-up heuristics).
+- `OFFENSE_BALL` (decision weights, backcourt behavior, quick-three, drive/high-flyer/escape/pull-up heuristics, **bunching detection**).
+- `OFFENSE_BALL.BUNCHING` - lane-blocked detection when close to basket, congestion shove triggers, cluster radius for multi-defender situations.
 - `OFFENSE_OFF_BALL` (cuts, spacing, passing-lane behavior).
-- `DEFENSE_ON_BALL` / `DEFENSE_HELP`.
+- `DEFENSE_ON_BALL` / `DEFENSE_ON_BALL.BUNCHING` - paint/contact shove triggers.
+- `DEFENSE_HELP` - help defender paint shove settings (`helpShoveDistance`, `helpShoveChance`, `helpMinTurbo`).
 
 Every AI module (`ai/offense-ball-handler.js`, `ai/defense-on-ball.js`, etc.) should pull from these objects. If a new heuristic is needed, extend this file and document the consumer in a comment.
 

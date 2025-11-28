@@ -363,8 +363,8 @@ function runCPUDemo(systems) {
         stateManager.set("totalGameTime", DEMO_GAME_SECONDS, "demo_init");
         stateManager.set("currentHalf", 1, "demo_init");
 
-        // Show splash screen (same as single-player)
-        showSplashScreen(systems, null, null);
+        // Skip splash screen in CPU Demo - go straight to matchup screen
+        // This allows demos to run continuously without user interaction
 
         // Show matchup screen (betting enabled for demo spectators)
         var bettingSlip = showMatchupScreen(true, systems, null, null);
