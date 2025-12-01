@@ -83,6 +83,57 @@ Features:
 - Place bets on outcomes (if enabled)
 - Potential for future multiplayer meetup
 
+### Crib (`crib.js`)
+**Purpose:** Player's home - crew management and stats
+
+Submenus:
+- **Contacts (Rolodex)** - NBA players you've defeated whose number you got
+- **Your Crew** - Active roster of players who run with you (max 5)
+- **Stats & Records** - Personal stats (moved from hub)
+
+Contact System:
+- Defeat NBA players on courts → they give you their number
+- Contacts can be signed temporarily (take % cut of winnings) or permanently (one-time fee)
+- Signed players join your crew for 2v2 games
+
+Crew Management:
+- Max 5 crew members
+- Temp players take a cut of game winnings
+- Permanently signed players have no per-game cost
+- Release players to make room for new ones
+
+Contact Tiers:
+| Tier | Sign Cost | Cut % | Examples |
+|------|-----------|-------|----------|
+| Superstar | $10,000 | 45% | LeBron, Curry, Jordan |
+| Star | $5,000 | 35% | Most starters |
+| Role | $2,000 | 25% | Role players |
+| Rookie | $1,000 | 20% | Rookies, legends past prime |
+
+### Tournaments (`tournaments.js`)
+**Purpose:** Multiplayer rankings and ghost match challenges
+
+Features:
+- Leaderboard showing all players across BBSes
+- Player stats: W-L record, rep, last played, BBS origin
+- Challenge other players to ghost matches
+- View detailed stats of other players
+
+Ghost Matches:
+- Play against a "ghost" of another player (their stats/AI)
+- Async - opponent doesn't need to be online
+- Wager system: max of 10% opponent's cash OR all your cash (whichever higher)
+- Winner takes the pot, gains rep
+
+Leaderboard Columns:
+| Column | Description |
+|--------|-------------|
+| Player | Name (truncated to 28 chars) |
+| W-L | Win-Loss record |
+| Rep | Reputation score |
+| Last On | When they last played |
+| BBS | Which BBS they're from |
+
 ---
 
 ## RichView vs Legacy

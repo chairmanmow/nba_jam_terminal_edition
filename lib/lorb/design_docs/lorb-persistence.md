@@ -1,188 +1,198 @@
 # LORB Persistence System
 
-The persistence system saves and loads player character data to JSON files.
+The persistence system uses Synchronet's JSON-DB service for networked character storage. Characters can be accessed from any BBS connected to the same JSON service.
 
 ---
 
-## File Location
+## Implementation
+
+**File:** `lib/lorb/util/persist.js`
+
+**Depends on:** `json-client.js` (Synchronet's JSON-DB client)
+
+---
+
+## Connection
+
+LORB connects to the JSON-DB service, using the same infrastructure as multiplayer.
+
+### Server Configuration
+
+Checks for `lib/config/lorb_server.ini` first:
+```ini
+name=LORB Server
+addr=localhost
+port=10088
+```
+
+Falls back to local JSON service at `localhost:10088` if no config exists.
+
+### Database Paths
+
+- **Scope:** `nba_jam`
+- **Players path:** `lorb.players`
+- **Individual player:** `lorb.players.<global_id>`
+
+---
+
+## Global Player IDs
+
+Players are identified by a cross-BBS unique ID:
 
 ```
-data/lorb/characters/{odtuid}.json
+<bbs_id>_<user_number>
 ```
 
-Each character is stored as a separate JSON file, keyed by the player's unique ID (`odtuid` - typically derived from their BBS user ID).
+Example: `mybbs_42`
+
+The BBS ID comes from `system.qwk_id` or `system.name`, sanitized to alphanumeric characters.
 
 ---
 
 ## API
 
-### LORB.Persistence.save(ctx)
+### LORB.Persist.connect()
 
-Saves the current context to disk.
+Establishes connection to JSON-DB. Called automatically by other methods.
 
 ```javascript
-LORB.Persistence.save(ctx);
+if (LORB.Persist.connect()) {
+    // Connected
+}
 ```
 
-**When to call:**
-- After completing a game
-- After purchasing items
-- After training stats
-- Before exiting LORB
+### LORB.Persist.disconnect()
 
-### LORB.Persistence.load(odtuid)
-
-Loads a character by ID. Returns `null` if not found.
+Closes the JSON-DB connection. Call when exiting LORB.
 
 ```javascript
-var ctx = LORB.Persistence.load(user.number.toString());
+LORB.Persist.disconnect();
+```
+
+### LORB.Persist.load(user)
+
+Loads player data from JSON-DB.
+
+```javascript
+var ctx = LORB.Persist.load(user);
 if (!ctx) {
     // New player - run character creation
     ctx = LORB.Character.create();
+    ctx._user = user;
 }
 ```
 
-### LORB.Persistence.exists(odtuid)
+**Parameter:** `user` - Synchronet user object
 
-Checks if a save file exists without loading it.
+**Returns:** Player context object or `null` if not found
+
+### LORB.Persist.save(ctx)
+
+Saves player data to JSON-DB.
 
 ```javascript
-if (LORB.Persistence.exists(userId)) {
-    // Continue game
-} else {
-    // New game
+LORB.Persist.save(ctx);
+```
+
+**Parameter:** `ctx` - Player context (must have `ctx._user` set)
+
+**Returns:** `true` on success, `false` on failure
+
+**Saved data includes:**
+- All context properties (except those starting with `_`)
+- `_globalId` - Cross-BBS unique identifier
+- `_lastSave` - Timestamp
+- `_bbsId` - Source BBS identifier
+- `_bbsName` - Source BBS name
+
+### LORB.Persist.exists(user)
+
+Checks if a player save exists.
+
+```javascript
+if (LORB.Persist.exists(user)) {
+    // Has existing character
 }
 ```
 
-### LORB.Persistence.delete(odtuid)
+### LORB.Persist.remove(user)
 
-Deletes a character save file.
+Deletes a player's saved data.
 
 ```javascript
-LORB.Persistence.delete(userId);  // Start fresh
+LORB.Persist.remove(user);  // Start fresh
+```
+
+### LORB.Persist.getGlobalPlayerId(user)
+
+Returns the global ID for a user.
+
+```javascript
+var globalId = LORB.Persist.getGlobalPlayerId(user);
+// e.g., "mybbs_42"
 ```
 
 ---
 
-## Data Format
+## Leaderboard Functions
 
-The save file is a JSON serialization of the context object:
+### LORB.Persist.listPlayers()
 
-```json
-{
-    "name": "RimBreaker",
-    "odtuid": "42",
-    "level": 3,
-    "xp": 450,
-    "rep": 75,
-    "cash": 1250,
-    "archetype": "SLASHER",
-    "stats": {
-        "speed": 7,
-        "3point": 4,
-        "dunk": 8,
-        "power": 6,
-        "steal": 5,
-        "block": 4
-    },
-    "appearance": {
-        "skin": "brown",
-        "jerseyColor": "RED",
-        "jerseyNumber": "23",
-        "eyeColor": "BROWN"
-    },
-    "streetTurns": 3,
-    "attributePoints": 2,
-    "inventory": {
-        "sneakers": [
-            { "id": "air_basics", "name": "Air Basics", "speedBonus": 1 }
-        ],
-        "drinks": []
-    },
-    "equipped": {
-        "sneakers": "air_basics"
-    },
-    "wins": 12,
-    "losses": 5,
-    "gamesPlayed": 17,
-    "lastPlayed": "2025-11-29T15:30:00.000Z",
-    "created": "2025-11-20T10:00:00.000Z"
-}
+Returns array of all player summaries.
+
+```javascript
+var players = LORB.Persist.listPlayers();
+// Returns: [{ globalId, name, level, wins, losses, rep, bbsName }, ...]
 ```
+
+### LORB.Persist.getLeaderboard(limit, sortBy)
+
+Returns top players sorted by a field.
+
+```javascript
+var topByWins = LORB.Persist.getLeaderboard(10, "wins");
+var topByRep = LORB.Persist.getLeaderboard(10, "rep");
+var topByLevel = LORB.Persist.getLeaderboard(5, "level");
+```
+
+**Parameters:**
+- `limit` - Max players to return (default: 10)
+- `sortBy` - Field to sort by: `"wins"`, `"rep"`, or `"level"` (default: `"wins"`)
 
 ---
 
-## Implementation Details
+## Locking
 
-### Directory Creation
-
-The persistence system auto-creates the directory structure if it doesn't exist:
-
-```javascript
-var dir = js.exec_dir + "data/lorb/characters/";
-if (!file_isdir(dir)) {
-    mkdir(dir);
-}
-```
-
-### Error Handling
-
-Save/load operations are wrapped in try-catch to prevent crashes:
-
-```javascript
-try {
-    var f = new File(filepath);
-    f.open("w");
-    f.write(JSON.stringify(ctx, null, 2));
-    f.close();
-} catch (e) {
-    log(LOG_ERR, "[LORB] Failed to save: " + e);
-}
-```
-
-### Migration
-
-When adding new fields to the context, the load function should provide defaults:
-
-```javascript
-function load(odtuid) {
-    var ctx = JSON.parse(fileContents);
-    
-    // Migration: add new fields if missing
-    if (!ctx.inventory) ctx.inventory = { sneakers: [], drinks: [] };
-    if (!ctx.equipped) ctx.equipped = { sneakers: null };
-    if (ctx.streetTurns === undefined) ctx.streetTurns = 5;
-    
-    return ctx;
-}
-```
+Uses JSON-DB lock constants:
+- `LOCK_READ` (1) - For read operations
+- `LOCK_WRITE` (2) - For write/delete operations
 
 ---
 
-## Day Reset
+## Cross-BBS Play
 
-Street turns reset daily. The persistence system tracks `lastPlayed` to detect day changes:
+Because player IDs include the BBS identifier, players from different BBSes can:
+- Appear on the same leaderboard
+- Have their stats compared
+- Potentially compete (if multiplayer is implemented)
 
-```javascript
-function checkDayReset(ctx) {
-    var now = new Date();
-    var last = ctx.lastPlayed ? new Date(ctx.lastPlayed) : null;
-    
-    if (!last || now.toDateString() !== last.toDateString()) {
-        // New day - reset turns
-        ctx.streetTurns = 5;
-        ctx.dayStats = { gamesPlayed: 0, wins: 0, losses: 0, cashEarned: 0, repGained: 0 };
-    }
-    
-    ctx.lastPlayed = now.toISOString();
-}
-```
+Each player's `_bbsName` is stored so leaderboards can show where players come from.
 
 ---
 
-## Backup Strategy
+## Error Handling
 
-**Not currently implemented.** Consider adding:
-- Automatic backup before overwrite
-- Multiple save slots
-- Export/import functionality
+All persistence operations are wrapped in try/catch. Failures are logged via `log(LOG_ERR, ...)` but don't crash the game. The context object remains in memory even if saves fail.
+
+---
+
+## When to Save
+
+Save should be called:
+- After completing a game (win or loss)
+- After purchasing items in the shop
+- After training stats at the gym
+- Before exiting LORB
+- After any significant state change
+
+The hub typically handles the exit save, but locations should save after transactions.
