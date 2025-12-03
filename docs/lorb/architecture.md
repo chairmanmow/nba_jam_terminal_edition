@@ -19,12 +19,13 @@ This document is the current source of truth for the `lib/lorb` runtime. It repl
 
 ## Load Order and Namespaces (`lib/lorb/boot.js`)
 - Establishes global `LORB` namespace with `{ Util, Core, Data, Engines, View }`.
-- Loads `config.js`, utilities (`util/*.js`), mock engine (`engines/nba_jam_mock.js`, required) and optional real adapter (`engines/nba_jam_adapter.js`), data (`data/*.js`), core modules, UI, and locations.
+- Loads `config.js`, utilities (`util/*.js` including `shared-state.js`), mock engine (`engines/nba_jam_mock.js`, required) and optional real adapter (`engines/nba_jam_adapter.js`), data (`data/*.js` including `cities.js`), core modules, UI, and locations.
 - Registers events from `lorb_events.ini` via `LORB.Events.loadFromIni` and wires CPU team definitions (`LORB.Core.registerCpuTeams`).
+- **SharedState initialization** happens in `lorb.js` after boot but before character load.
 
 ## Modules and Responsibilities
-- **Config:** `config.js` holds day duration/banking, daily resource caps, default team roster, betting odds/spread/total knobs.
-- **Data:** `data/archetypes.js`, `backgrounds.js`, `cpu_teams.js`, `data/events.ini` feed character creation, CPU rosters, and random events. `lorb_events.ini` is loaded at runtime.
+- **Config:** `config.js` holds day duration/banking, daily resource caps, default team roster, betting odds/spread/total knobs, and graffiti wall limits (`MAX_GRAFFITI_ENTRIES`, `MAX_GRAFFITI_LINES`, `GRAFFITI_LINE_LENGTH`).
+- **Data:** `data/archetypes.js`, `backgrounds.js`, `cpu_teams.js`, `data/events.ini`, `data/cities.js` feed character creation, CPU rosters, city rotation, and random events. `lorb_events.ini` is loaded at runtime. `cities.js` loads `cities.json` and provides city lookup/rotation helpers (see "Shared World State and City Rotation System" section).
 - **Core:**
   - `state.js`: legacy initializer (not used by `lorb.js`; kept for reference).
   - `economy.js`: simple currency/xp/rep application helpers.
@@ -34,7 +35,8 @@ This document is the current source of truth for the `lib/lorb` runtime. It repl
   - `events.js`: weighted random events from `lorb_events.ini` (battle/gamble placeholder); `runGamble` is intentionally unimplemented.
 - **Engines:** `engines/nba_jam_mock.js` (authoritative mock with `runLorbBattle`), `engines/nba_jam_adapter.js` (adapts LORB ctx/opponents to `runExternalGame`; also supports AI-vs-AI spectate for betting).
 - **Utilities:**
-  - `util/persist.js`: JSON-DB wrapper (shared `server.ini` config). Handles load/save/remove, presence heartbeat (`lorb.presence` namespace, 60s timeout), leaderboards (`listPlayers/getLeaderboard`), and online status checks. Uses LOCK_READ/LOCK_WRITE; no retry/backoff or partial write protection.
+  - `util/persist.js`: JSON-DB wrapper (shared `server.ini` config). Handles load/save/remove, presence heartbeat (`lorb.presence` namespace, 60s timeout), leaderboards (`listPlayers/getLeaderboard`), online status checks, and **graffiti wall** storage (`lorb.graffiti` namespace via `readGraffiti`/`addGraffiti`). Uses LOCK_READ/LOCK_WRITE; no retry/backoff or partial write protection.
+  - `util/shared-state.js`: Manages global shared world state (`lorb.sharedState`). Provides `initialize`, `get`, `getGameDay`, `getInfo`, `resetSeason`, `timeUntilNextDay`. Game day is computed from `(now - seasonStart) / DAY_DURATION_MS`. See "Shared World State and City Rotation System" section.
   - `util/contacts.js`: builds crew contacts from NBA players, tracks tiers/cuts, awards contacts on NBA wins, starter teammate (Barney), crew rivalry helpers, and active teammate selection. `checkCrewRivalConflict` exists but is not enforced during awards.
   - `util/daily_matchups.js`: deterministic NBA daily schedule generator (seeded by day number). Reads `lib/config/rosters.ini`, computes odds/spreads/totals, simulates outcomes, and grades wagers. Namespaced under `LORB.Betting`.
   - `util/career-stats.js`: cumulative/stat record tracking, formats stats/averages/records, calculates post-game cash bonuses by stat with difficulty multipliers.
@@ -49,7 +51,7 @@ This document is the current source of truth for the `lib/lorb` runtime. It repl
 - **Locations:** (all prefer RichView, fall back to `LORB.View`)
   - `locations/hub.js`: central menu. Owns day calculation (`calculateGameDay/daysBetween/timeUntilNextDay`), resource refresh (`initDailyResources`), quit/reset flows. Does not call `initDailyResources` internally; expects caller to do so to avoid double-granting.
   - `locations/courts.js`: court selection and game flow. Generates opponents (streetball or NBA via `get_random_opponent`), supports reroll, runs real game via `runExternalGame` when available, otherwise mock simulation. Handles teammates (`LORB.Util.Contacts.getActiveTeammate` fallback to generated streetballer), applies rewards, crew cuts, career stat recording/bonuses, level-up, contact awards on NBA wins. Uses `ctx.dayStats` for session metrics.
-  - `locations/club23.js`: social hub + betting. Restores resources (bar actions) and leverages `LORB.Betting.generateDailyMatchups` and `nba_jam_adapter.runSpectateGame` for wagers. Builds rumors from static pools plus persisted player stats/records when available. Handles rest/rumor/bookie flows.
+  - `locations/club23.js`: social hub + betting. Restores resources (bar actions) and leverages `LORB.Betting.generateDailyMatchups` and `nba_jam_adapter.runSpectateGame` for wagers. Builds rumors from static pools plus persisted player stats/records when available. Handles rest/rumor/bookie flows. Includes **graffiti wall** feature in the restroom submenu (read/write persistent messages via `LORB.Persist.readGraffiti`/`addGraffiti`).
   - `locations/gym.js`: stat training with per-session costs scaling by current stat; limited by `ctx.gymSessions` and cash. Shows equipped buffs for context.
   - `locations/shop.js`: gear/consumables. Sneakers apply persistent mods while equipped (`equipment.feet`); drinks apply temp buffs to `ctx.tempBuffs`. `getEffectiveStats` used by UI and courts to show buffs.
   - `locations/crib.js`: home menu for contacts/crew/appearance/stats. Supports character reset (calls `LORB.Persist.remove` and flags `_deleted`). Crew/rolodex operations rely on `LORB.Util.Contacts`. Appearance editor mirrors character creation options.
@@ -57,8 +59,69 @@ This document is the current source of truth for the `lib/lorb` runtime. It repl
 
 ## Integration Points
 - **Real game dependency:** Rich game flow requires `runExternalGame` (from the main NBA Jam runtime). Courts and adapter fall back to mock simulation if absent; presence of `BinLoader`, `RichView`, and sprite utils gates richer UI paths.
-- **JSON-DB:** Shares `nba_jam` scope with multiplayer systems. `LORB.Persist` assumes JSONClient availability (autoloads `json-client.js` if missing) and writes under `lorb.players` / `lorb.presence`. No schema migration or versioning exists—new fields simply persist.
+- **JSON-DB:** Shares `nba_jam` scope with multiplayer systems. `LORB.Persist` assumes JSONClient availability (autoloads `json-client.js` if missing) and writes under `lorb.players` / `lorb.presence` / `lorb.graffiti` / `lorb.sharedState`. No schema migration or versioning exists—new fields simply persist.
 - **Assets:** Heavy reliance on `/sbbs/xtrn/nba_jam/assets` for sprites and art; missing files silently degrade to ASCII.
+
+## Shared World State and City Rotation System
+
+### Overview
+All players share a global game day that advances based on real time elapsed since "season start." Instead of tracking individual player days, the system uses a single `seasonStart` timestamp stored in `lorb.sharedState` (JSON-DB). This ensures all players experience the same game day and city.
+
+### Key Components
+- **`util/shared-state.js`** (`LORB.SharedState`): Manages the global shared state.
+  - `initialize()`: Creates `sharedState` if it doesn't exist; sets `seasonStart` to now, `initialized` flag.
+  - `get()`: Returns raw shared state object.
+  - `getGameDay()`: Computes current day from `(now - seasonStart) / DAY_DURATION_MS`, floored + 1 (1-indexed).
+  - `getInfo()`: Returns `{ gameDay, seasonStart, msUntilNextDay, initialized }`.
+  - `resetSeason()`: Resets `seasonStart` to now (for admin use).
+  - `timeUntilNextDay()`: Milliseconds until next day boundary.
+
+- **`data/cities.js`** (`LORB.Cities`): Loads city definitions from `cities.json` and provides rotation helpers.
+  - `getCurrent(gameDay)`: Returns city object for given day (0-indexed mod 30).
+  - `getToday()`: Convenience wrapper that fetches gameDay from `SharedState`.
+  - `getBuffs(city)`: Normalizes city buff object (defaults all undefined to 0).
+  - `applyBuffsToStats(baseStats, city)`: Returns new stats object with buffs applied.
+  - `getClubName(city)`: Returns city's nightclub name (fallback: "Club 23").
+  - `getBannerPath(city)` / `getDetailPath(city)`: Returns paths to city art files.
+  - `getHubTitle(city, gameDay)`: Formatted hub header string.
+  - `getTeamColorCode(city)`: Returns Ctrl-A color code based on region.
+  - `getBuffDescription(city)`: Short string describing active buffs.
+
+- **`cities.json`** (at `lib/lorb/design_docs/season_concept/cities.json`): 30 NBA city definitions with:
+  - `id`, `cityName`, `teamName`, `region`, `order` (1-30)
+  - `bannerBin`, `detailBin` (art file names)
+  - `nightclubName` (city-specific club name)
+  - `buffs` (speed, three, power, steal, block, dunk, stamina, defense, fundamentals, clutch, luck, foulTolerance, repMultiplier, cashMultiplier)
+  - `notes` (flavor text)
+
+### City Rotation Logic
+- Day 1 = cities[0] (Boston)
+- Day 2 = cities[1] (New York)
+- ...
+- Day 30 = cities[29] (Oklahoma City)
+- Day 31 = cities[0] (Boston again)
+
+Formula: `cityIndex = (gameDay - 1) % 30`
+
+### Art Assets
+City art files are stored in `/sbbs/xtrn/nba_jam/assets/lorb/cities/`:
+- Banners: 80x4 .bin files (e.g., `bos_banner.bin`, `chi_banner.bin`)
+- Details: 40x20 .bin files (e.g., `bos_detail.bin`, `chi_detail.bin`)
+- Defaults: `default_banner.bin`, `default_detail.bin` (fallbacks)
+
+Generated via `scripts/generate-city-art.js` with city-specific colors and icons.
+
+### Player Context Changes
+- `joinedTimestamp`: When player first joined (ms since epoch)
+- `joinedOnDay`: Game day when player joined
+- `joinedInCity`: City ID where player joined
+- Legacy players get these fields set on first load after update
+
+### UI Integration
+- **Hub**: Displays current city name, team, buffs, and loads city-specific banner/detail art.
+- **Club23**: Uses `LORB.Cities.getClubName()` for dynamic nightclub naming.
+- **Welcome Message**: Shows "Day X in CityName" with team info.
+- **Exit Message**: Farewell uses current city name.
 
 ## Strengths
 - Clear load order and hard dependency checks in `boot.js` (mock engine enforced).
