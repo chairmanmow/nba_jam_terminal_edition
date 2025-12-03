@@ -127,6 +127,38 @@ Legacy balance sheet grouped by subsystem (AI, shooting, dunks, rebounds, defens
 
 ---
 
+### `lib/config/difficulty-scaling.js`
+
+Centralizes AI difficulty scaling for LORB (Legend of the Red Bull) and other external game modes. Uses the `DifficultyScaling` global.
+
+| Key | Type | Description |
+| --- | --- | --- |
+| `DIFFICULTY_PRESETS` | Object | Named presets (1–5 for LORB tiers, plus `playoff` and `jordan`). Each preset defines a package of AI modifiers. |
+| `BASE_VALUES` | Object | Original AI constant values captured before scaling (for restoration). |
+| `ORIGINAL_VALUES` | Object | Runtime cache of original values before current session's scaling was applied. |
+
+**Preset Keys (per tier):**
+- `turboCapacity` – AI turbo tank size (lower = runs out of gas faster).
+- `shotThreshold` – Base shot probability threshold (higher = AI takes higher-quality shots).
+- `denyReactionDelay` – Frames before help defender reacts (higher = slower help rotation).
+- `blowbyChanceMultiplier` – Scales backcourt/midcourt/frontcourt blowby chances.
+- `responsivenessMultiplier` – Scales court-position responsiveness values.
+- `wobbleFramesMultiplier` – Scales off-ball cut hesitation (higher = more hesitation).
+- `decisionDelayMultiplier` – Scales ball-handler decision delays.
+
+**Public API (`DifficultyScaling.*`):**
+- `applyDifficultyScaling(tier)` – Patches AI_CONSTANTS with preset multipliers; caches originals.
+- `resetDifficultyScaling()` – Restores AI_CONSTANTS to cached originals.
+- `applyTurboCapacityToAI(players)` – Sets `playerData.turboCapacity` on CPU players.
+- `getDifficultyModifiers(tier)` – Returns the modifier object for a given tier.
+
+**Consumers:**
+- `lib/game-logic/external-game.js` – Applies scaling on LORB game start, resets on cleanup.
+- `lib/lorb/core/season.js` – `getDifficultyModifiers()` delegates to this module.
+- `lib/lorb/locations/courts.js` – Passes `lorbContext.difficulty` (1–5) to `runExternalGame`.
+
+---
+
 ### Adding New Constants
 
 1. Pick the module by category:

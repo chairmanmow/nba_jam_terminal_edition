@@ -100,6 +100,14 @@ Implementation pattern:
 - Added `evaluatePressDecision()` helper to `lib/ai/ai-decision-support.js` that calculates press score from catchup potential, game situation, threat assessment, and rubber banding status.
 - `lib/ai/defense-on-ball.js` now checks press decision at the start of `aiDefenseOnBall()` - if score is below threshold, defender retreats to halfcourt instead of chasing into backcourt.
 - AI now weighs risk/reward of full-court press: trailing teams press more aggressively (desperation), leading teams may press casually (low risk), good shooters discourage pressing (blowby = open three).
+
+### ✅ Pass 14 (LORB difficulty scaling)
+- Created `lib/config/difficulty-scaling.js` to centralize AI difficulty scaling for LORB courts and other external game modes.
+- New constants: `DIFFICULTY_PRESETS` object with tiers 1-5, `playoff`, and `jordan` presets. Each preset defines `turboCapacity` (60-150), `shotThreshold` (28-55), `denyReactionDelay` (25-10 frames), plus multipliers for blowby chances, responsiveness, wobble frames, and decision delays.
+- Added `DifficultyScaling` API: `applyDifficultyScaling(tier)`, `resetDifficultyScaling()`, `applyTurboCapacityToAI(players)`, `getDifficultyModifiers(tier)`.
+- Wired into `lib/game-logic/external-game.js`: applies difficulty at game start if `lorbContext.difficulty` is present, sets AI turbo capacity after sprite initialization, and resets difficulty on cleanup (success and error paths).
+- Updated `lib/lorb/core/season.js`: `getDifficultyModifiers()` now delegates to `DifficultyScaling` module when available.
+- Scaling philosophy: lower tiers reduce AI turbo capacity (they run out of gas), increase reaction delays (slower help rotation), and raise shot thresholds (take only high-quality shots). Higher tiers do the opposite, creating elite AI opponents. Movement speed is NOT scaled—turbo capacity creates natural windows without being "dishonest" to player Speed attributes.
 ### 2.1 Geometry & UI
 - `lib/ui/scoreboard.js:260-330` – Hard-coded frame widths (`80`), column offsets (`60`, `centerColumn = Math.floor(frameWidth / 2)`), turbo bar length `6`. Move to **presentation constants** so HUD tweaks don’t require code edits.  ✅ *(Handled via `GAMEPLAY_CONSTANTS.SCOREBOARD` in Pass 1.)*
 - Wave 24 follow-up: the new opening tip flow consumes `GAMEPLAY_CONSTANTS.JUMP_BALL` (center coordinates, jumper offsets, wing spacing) so the geometry stays tunable without sprinkling fresh literals into `jump-ball-system.js`.
