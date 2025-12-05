@@ -5,7 +5,7 @@ This document is the current source of truth for the `lib/lorb` runtime. It repl
 ## Execution Flow
 - Entry: `lib/lorb/lorb.js` loads `boot.js`, then attempts to load or create a character (via `LORB.Persist.load` or `LORB.CharacterCreation.run`).
 - Daily resources: returning players get `LORB.Locations.Hub.initDailyResources(ctx)` before the hub; new players get the same after creation if no `lastPlayedTimestamp` exists. Day boundaries are purely timestamp-based (see `config.js`).
-- Presence: `LORB.Persist.setPresence` heartbeat every 30s while in the hub; cleared on exit.
+- Presence: `LORB.Persist.setPresence` heartbeat every 30s while in the hub; cleared on exit. JSONClient operations are lock-protected (LOCK_READ/LOCK_WRITE) to avoid service timeouts.
 - Main loop: `LORB.Locations.Hub.run(ctx)` drives all navigation (courts, club, gym, shop, crib, tournaments); the hub returns `"reset"` or `"quit"` to control save/cleanup.
 - Save: on normal exit, `LORB.Persist.save(ctx)` persists all non-underscore fields; `_user` is stripped before save and reattached on load.
 
@@ -35,7 +35,7 @@ This document is the current source of truth for the `lib/lorb` runtime. It repl
   - `events.js`: weighted random events from `lorb_events.ini` (battle/gamble placeholder); `runGamble` is intentionally unimplemented.
 - **Engines:** `engines/nba_jam_mock.js` (authoritative mock with `runLorbBattle`), `engines/nba_jam_adapter.js` (adapts LORB ctx/opponents to `runExternalGame`; also supports AI-vs-AI spectate for betting).
 - **Utilities:**
-  - `util/persist.js`: JSON-DB wrapper (shared `server.ini` config). Handles load/save/remove, presence heartbeat (`lorb.presence` namespace, 60s timeout), leaderboards (`listPlayers/getLeaderboard`), online status checks, and **graffiti wall** storage (`lorb.graffiti` namespace via `readGraffiti`/`addGraffiti`). Uses LOCK_READ/LOCK_WRITE; no retry/backoff or partial write protection.
+  - `util/persist.js`: JSON-DB wrapper (shared `server.ini` config). Handles load/save/remove, presence heartbeat (`lorb.presence` namespace, 60s timeout), leaderboards (`listPlayers/getLeaderboard`), online status checks, and **graffiti wall** storage (`lorb.graffiti` namespace via `readGraffiti`/`addGraffiti`). Presence/live ops use LOCK_READ/LOCK_WRITE for JSONClient; there is still no multi-attempt retry/backoff for these writes.
   - `util/shared-state.js`: Manages global shared world state (`lorb.sharedState`). Provides `initialize`, `get`, `getGameDay`, `getInfo`, `resetSeason`, `timeUntilNextDay`. Game day is computed from `(now - seasonStart) / DAY_DURATION_MS`. See "Shared World State and City Rotation System" section.
   - `util/contacts.js`: builds crew contacts from NBA players, tracks tiers/cuts, awards contacts on NBA wins, starter teammate (Barney), crew rivalry helpers, and active teammate selection. `checkCrewRivalConflict` exists but is not enforced during awards.
   - `util/daily_matchups.js`: deterministic NBA daily schedule generator (seeded by day number). Reads `lib/config/rosters.ini`, computes odds/spreads/totals, simulates outcomes, and grades wagers. Namespaced under `LORB.Betting`.
@@ -43,7 +43,7 @@ This document is the current source of truth for the `lib/lorb` runtime. It repl
   - `util/rng.js`: tiny LCG helper (seedable).
   - `get_random_opponent.js`: scans `/assets/characters/*.bin` and cross-references `rosters.ini` to attach team/stats metadata; used by courts for NBA encounters.
 - **Multiplayer (live challenge handshake):**
-  - `multiplayer/challenges.js`: CRUD on `lorb.challenges.*` records in JSON-DB, pending/accepted/declined lifecycle, ready heartbeats, and cleanup of expired invites (no JSONClient locks).
+  - `multiplayer/challenges.js`: CRUD on `lorb.challenges.*` records in JSON-DB, pending/accepted/declined lifecycle, ready heartbeats, and cleanup of expired invites. JSONClient reads/writes/removes are locked (LOCK_READ/LOCK_WRITE) per bucket entry.
   - `multiplayer/challenge_service.js`: background poll/maintenance loop (event-timer) that keeps challenge data fresh without blocking UI loops; started/stopped from `lorb.js`.
   - `multiplayer/challenge_lobby.js`: waits for both sides to mark ready (keeps own readiness fresh), bounded by timeouts so hub/menu loops don't hang forever.
   - `multiplayer/challenge_lobby_ui.js`: simple prompts for incoming challenges and waiting screens; invoked from hub and tournaments.
@@ -59,7 +59,7 @@ This document is the current source of truth for the `lib/lorb` runtime. It repl
 
 ## Integration Points
 - **Real game dependency:** Rich game flow requires `runExternalGame` (from the main NBA Jam runtime). Courts and adapter fall back to mock simulation if absent; presence of `BinLoader`, `RichView`, and sprite utils gates richer UI paths.
-- **JSON-DB:** Shares `nba_jam` scope with multiplayer systems. `LORB.Persist` assumes JSONClient availability (autoloads `json-client.js` if missing) and writes under `lorb.players` / `lorb.presence` / `lorb.graffiti` / `lorb.sharedState`. No schema migration or versioning exists—new fields simply persist.
+- **JSON-DB / JSONClient:** Uses dedicated `lorb` scope for presence and live challenges. `LORB.Persist` assumes JSONClient availability (autoloads `json-client.js` if missing) and writes under `lorb.players` / `lorb.presence` / `lorb.graffiti` / `lorb.sharedState`. JSONClient operations take locks but still lack retry/backoff/validation beyond helper backoff.
 - **Assets:** Heavy reliance on `/sbbs/xtrn/nba_jam/assets` for sprites and art; missing files silently degrade to ASCII.
 
 ## Shared World State and City Rotation System

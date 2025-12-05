@@ -1,0 +1,297 @@
+{
+	"sharedState": {
+		"seasonStart": 1764831285304,
+		"seasonNumber": 1,
+		"lastUpdated": 1764831285304,
+		"seasonChampions": []
+	},
+	"players": {
+		"futureld_1": {
+			"seed": 1747991238,
+			"userHandle": "Hm Derdoc",
+			"dayTurns": 5,
+			"flags": {},
+			"xp": 12,
+			"level": 1,
+			"gamesPlayed": 1,
+			"wins": 1,
+			"losses": 0,
+			"name": "Derdok",
+			"archetype": "enforcer",
+			"special": "intimidation",
+			"background": "streetball",
+			"cash": 107,
+			"rep": 7,
+			"perks": [
+				"blacktop_encounters"
+			],
+			"stats": {
+				"speed": 7,
+				"threePt": 4,
+				"power": 9,
+				"steal": 4,
+				"block": 6,
+				"dunk": 10
+			},
+			"appearance": {
+				"skin": "lightgray",
+				"eyeColor": "BROWN",
+				"jerseyColor": "RED",
+				"jerseyLettering": "WHITE",
+				"jerseyNumber": "3"
+			},
+			"nickname": "DERDOK",
+			"contacts": [
+				{
+					"id": "sonic_hedgehog",
+					"type": "legend",
+					"name": "Sonic",
+					"team": "Green Hill Zone",
+					"position": "PG",
+					"positionName": "Point Guard",
+					"status": "signed",
+					"signCost": 0,
+					"cutPercent": 10,
+					"tier": "rookie",
+					"stats": {
+						"speed": 10,
+						"threePt": 5,
+						"dunk": 2,
+						"block": 2,
+						"power": 2,
+						"steal": 7
+					},
+					"skin": "sonic",
+					"jersey": 1,
+					"shortNick": "SONIC",
+					"dateAcquired": 1764831342995,
+					"isStarter": true,
+					"rivals": [],
+					"intro": "You've been paired with \u0001c\u0001hSonic\u0001n, a lightning-fast \u0001wPoint Guard\u0001n\u000awho'll handle tempo and rack up steals.\u000aHe'll push the pace and find you\u000afor easy buckets in the paint."
+				}
+			],
+			"crew": [
+				{
+					"contactId": "sonic_hedgehog"
+				}
+			],
+			"position": "C",
+			"positionName": "Center",
+			"positionCategory": "Center",
+			"activeTeammate": "sonic_hedgehog",
+			"joinedTimestamp": 1764831359348,
+			"joinedOnDay": 1,
+			"joinedInCity": "bos",
+			"streetTurns": 15,
+			"gymSessions": 9,
+			"barActions": 9,
+			"lastPlayedTimestamp": 1764917837717,
+			"dayStats": {
+				"gamesPlayed": 0,
+				"wins": 0,
+				"losses": 0,
+				"cashEarned": 0,
+				"repGained": 0
+			},
+			"restUsedToday": false,
+			"careerStats": {
+				"gamesPlayed": 1,
+				"totals": {
+					"points": 18,
+					"rebounds": 0,
+					"assists": 0,
+					"steals": 1,
+					"blocks": 0,
+					"turnovers": 0,
+					"fgm": 7,
+					"fga": 8,
+					"tpm": 4,
+					"tpa": 5,
+					"dunks": 3,
+					"injuries": 0
+				}
+			},
+			"records": {
+				"points": {
+					"value": 18,
+					"date": 1764832344292,
+					"opponent": "Park Rat",
+					"court": "Court 6"
+				},
+				"rebounds": {
+					"value": 0,
+					"date": null,
+					"opponent": null,
+					"court": null
+				},
+				"assists": {
+					"value": 0,
+					"date": null,
+					"opponent": null,
+					"court": null
+				},
+				"steals": {
+					"value": 1,
+					"date": 1764832344292,
+					"opponent": "Park Rat",
+					"court": "Court 6"
+				},
+				"blocks": {
+					"value": 0,
+					"date": null,
+					"opponent": null,
+					"court": null
+				},
+				"turnovers": {
+					"value": 0,
+					"date": null,
+					"opponent": null,
+					"court": null
+				},
+				"fgm": {
+					"value": 7,
+					"date": 1764832344292,
+					"opponent": "Park Rat",
+					"court": "Court 6"
+				},
+				"fga": {
+					"value": 8,
+					"date": 1764832344292,
+					"opponent": "Park Rat",
+					"court": "Court 6"
+				},
+				"tpm": {
+					"value": 4,
+					"date": 1764832344292,
+					"opponent": "Park Rat",
+					"court": "Court 6"
+				},
+				"tpa": {
+					"value": 5,
+					"date": 1764832344292,
+					"opponent": "Park Rat",
+					"court": "Court 6"
+				},
+				"dunks": {
+					"value": 3,
+					"date": 1764832344292,
+					"opponent": "Park Rat",
+					"court": "Court 6"
+				},
+				"injuries": {
+					"value": 0,
+					"date": null,
+					"opponent": null,
+					"court": null
+				}
+			},
+			"inventory": {
+				"sneakers": [
+					"rim_grinders",
+					"cloudwalkers"
+				]
+			},
+			"equipment": {
+				"feet": "rim_grinders"
+			},
+			"_globalId": "futureld_1",
+			"_lastSave": 1764917989538,
+			"_bbsId": "FUTURELD",
+			"_bbsName": "futureland.today"
+		},
+		"futureld_3": {
+			"seed": 1748730377,
+			"userHandle": "Beta Tester",
+			"dayTurns": 5,
+			"flags": {},
+			"xp": 0,
+			"level": 1,
+			"gamesPlayed": 2,
+			"wins": 0,
+			"losses": 2,
+			"name": "derpy",
+			"archetype": "sniper",
+			"special": "heat_check",
+			"background": "streetball",
+			"cash": 450,
+			"rep": 5,
+			"perks": [
+				"blacktop_encounters"
+			],
+			"stats": {
+				"speed": 9,
+				"threePt": 9,
+				"power": 7,
+				"steal": 5,
+				"block": 4,
+				"dunk": 6
+			},
+			"appearance": {
+				"skin": "lightgray",
+				"eyeColor": "BROWN",
+				"jerseyColor": "RED",
+				"jerseyLettering": "WHITE",
+				"jerseyNumber": "47"
+			},
+			"nickname": "DERPY",
+			"contacts": [
+				{
+					"id": "shrek_ogre",
+					"type": "legend",
+					"name": "Shrek",
+					"team": "Swamp Monsters",
+					"position": "PF",
+					"positionName": "Power Forward",
+					"status": "signed",
+					"signCost": 0,
+					"cutPercent": 10,
+					"tier": "rookie",
+					"stats": {
+						"speed": 4,
+						"threePt": 2,
+						"dunk": 6,
+						"block": 5,
+						"power": 8,
+						"steal": 3
+					},
+					"skin": "shrek",
+					"jersey": 22,
+					"shortNick": "SHREK",
+					"dateAcquired": 1764832087955,
+					"isStarter": true,
+					"rivals": [],
+					"intro": "You've been paired with \u0001g\u0001hShrek\u0001n, a bruising \u0001wPower Forward\u0001n\u000afrom the swamp. He'll bang bodies in the post\u000aand clear the lane while you rain\u000athrees from the outside."
+				}
+			],
+			"crew": [
+				{
+					"contactId": "shrek_ogre"
+				}
+			],
+			"position": "SG",
+			"positionName": "Shooting Guard",
+			"positionCategory": "Guard",
+			"activeTeammate": "shrek_ogre",
+			"joinedTimestamp": 1764832093640,
+			"joinedOnDay": 1,
+			"joinedInCity": "bos",
+			"streetTurns": 15,
+			"gymSessions": 9,
+			"barActions": 9,
+			"lastPlayedTimestamp": 1764918036789,
+			"dayStats": {
+				"gamesPlayed": 0,
+				"wins": 0,
+				"losses": 0,
+				"cashEarned": 0,
+				"repGained": 0
+			},
+			"restUsedToday": false,
+			"_globalId": "futureld_3",
+			"_lastSave": 1764918258435,
+			"_bbsId": "FUTURELD",
+			"_bbsName": "futureland.today"
+		}
+	},
+	"presence": {}
+}
