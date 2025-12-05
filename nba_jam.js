@@ -1056,6 +1056,11 @@ function main() {
             }
 
             if (result === "game_over") {
+                // Broadcast final game state with gameRunning=false to clients before exiting
+                if (coordinator && coordinator.isCoordinator) {
+                    debugLog("[MP GAME LOOP] Game over - broadcasting final state to clients");
+                    coordinator.broadcastState();
+                }
                 break;
             }
 
