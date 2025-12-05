@@ -1,9 +1,17 @@
 {
 	"sharedState": {
-		"seasonStart": 1764831285304,
-		"seasonNumber": 1,
-		"lastUpdated": 1764831285304,
-		"seasonChampions": []
+		"seasonStart": 1764947434670,
+		"seasonNumber": 2,
+		"lastUpdated": 1764947434670,
+		"seasonChampions": [
+			{
+				"seasonNumber": 1,
+				"championName": "Season Reset",
+				"championId": null,
+				"defeatedOnDay": 33,
+				"timestamp": 1764947434670
+			}
+		]
 	},
 	"players": {
 		"futureld_1": {
@@ -11,17 +19,17 @@
 			"userHandle": "Hm Derdoc",
 			"dayTurns": 5,
 			"flags": {},
-			"xp": 12,
+			"xp": 0,
 			"level": 1,
-			"gamesPlayed": 1,
-			"wins": 1,
+			"gamesPlayed": 0,
+			"wins": 0,
 			"losses": 0,
 			"name": "Derdok",
 			"archetype": "enforcer",
 			"special": "intimidation",
 			"background": "streetball",
-			"cash": 107,
-			"rep": 7,
+			"cash": 1000,
+			"rep": 0,
 			"perks": [
 				"blacktop_encounters"
 			],
@@ -85,7 +93,7 @@
 			"streetTurns": 15,
 			"gymSessions": 9,
 			"barActions": 9,
-			"lastPlayedTimestamp": 1764922623949,
+			"lastPlayedTimestamp": 1764950729262,
 			"dayStats": {
 				"gamesPlayed": 0,
 				"wins": 0,
@@ -194,8 +202,10 @@
 			"equipment": {
 				"feet": "rim_grinders"
 			},
+			"winStreak": 0,
+			"romance": null,
 			"_globalId": "futureld_1",
-			"_lastSave": 1764922981587,
+			"_lastSave": 1764950800886,
 			"_bbsId": "FUTURELD",
 			"_bbsName": "futureland.today"
 		},
@@ -278,7 +288,7 @@
 			"streetTurns": 15,
 			"gymSessions": 9,
 			"barActions": 9,
-			"lastPlayedTimestamp": 1764922632596,
+			"lastPlayedTimestamp": 1764950736276,
 			"dayStats": {
 				"gamesPlayed": 0,
 				"wins": 0,
@@ -288,10 +298,29 @@
 			},
 			"restUsedToday": false,
 			"_globalId": "futureld_3",
-			"_lastSave": 1764922985373,
+			"_lastSave": 1764950794970,
 			"_bbsId": "FUTURELD",
 			"_bbsName": "futureland.today"
 		}
 	},
-	"presence": {}
+	"presence": {},
+	"lorb": {
+		"sharedState": {
+			"seasonStart": 1764831285304,
+			"seasonNumber": 1,
+			"lastUpdated": 1764831285304,
+			"seasonChampions": [],
+			"hallOfFame": [
+				{
+					"seasonNumber": 1,
+					"championId": "ghost_6",
+					"championName": "Shadow Hooper",
+					"defeatedJordan": false,
+					"timestamp": 1764947434668,
+					"date": "2025-12-05T15:10:34.668Z"
+				}
+			]
+		},
+		"marriages": {}
+	}
 }
