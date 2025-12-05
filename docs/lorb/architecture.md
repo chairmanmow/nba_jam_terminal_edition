@@ -15,6 +15,7 @@ This document is the current source of truth for the `lib/lorb` runtime. It repl
 - Stats and appearance: `stats` (speed/threePt/power/steal/block/dunk), `archetype`, `background`, `appearance` (skin/eye/jerseryColor/lettering/jerseyNumber/nametag colors).
 - Resources: `streetTurns`, `gymSessions`, `barActions`, `restUsedToday`, `tempBuffs`, `dailyBetting` (club 23 wagers), `dayStats` (session tracking).
 - Crew and inventory: `contacts` (rolodex), `crew` (array of `{contactId}`), `activeTeammate`, `equipment` (e.g., `feet`), `inventory` (drinks), flags (`flags` map), `careerStats`, `records`.
+- **PvP tracking**: `pvpStats` (gamesPlayed/wins/losses/ties/currentStreak/longestWinStreak/totals), `pvpRecords` (per-stat single-game bests).
 - Time markers: `lastPlayedTimestamp` (ms), optional `_daysPassed`/`_effectiveDays` for one-time welcome messaging.
 
 ## Load Order and Namespaces (`lib/lorb/boot.js`)
@@ -40,6 +41,11 @@ This document is the current source of truth for the `lib/lorb` runtime. It repl
   - `util/contacts.js`: builds crew contacts from NBA players, tracks tiers/cuts, awards contacts on NBA wins, starter teammate (Barney), crew rivalry helpers, and active teammate selection. `checkCrewRivalConflict` exists but is not enforced during awards.
   - `util/daily_matchups.js`: deterministic NBA daily schedule generator (seeded by day number). Reads `lib/config/rosters.ini`, computes odds/spreads/totals, simulates outcomes, and grades wagers. Namespaced under `LORB.Betting`.
   - `util/career-stats.js`: cumulative/stat record tracking, formats stats/averages/records, calculates post-game cash bonuses by stat with difficulty multipliers.
+  - `util/pvp-stats.js`: **PvP-specific statistics and news system.** Tracks multiplayer-exclusive stats separately from street/career stats. Provides:
+    - `pvpStats` tracking: wins/losses/ties, streak tracking, cumulative game stats
+    - `pvpRecords`: single-game PvP bests (points, rebounds, biggest win margin, etc.)
+    - **Sports news system** (`lorb.pvpNews` namespace): Records match results with headlines like "Player A defeated Player B 16-13. Barney led scoring with 9 points!"
+    - Static PvP wager system: $50 per match, +50 rep on win, -10 rep on loss
   - `util/rng.js`: tiny LCG helper (seedable).
   - `get_random_opponent.js`: scans `/assets/characters/*.bin` and cross-references `rosters.ini` to attach team/stats metadata; used by courts for NBA encounters.
 - **Multiplayer (live challenge handshake):**
