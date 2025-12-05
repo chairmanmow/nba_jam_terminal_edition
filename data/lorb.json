@@ -93,7 +93,7 @@
 			"streetTurns": 15,
 			"gymSessions": 9,
 			"barActions": 9,
-			"lastPlayedTimestamp": 1764953809023,
+			"lastPlayedTimestamp": 1764955434019,
 			"dayStats": {
 				"gamesPlayed": 0,
 				"wins": 0,
@@ -205,7 +205,7 @@
 			"winStreak": 0,
 			"romance": null,
 			"_globalId": "futureld_1",
-			"_lastSave": 1764955001537,
+			"_lastSave": 1764955451838,
 			"_bbsId": "FUTURELD",
 			"_bbsName": "futureland.today"
 		},
@@ -216,15 +216,15 @@
 			"flags": {},
 			"xp": 0,
 			"level": 1,
-			"gamesPlayed": 2,
+			"gamesPlayed": 3,
 			"wins": 0,
-			"losses": 2,
+			"losses": 3,
 			"name": "derpy",
 			"archetype": "sniper",
 			"special": "heat_check",
 			"background": "streetball",
-			"cash": 450,
-			"rep": 5,
+			"cash": 400,
+			"rep": 0,
 			"perks": [
 				"blacktop_encounters"
 			],
@@ -288,7 +288,7 @@
 			"streetTurns": 15,
 			"gymSessions": 9,
 			"barActions": 9,
-			"lastPlayedTimestamp": 1764953440566,
+			"lastPlayedTimestamp": 1764955196188,
 			"dayStats": {
 				"gamesPlayed": 0,
 				"wins": 0,
@@ -297,8 +297,99 @@
 				"repGained": 0
 			},
 			"restUsedToday": false,
+			"pvpStats": {
+				"gamesPlayed": 1,
+				"wins": 0,
+				"losses": 1,
+				"ties": 0,
+				"totals": {
+					"points": 0,
+					"rebounds": 0,
+					"assists": 0,
+					"steals": 0,
+					"blocks": 0,
+					"turnovers": 0,
+					"fgm": 0,
+					"fga": 0,
+					"tpm": 0,
+					"tpa": 0,
+					"dunks": 0,
+					"injuries": 0
+				},
+				"currentStreak": -1,
+				"longestWinStreak": 0,
+				"longestLossStreak": 1
+			},
+			"pvpRecords": {
+				"points": {
+					"value": 0,
+					"date": null,
+					"opponent": null
+				},
+				"rebounds": {
+					"value": 0,
+					"date": null,
+					"opponent": null
+				},
+				"assists": {
+					"value": 0,
+					"date": null,
+					"opponent": null
+				},
+				"steals": {
+					"value": 0,
+					"date": null,
+					"opponent": null
+				},
+				"blocks": {
+					"value": 0,
+					"date": null,
+					"opponent": null
+				},
+				"turnovers": {
+					"value": 0,
+					"date": null,
+					"opponent": null
+				},
+				"fgm": {
+					"value": 0,
+					"date": null,
+					"opponent": null
+				},
+				"fga": {
+					"value": 0,
+					"date": null,
+					"opponent": null
+				},
+				"tpm": {
+					"value": 0,
+					"date": null,
+					"opponent": null
+				},
+				"tpa": {
+					"value": 0,
+					"date": null,
+					"opponent": null
+				},
+				"dunks": {
+					"value": 0,
+					"date": null,
+					"opponent": null
+				},
+				"injuries": {
+					"value": 0,
+					"date": null,
+					"opponent": null
+				},
+				"winMargin": {
+					"value": 0,
+					"date": null,
+					"opponent": null,
+					"score": null
+				}
+			},
 			"_globalId": "futureld_3",
-			"_lastSave": 1764953466226,
+			"_lastSave": 1764955425580,
 			"_bbsId": "FUTURELD",
 			"_bbsName": "futureland.today"
 		}
