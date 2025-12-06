@@ -16,18 +16,32 @@ Service config: `localhost:10088`, scope `lorb`, configurable via `LORB.Config.J
 - **Challenge** (`lorb.challenges.<gid>.<challengeId>`)  
   ```
   {
-    id, from { globalId, name, bbsName }, to { ... },
-    status: "pending" | "accepted" | "declined" | "cancelled",
+    id, from { globalId, name, bbsName, cash, rep, ... }, to { ... },
+    status: "pending" | "negotiating" | "accepted" | "declined" | "cancelled",
     createdAt, updatedAt, expiresAt (5m TTL),
     lobby: { ready: { gid: bool }, lastPing: { gid: ts } },
-    meta: {}
+    meta: {},
+    wager: null | <WagerObject>  // See below
   }
   ```
+- **Wager Object** (`challenge.wager`) — Optional betting negotiation:
+  ```
+  {
+    cash, rep,                    // Current offer amounts
+    absoluteMax: { cash, rep },   // Hard limit (min of both players)
+    ceiling: { cash, rep, locked }, // Locks after first counter
+    proposedBy: "gid",            // Who made current offer
+    revision: <n>,                // Increments each counter
+    history: [{ cash, rep, by, at }]  // Audit trail
+  }
+  ```
+  Ceiling rules: Challenger sets initial ceiling → Challengee's first counter can raise it (up to absoluteMax) → Ceiling then locks → Unlimited counters within locked ceiling until accept/cancel.
 
 ## Flow (happy path)
 1. **Presence**: On enter, `setPresence` writes `presence.<gid>` via JSONClient; `clearPresence` removes on exit. `getOnlinePlayers` reads the same scope/path.
 2. **Create challenge**: Challenger writes the record into both buckets (`from` and `to`) under `lorb.challenges.*` via JSONClient. TTL is 5m; stale/declined/cancelled entries are pruned.
-3. **Discover**: `ChallengeService` polls JSONClient every 5s (via event-timer). Hub injects an “Incoming Challenge” menu item immediately when a pending record is seen.
+3. **Wager negotiation** (optional): Challenger sets max wager → Challengee can accept/counter/decline → Counter-offers flow until accepted or cancelled. See `challenge_negotiation.js` for UI.
+4. **Discover**: `ChallengeService` polls JSONClient every 5s (via event-timer). Hub injects an "Incoming Challenge" menu item immediately when a pending record is seen.
 4. **Accept/decline/ready**: Status and lobby.ready/lastPing are written back to both buckets. Each JSONClient read/write/remove is wrapped with LOCK_READ/LOCK_WRITE; failed writes trigger backoff.
 5. **Handoff**: Once both sides are ready, control moves to the real-time lobby/game sync (also JSONClient, separate modules). Cleanup of expired/abandoned challenges removes the bucket entries.
 
