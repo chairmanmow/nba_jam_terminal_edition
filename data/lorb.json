@@ -21,15 +21,15 @@
 			"flags": {},
 			"xp": 0,
 			"level": 1,
-			"gamesPlayed": 1,
-			"wins": 1,
+			"gamesPlayed": 5,
+			"wins": 5,
 			"losses": 0,
 			"name": "Derdok",
 			"archetype": "enforcer",
 			"special": "intimidation",
 			"background": "streetball",
-			"cash": 1050,
-			"rep": 50,
+			"cash": 1266,
+			"rep": 250,
 			"perks": [
 				"blacktop_encounters"
 			],
@@ -97,7 +97,7 @@
 			"streetTurns": 15,
 			"gymSessions": 9,
 			"barActions": 9,
-			"lastPlayedTimestamp": 1764988816212,
+			"lastPlayedTimestamp": 1765034476101,
 			"dayStats": {
 				"gamesPlayed": 0,
 				"wins": 0,
@@ -234,8 +234,8 @@
 				"spouseCityId": null
 			},
 			"pvpStats": {
-				"gamesPlayed": 1,
-				"wins": 1,
+				"gamesPlayed": 5,
+				"wins": 5,
 				"losses": 0,
 				"ties": 0,
 				"totals": {
@@ -252,8 +252,8 @@
 					"dunks": 0,
 					"injuries": 0
 				},
-				"currentStreak": 1,
-				"longestWinStreak": 1,
+				"currentStreak": 5,
+				"longestWinStreak": 5,
 				"longestLossStreak": 0
 			},
 			"pvpRecords": {
@@ -326,7 +326,7 @@
 			},
 			"dailyBetting": null,
 			"_globalId": "futureld_1",
-			"_lastSave": 1764989180140,
+			"_lastSave": 1765035101720,
 			"_bbsId": "FUTURELD",
 			"_bbsName": "futureland.today"
 		},
@@ -337,14 +337,14 @@
 			"flags": {},
 			"xp": 0,
 			"level": 1,
-			"gamesPlayed": 4,
+			"gamesPlayed": 7,
 			"wins": 0,
-			"losses": 4,
+			"losses": 7,
 			"name": "derpy",
 			"archetype": "sniper",
 			"special": "heat_check",
 			"background": "streetball",
-			"cash": 350,
+			"cash": 184,
 			"rep": 0,
 			"perks": [
 				"blacktop_encounters"
@@ -409,7 +409,7 @@
 			"streetTurns": 15,
 			"gymSessions": 9,
 			"barActions": 9,
-			"lastPlayedTimestamp": 1764955805795,
+			"lastPlayedTimestamp": 1765035171786,
 			"dayStats": {
 				"gamesPlayed": 0,
 				"wins": 0,
@@ -419,9 +419,9 @@
 			},
 			"restUsedToday": false,
 			"pvpStats": {
-				"gamesPlayed": 2,
+				"gamesPlayed": 5,
 				"wins": 0,
-				"losses": 2,
+				"losses": 5,
 				"ties": 0,
 				"totals": {
 					"points": 0,
@@ -437,9 +437,9 @@
 					"dunks": 0,
 					"injuries": 0
 				},
-				"currentStreak": -2,
+				"currentStreak": -5,
 				"longestWinStreak": 0,
-				"longestLossStreak": 2
+				"longestLossStreak": 5
 			},
 			"pvpRecords": {
 				"points": {
@@ -510,7 +510,85 @@
 				}
 			},
 			"_globalId": "futureld_3",
-			"_lastSave": 1764956063803,
+			"_lastSave": 1765035177478,
+			"_bbsId": "FUTURELD",
+			"_bbsName": "futureland.today"
+		},
+		"futureld_35": {
+			"seed": 1940880790,
+			"userHandle": "t0ti",
+			"dayTurns": 5,
+			"flags": {},
+			"xp": 0,
+			"level": 1,
+			"gamesPlayed": 0,
+			"wins": 0,
+			"losses": 0,
+			"name": "t0ti",
+			"archetype": "playmaker",
+			"special": "hype_assist",
+			"background": "city_league",
+			"cash": 1200,
+			"rep": 0,
+			"perks": [
+				"reduced_injury_risk"
+			],
+			"stats": {
+				"speed": 7,
+				"threePt": 5,
+				"power": 8,
+				"steal": 9,
+				"block": 6,
+				"dunk": 3
+			},
+			"appearance": {
+				"skin": "lightgray",
+				"eyeColor": "BROWN",
+				"jerseyColor": "RED",
+				"jerseyLettering": "WHITE",
+				"jerseyNumber": "17"
+			},
+			"nickname": "T0TI",
+			"contacts": [
+				{
+					"id": "barney_dinosaur",
+					"type": "legend",
+					"name": "Barney Dinosaur",
+					"team": "Legends",
+					"position": "C",
+					"positionName": "Center",
+					"status": "signed",
+					"signCost": 0,
+					"cutPercent": 10,
+					"tier": "rookie",
+					"stats": {
+						"speed": 3,
+						"threePt": 2,
+						"dunk": 5,
+						"block": 6,
+						"power": 9,
+						"steal": 2
+					},
+					"skin": "barney",
+					"jersey": 1,
+					"shortNick": "BARNY",
+					"dateAcquired": 1765025569332,
+					"isStarter": true,
+					"rivals": [],
+					"intro": "You've been paired with \u0001m\u0001hBarney\u0001n, a lumbering \u0001wCenter\u0001n\u000awho dominates the paint with sheer power.\u000aHe'll grab boards and protect the rim\u000awhile you orchestrate from the perimeter."
+				}
+			],
+			"crew": [
+				{
+					"contactId": "barney_dinosaur"
+				}
+			],
+			"position": "PG",
+			"positionName": "Point Guard",
+			"positionCategory": "Guard",
+			"activeTeammate": "barney_dinosaur",
+			"_globalId": "futureld_35",
+			"_lastSave": 1765025572703,
 			"_bbsId": "FUTURELD",
 			"_bbsName": "futureland.today"
 		}
@@ -570,9 +648,109 @@
 				"winnerScore": 17,
 				"loserScore": 0,
 				"isTie": false
+			},
+			{
+				"type": "pvp_match",
+				"timestamp": 1764999046284,
+				"gameDay": 15,
+				"city": "was",
+				"winnerName": "Opponent",
+				"loserName": "derpy",
+				"winnerScore": 8,
+				"loserScore": 2,
+				"isTie": false,
+				"topScorer": "Derdok",
+				"topScorerPoints": 6,
+				"topScorerTeam": "teamB"
+			},
+			{
+				"type": "pvp_match",
+				"timestamp": 1764999046391,
+				"gameDay": 15,
+				"city": "was",
+				"winnerName": "Derdok",
+				"loserName": "Beta Tester",
+				"winnerScore": 8,
+				"loserScore": 2,
+				"isTie": false
+			},
+			{
+				"type": "pvp_match",
+				"timestamp": 1765000058278,
+				"gameDay": 15,
+				"city": "was",
+				"winnerName": "Opponent",
+				"loserName": "derpy",
+				"winnerScore": 3,
+				"loserScore": 2,
+				"isTie": false,
+				"topScorer": "Sonic",
+				"topScorerPoints": 3,
+				"topScorerTeam": "teamB"
+			},
+			{
+				"type": "pvp_match",
+				"timestamp": 1765000058361,
+				"gameDay": 15,
+				"city": "was",
+				"winnerName": "Derdok",
+				"loserName": "Beta Tester",
+				"winnerScore": 3,
+				"loserScore": 2,
+				"isTie": false
+			},
+			{
+				"type": "pvp_match",
+				"timestamp": 1765001709084,
+				"gameDay": 16,
+				"city": "mem",
+				"winnerName": "Opponent",
+				"loserName": "derpy",
+				"winnerScore": 3,
+				"loserScore": 0,
+				"isTie": false,
+				"topScorer": "Sonic",
+				"topScorerPoints": 3,
+				"topScorerTeam": "teamB"
+			},
+			{
+				"type": "pvp_match",
+				"timestamp": 1765001709134,
+				"gameDay": 16,
+				"city": "mem",
+				"winnerName": "Derdok",
+				"loserName": "Beta Tester",
+				"winnerScore": 3,
+				"loserScore": 0,
+				"isTie": false
+			},
+			{
+				"type": "pvp_match",
+				"timestamp": 1765035008837,
+				"gameDay": 25,
+				"city": "gsw",
+				"winnerName": "Opponent",
+				"loserName": "derpy",
+				"winnerScore": 6,
+				"loserScore": 4,
+				"isTie": false,
+				"topScorer": "Shrek",
+				"topScorerPoints": 4,
+				"topScorerTeam": "teamA"
+			},
+			{
+				"type": "pvp_match",
+				"timestamp": 1765035008947,
+				"gameDay": 25,
+				"city": "gsw",
+				"winnerName": "Derdok",
+				"loserName": "Beta Tester",
+				"winnerScore": 6,
+				"loserScore": 4,
+				"isTie": false
 			}
 		],
-		"lastUpdated": 1764956044216
+		"lastUpdated": 1765035008947
 	},
 	"graffiti": {
 		"entries": [
