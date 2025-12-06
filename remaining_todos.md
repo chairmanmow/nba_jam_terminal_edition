@@ -23,8 +23,8 @@
 - Main game entry point could be simplified to 3 items, "RPG" (LORB), "Arcade" (NBA Jam exhibition matche, would need a new submenu for Single Player, multiplayer, CPU demo, back / quit), this functionality is really for the "ENTER" key button masher so they wind up in LORB as quickly as possible since it'd be the first option.  I must admit, I am an "ENTER" key button masher myself.
 
 #### LORB
-- When entering the game, we should treat daily news / recent pvp action as its own view after we present a key to enter.  There is too much on that initial view, the news should get its own view.
-- when we leave the game, we should provide an overview of what the user accomplised today and if they have remaining turns.  If they're out of street turns, we can say "See you tomorrow in {nextCityName}" otherwise we'll say something like "See you soon in {currentCityName}" I'm not married to verbiage, it's just a small example for context awareness.
+- ~~When entering the game, we should treat daily news / recent pvp action as its own view after we present a key to enter.  There is too much on that initial view, the news should get its own view.~~ **FIXED** - Split welcome screen in lorb.js: greeting/stats shown first, then news in separate "DAILY NEWS" view with spacing and up to 5 items
+- ~~when we leave the game, we should provide an overview of what the user accomplised today and if they have remaining turns.  If they're out of street turns, we can say "See you tomorrow in {nextCityName}" otherwise we'll say something like "See you soon in {currentCityName}" I'm not married to verbiage, it's just a small example for context awareness.~~ **FIXED** - Enhanced endDay() in hub.js: shows session summary (games, wins/losses, cash, rep), remaining resources, context-aware farewell ("See you soon in X" vs "See you tomorrow in Y")
 #### NBA JAM ARCADE ENGINE
 
 #### MULTIPLAYER ENGINE
