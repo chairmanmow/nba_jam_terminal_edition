@@ -127,6 +127,33 @@ Multiplayer uses Synchronet's JSON-DB for real-time coordination:
 
 See [design_docs/multiplayer_design_and_architecture.md](design_docs/multiplayer_design_and_architecture.md) for details.
 
+### LORB Version Compatibility
+
+LORB (RPG mode) includes automatic version checking to ensure all connected clients are running compatible code. This prevents issues caused by outdated or modified clients connecting to the server.
+
+**How it works:**
+- The version is based on the git commit hash of your installation
+- When entering LORB, the client checks its version against the server's published version
+- The first client to connect establishes the server's version
+- Subsequent clients must match this version to connect
+
+**If you see a version mismatch error:**
+```
+VERSION MISMATCH
+Cannot connect to LORB due to version mismatch.
+Your version: abc1234
+Server version: def5678
+Please ask your sysop to update NBA JAM to the latest version.
+```
+
+**For sysops:** Update your installation by pulling the latest code:
+```bash
+cd /sbbs/xtrn/nba_jam
+git pull origin main
+```
+
+**Note:** If running from a non-git installation (version shows as "unknown"), the version check is skipped to allow development/testing.
+
 ## Development
 
 ### Code Organization
