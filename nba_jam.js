@@ -480,7 +480,8 @@ function main() {
     loadAnnouncerData();
 
     initFrames(systems);
-    showIntro();
+    // NOTE: Intro/instructions screen removed from auto-run flow.
+    // Now available via "Instructions" menu item for users who want it.
 
     // Main menu - choose play or demo
     var menuChoice = mainMenu();
@@ -569,8 +570,7 @@ function main() {
         }
 
         // Run the lobby
-        var lobbyResult = runMultiplayerLobby();
-
+        var lobbyResult = runMultiplayerLobbyV2();
         if (!lobbyResult) {
             // User cancelled or connection failed
             return;
@@ -1057,6 +1057,11 @@ function main() {
             }
 
             if (result === "game_over") {
+                // Broadcast final game state with gameRunning=false to clients before exiting
+                if (coordinator && coordinator.isCoordinator) {
+                    debugLog("[MP GAME LOOP] Game over - broadcasting final state to clients");
+                    coordinator.broadcastState();
+                }
                 break;
             }
 
@@ -1153,15 +1158,16 @@ function main() {
     }
 
     // Cleanup
-    if (ballFrame) ballFrame.close();
-    if (teamAPlayer1) teamAPlayer1.remove();
-    if (teamAPlayer2) teamAPlayer2.remove();
-    if (teamBPlayer1) teamBPlayer1.remove();
-    if (teamBPlayer2) teamBPlayer2.remove();
-    if (courtFrame) courtFrame.close();
+    // Note: These globals may be undefined if game exited early or in LORB mode
+    if (typeof ballFrame !== "undefined" && ballFrame) ballFrame.close();
+    if (typeof teamAPlayer1 !== "undefined" && teamAPlayer1) teamAPlayer1.remove();
+    if (typeof teamAPlayer2 !== "undefined" && teamAPlayer2) teamAPlayer2.remove();
+    if (typeof teamBPlayer1 !== "undefined" && teamBPlayer1) teamBPlayer1.remove();
+    if (typeof teamBPlayer2 !== "undefined" && teamBPlayer2) teamBPlayer2.remove();
+    if (typeof courtFrame !== "undefined" && courtFrame) courtFrame.close();
     cleanupScoreFrames();
-    if (scoreFrame) scoreFrame.close();
-    if (announcerFrame) announcerFrame.close();
+    if (typeof scoreFrame !== "undefined" && scoreFrame) scoreFrame.close();
+    if (typeof announcerFrame !== "undefined" && announcerFrame) announcerFrame.close();
 }
 
 // Wrap main() with error handler for automatic error logging

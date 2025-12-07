@@ -50,6 +50,7 @@ Domain | Keys | Notes |
 | Stat trail overlay | `STAT_TRAIL.LIFETIME_FRAMES`, `.FADE_FRAMES`, `.RISE_PER_FRAME`, `.RISE_SLOW_PER_FRAME`, `.RISE_FAST_PER_FRAME`, `.RISE_ACCELERATION_EXP`, `.HORIZONTAL_DRIFT_PER_FRAME`, `.BLINK_INTERVAL_FRAMES`, `.ORIGIN_Y_OFFSET`, `.MAX_ACTIVE`, `.FLASH_FG_COLOR`, `.FINAL_FG_COLOR`, `.FINAL_FADE_FRAMES`, `.SIDELINE_MARGIN`, `.BASELINE_MARGIN`, `.STAT_TYPE_COLORS` | `lib/animation/stat-trail-system.js` controls lifespan, acceleration curve, flashing cadence, fade palette, safe court margins, and stat-type color mapping for celebratory text overlays. |
 | Inbound cadence | `INBOUND.SETUP_DURATION_MS` | `lib/game-logic/phase-handler.js` uses it for `PHASE_INBOUND_SETUP` length; `startSecondHalfInbound` references it so halftime restarts share the same animation window as post-score inbounds. |
 | Jump ball | `JUMP_BALL.COUNTDOWN_MS`, `.DROP_DURATION_FRAMES`, `.DROP_START_Y`, `.CONTEST_WINDOW_FRAMES`, `.ARC_MIN_DURATION_MS`, `.HANDOFF_DURATION_MS`, `.CPU_OFFSET_MAX_RATIO`, `.CPU_OFFSET_EARLY_RATIO`, `.JUMP_ANIMATION_DURATION_RATIO`, `.JUMP_ANIMATION_MIN_MS`, `.JUMP_ANIMATION_MAX_MS` | `jump-ball-system.js` drives announcer cadence, ball arc timing, CPU jump scheduling, jumper animation bounds, and the handoff-to-wing tween; the same constants are consumed in both authority and client contexts to keep the tipoff deterministic. |
+| Live challenge lobby (LORB) | `LORB_CHALLENGES.pendingAcceptanceGraceMs`, `.lobbyTimeoutMs`, `.pollTickMs` | `lib/lorb/multiplayer/challenge_lobby.js` paces lobby polling, extends acceptance grace, and caps total lobby wait to keep invites from timing out before the UI surfaces them. |
 
 Timing, cadence, and animation math belong here.
 
@@ -102,6 +103,7 @@ Networking and tuning knobs for multiplayer:
 | Animation hints | `ANIMATION_HINTS.TTL_FRAMES`, `.MAX_PER_PACKET` | `mp_coordinator` tracker emits animation payloads (e.g., shove knockback). Clients consume them immediately to mirror authority choreography. |
 | Hint choreography | `ANIMATION_HINTS.INBOUND.WALK_FRAMES`, `.READY_FRAMES`, `.TARGET_FRAMES`; `ANIMATION_HINTS.DRIFT.FLASH_FRAMES`, `.LERP_FRAMES` | Client-side animation helpers use these to pace inbound walk/ready/target tweens and drift-snap highlight duration. Keep coordinator + client tuned together. |
 | Prediction turbo | `PREDICTION.TURBO.DRAIN_FACTOR`, `.CATCHUP_FACTOR` | `mp_client.js` scales client-side turbo drain and disables it during authoritative catch-up. |
+| Screen timeouts | `SCREEN_TIMEOUTS.SPLASH_MS`, `.MATCHUP_MS`, `.HALFTIME_MS`, `.GAME_OVER_MS` | Maximum wait times for multiplayer screen sync (splash, matchup, halftime, game over). `mp-screen-coordinator.js` and `halftime.js` consume these for timeout enforcement. Halftime reduced to 20s for faster pacing. |
 
 If you need to change how often inputs flush, how reconciliation works, or what latency bars look like, edit this file.
 
@@ -124,6 +126,38 @@ UI/feature gating constants go here rather than alongside gameplay physics.
 ### `lib/config/game-balance.js`
 
 Legacy balance sheet grouped by subsystem (AI, shooting, dunks, rebounds, defense, physical play, fast break). New work should prefer `ai-constants.js`, `timing-constants.js`, or `player-constants.js`, but this file is still referenced by older modules. If you migrate a section, annotate both this file and `current_architecture_docs/tech-debt.md` so we can retire the duplicate.
+
+---
+
+### `lib/config/difficulty-scaling.js`
+
+Centralizes AI difficulty scaling for LORB (Legend of the Red Bull) and other external game modes. Uses the `DifficultyScaling` global.
+
+| Key | Type | Description |
+| --- | --- | --- |
+| `DIFFICULTY_PRESETS` | Object | Named presets (1–5 for LORB tiers, plus `playoff` and `jordan`). Each preset defines a package of AI modifiers. |
+| `BASE_VALUES` | Object | Original AI constant values captured before scaling (for restoration). |
+| `ORIGINAL_VALUES` | Object | Runtime cache of original values before current session's scaling was applied. |
+
+**Preset Keys (per tier):**
+- `turboCapacity` – AI turbo tank size (lower = runs out of gas faster).
+- `shotThreshold` – Base shot probability threshold (higher = AI takes higher-quality shots).
+- `denyReactionDelay` – Frames before help defender reacts (higher = slower help rotation).
+- `blowbyChanceMultiplier` – Scales backcourt/midcourt/frontcourt blowby chances.
+- `responsivenessMultiplier` – Scales court-position responsiveness values.
+- `wobbleFramesMultiplier` – Scales off-ball cut hesitation (higher = more hesitation).
+- `decisionDelayMultiplier` – Scales ball-handler decision delays.
+
+**Public API (`DifficultyScaling.*`):**
+- `applyDifficultyScaling(tier)` – Patches AI_CONSTANTS with preset multipliers; caches originals.
+- `resetDifficultyScaling()` – Restores AI_CONSTANTS to cached originals.
+- `applyTurboCapacityToAI(players)` – Sets `playerData.turboCapacity` on CPU players.
+- `getDifficultyModifiers(tier)` – Returns the modifier object for a given tier.
+
+**Consumers:**
+- `lib/game-logic/external-game.js` – Applies scaling on LORB game start, resets on cleanup.
+- `lib/lorb/core/season.js` – `getDifficultyModifiers()` delegates to this module.
+- `lib/lorb/locations/courts.js` – Passes `lorbContext.difficulty` (1–5) to `runExternalGame`.
 
 ---
 

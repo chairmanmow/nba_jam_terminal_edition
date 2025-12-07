@@ -8,8 +8,9 @@ Copilot must produce changes that respect the Wave 24 architecture, eliminate 
 
 1. **No magic numbers.** Every tuning value lives in a config module under `lib/config/`. Extend those modules (see `current_architecture_docs/constant_reference.md`) and wire new keys through `lib/utils/constants.js` before touching game logic.
 2. **Honor the entry path.** `nba_jam.js` → `module-loader` → `initializeSystems` → `runGameFrame` is sacrosanct. All new work must hook into those layers instead of creating side loops.
-3. **Respect the docs.** Before writing code, read the relevant file inside `current_architecture_docs/` (rendering, multiplayer, AI, etc.). When patterns change, update the doc *first* so other contributors stay in sync.
+3. **Respect the docs.** Before writing code, read the relevant file inside `current_architecture_docs/` (rendering, multiplayer, AI, etc.). When patterns change, update the doc *first* so other contributors stay in sync. For LORB live challenges, consult `docs/lorb/architecture.md` and `docs/lorb/challenges.md`.
 4. **Kill tech debt on sight.** If you encounter a legacy fallback or global, migrate it. Never extend pre-Wave23 code paths.
+5. **Live challenges/presence use JSONClient.** Scope is `nba_jam`, no locks, no JSONdb writes for ephemeral data. Durable character/state stays in JSONdb. If you touch this flow, update `docs/lorb/challenges.md`.
 
 ---
 
@@ -20,6 +21,7 @@ Copilot must produce changes that respect the Wave 24 architecture, eliminate 
 - **State** lives inside `stateManager`. Use `set(path, value, reason)` with a descriptive reason string. Never mutate the raw `gameState` or sprite globals.
 - **Game loop** (`lib/core/game-loop-core.js`) governs timers, AI cadence, rendering, and multiplayer sync. Hook in via events or helper functions—do not block or spawn competing loops.
 - **Multiplayer**: Coordinators serialize state packets (`captureState`) and clients reconcile via prediction + correction. Authority changes require mirrored updates inside `mp_client.js`.
+- **LORB**: Rim City / Legend of the Red Bull lives under `lib/lorb/*`. Treat `docs/lorb/architecture.md` as the canonical map; read and update it whenever you touch LORB code or flows.
 
 Refer to `current_architecture_docs/common_type_definitions.md` whenever you need the shape of a packet, sprite, or helper.
 
