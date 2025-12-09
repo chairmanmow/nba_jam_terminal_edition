@@ -40,17 +40,17 @@
 			"userHandle": "Hm Derdoc",
 			"dayTurns": 5,
 			"flags": {},
-			"xp": 140,
+			"xp": 152,
 			"level": 2,
-			"gamesPlayed": 17,
-			"wins": 13,
+			"gamesPlayed": 18,
+			"wins": 14,
 			"losses": 3,
 			"name": "Derdok",
 			"archetype": "enforcer",
 			"special": "intimidation",
 			"background": "streetball",
-			"cash": 829,
-			"rep": 10,
+			"cash": 891,
+			"rep": 12,
 			"perks": [
 				"blacktop_encounters"
 			],
@@ -262,6 +262,29 @@
 					"shortNick": "LARRY",
 					"dateAcquired": 1765296951021,
 					"rivals": []
+				},
+				{
+					"id": "jalen_brunson",
+					"type": "nba",
+					"name": "Jalen Brunson",
+					"team": "New York Knicks",
+					"status": "contact",
+					"signCost": 1000,
+					"cutPercent": 20,
+					"tier": "rookie",
+					"stats": {
+						"speed": 8,
+						"threePt": 8,
+						"dunk": 5,
+						"block": 3,
+						"power": 5,
+						"steal": 7
+					},
+					"skin": "brown",
+					"jersey": "11",
+					"shortNick": "JB",
+					"dateAcquired": 1765297452311,
+					"rivals": []
 				}
 			],
 			"crew": [
@@ -276,15 +299,15 @@
 			"joinedTimestamp": 1764831359348,
 			"joinedOnDay": 1,
 			"joinedInCity": "bos",
-			"streetTurns": 13,
+			"streetTurns": 12,
 			"gymSessions": 9,
 			"barActions": 9,
-			"lastPlayedTimestamp": 1765296830188,
+			"lastPlayedTimestamp": 1765297422343,
 			"dayStats": {
 				"gamesPlayed": 1,
 				"wins": 1,
 				"losses": 0,
-				"cashEarned": 89,
+				"cashEarned": 62,
 				"repGained": 2
 			},
 			"restUsedToday": false,
@@ -484,7 +507,7 @@
 			"dailyBetting": null,
 			"attributePoints": 2,
 			"_globalId": "futureld_1",
-			"_lastSave": 1765296960246,
+			"_lastSave": 1765297506078,
 			"_bbsId": "FUTURELD",
 			"_bbsName": "futureland.today"
 		},
