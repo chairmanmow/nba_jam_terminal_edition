@@ -196,8 +196,8 @@ PRESENCE: {
 
 ### Short-term (Week 2-3)
 
-6. [ ] **Consolidate challenge implementations** - keep `challenges_pubsub.js`, deprecate others
-7. [ ] **Add transactional safety** to `playoffs.js` bracket modifications
+6. [x] **Consolidate challenge implementations** - Marked `challenges.js` and `challenges_simple.js` as deprecated; `challenges_pubsub.js` is the canonical implementation ✅ DONE
+7. [x] **Add transactional safety** to `playoffs.js` bracket modifications ✅ DONE
 8. [ ] **Extract large functions** (>100 lines) into smaller helpers
 9. [ ] **Add input validation** to `persist.js` stat recording
 
