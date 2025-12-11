@@ -15,49 +15,50 @@ The most critical concerns relate to **JSONClient lock management** and **error 
 
 ## 1. JSONClient Usage Issues
 
-### Critical Lock/Error Patterns
+### ✅ RESOLVED: Lock/Error Patterns (Dec 10, 2025)
 
-| Severity | File | Issue | Risk |
-|----------|------|-------|------|
-| **HIGH** | `challenges_pubsub.js:210-230` | Lock acquired but unlock called in both try AND catch blocks - if catch's unlock throws, original error is swallowed | BBS lockup, orphaned locks |
-| **HIGH** | `json-client-helper.js:285-290` | LOCK_WRITE (2) passed to write but no corresponding unlock - relies on fire-and-forget | Orphaned locks |
-| **HIGH** | `challenge-negotiation.js:160-220` | `disconnect()` called in multiple exit paths but NOT in all error paths | Connection leaks |
-| **HIGH** | `challenges_pubsub.js:300-400` | Complex reconnect logic - if disconnect happens after lock but before unlock, lock is orphaned | Orphaned locks on network failure |
+The blocking lock issues have been **completely resolved** by rewriting `challenges_pubsub.js` to use:
 
-### Recommended Pattern
+1. **Fire-and-forget mode:** `client.settings.TIMEOUT = -1` - never calls `wait()`
+2. **Inline LOCK_WRITE:** `client.write(scope, path, data, LOCK_WRITE)` - server handles atomic lock→write→unlock
+3. **No client-side lock() calls:** All locking is server-side atomic operations
+
+**Key insight from json-db.js (lines 590-601):** When `write()` receives a `lock` parameter, the server internally queues:
+- LOCK operation
+- WRITE operation  
+- UNLOCK operation
+
+The UNLOCK triggers `send_data_updates()` to notify all subscribers. This completely eliminates client-side blocking.
+
+### Previously Critical Issues (NOW FIXED)
+
+| Status | Issue | Resolution |
+|--------|-------|------------|
+| ✅ FIXED | Separate lock()/unlock() calls caused BBS-wide blocking | Using inline LOCK_WRITE param |
+| ✅ FIXED | wait() blocking on lock contention | TIMEOUT=-1 (fire-and-forget mode) |
+| ✅ FIXED | Orphaned locks on disconnect | No client-side locks to orphan |
+| ✅ FIXED | Complex reconnect/lock cleanup logic | Simplified - no locks to track |
+
+### Correct Pattern (Current Implementation)
 
 ```javascript
-// BAD - current pattern in some files
-try {
-    client.lock(path, LOCK_WRITE);
-    client.write(path, data);
-    client.unlock(path);
-} catch (e) {
-    client.unlock(path);  // May throw, swallowing original error
-    throw e;
-}
+// CORRECT - fire-and-forget with inline lock
+// Server handles: LOCK → WRITE → UNLOCK atomically
+// TIMEOUT=-1 means no wait() call - completely non-blocking
+client.settings.TIMEOUT = -1;  // Fire and forget
+client.write(scope, path, data, LOCK_WRITE);  // Inline lock
 
-// GOOD - recommended pattern
-var locked = false;
-try {
-    client.lock(path, LOCK_WRITE);
-    locked = true;
-    client.write(path, data);
-} finally {
-    if (locked) {
-        try { client.unlock(path); } catch (unlockErr) { 
-            log(LOG_WARNING, "Unlock failed: " + unlockErr); 
-        }
-    }
-}
+// The 4th parameter (LOCK_WRITE = 2) tells the server to:
+// 1. Acquire lock
+// 2. Write data
+// 3. Release lock (triggers subscriber notifications)
+// All as a single atomic server-side operation
 ```
 
-### Medium/Low JSONClient Issues
+### Remaining Medium/Low JSONClient Issues
 
 | Severity | File | Issue |
 |----------|------|-------|
-| MEDIUM | `json-client-helper.js:50-58` | `lock()` and `unlock()` are NO-OP stubs but callers may assume they work |
-| MEDIUM | `challenges_pubsub.js:80-120` | Polling loop uses lock but no exception handling for network errors |
 | LOW | `persist.js:191` | `logFn()` function defined twice in same file |
 | LOW | `persist.js:Multiple` | Uses `readShared()` without explicit error handling |
 
@@ -189,10 +190,11 @@ PRESENCE: {
 ### Immediate (Week 1)
 
 1. [x] **Fix try/finally patterns** in `challenges_pubsub.js` - ensure locks always released ✅ DONE
-2. [ ] **Add disconnect() to finally blocks** in `challenge-negotiation.js`
-3. [ ] **Standardize JSON scope** to `"nba_jam"` in all files
-4. [x] **Add CHALLENGES and PRESENCE constants** to `config.js` ✅ DONE
-5. [ ] **Remove duplicate `logFn()`** in `persist.js`
+2. [x] **CRITICAL: Eliminate blocking locks** - Rewritten to use fire-and-forget with inline LOCK_WRITE ✅ FIXED (Dec 10, 2025)
+3. [ ] **Add disconnect() to finally blocks** in `challenge-negotiation.js`
+4. [ ] **Standardize JSON scope** to `"nba_jam"` in all files
+5. [x] **Add CHALLENGES and PRESENCE constants** to `config.js` ✅ DONE
+6. [ ] **Remove duplicate `logFn()`** in `persist.js`
 
 ### Short-term (Week 2-3)
 
@@ -212,24 +214,21 @@ PRESENCE: {
 
 ## 7. Lock Cleanup Strategy
 
-To prevent BBS-wide lockups from orphaned JSONClient locks:
+### ✅ RESOLVED (Dec 10, 2025)
 
-### Option A: Application-level cleanup
-- Track all acquired locks in module state
-- Add cleanup function called on module unload/error
-- Periodic sweep for stale locks
+The lock cleanup strategy is no longer needed because **we no longer use client-side locks**.
 
-### Option B: JSONClient configuration
-- Use shorter lock timeouts
-- Configure auto-unlock on disconnect
-- Add heartbeat requirement for held locks
+The new architecture uses:
+1. `TIMEOUT = -1` (fire-and-forget) - client never blocks waiting for responses
+2. `client.write(scope, path, data, LOCK_WRITE)` - inline lock parameter
+3. Server handles LOCK → WRITE → UNLOCK atomically
+4. No client-side lock state to track or clean up
 
-### Option C: Avoid locks entirely
-- Use optimistic concurrency with version numbers
-- Accept occasional write conflicts
-- Implement retry with backoff
-
-**Recommendation:** Combine A and B for immediate safety, consider C for long-term architecture.
+This completely eliminates:
+- Lock contention between BBS users
+- Orphaned locks on disconnect
+- Need for lock timeout/cleanup mechanisms
+- Complex reconnect logic
 
 ---
 
