@@ -1,8 +1,8 @@
 {
 	"sharedState": {
-		"seasonStart": 1765509986632,
-		"seasonNumber": 7,
-		"lastUpdated": 1765509986632,
+		"seasonStart": 1765644185014,
+		"seasonNumber": 8,
+		"lastUpdated": 1765644185014,
 		"seasonChampions": [
 			{
 				"seasonNumber": 1,
@@ -45,6 +45,13 @@
 				"championId": null,
 				"defeatedOnDay": 30,
 				"timestamp": 1765509986632
+			},
+			{
+				"seasonNumber": 7,
+				"championName": "Season 7 End",
+				"championId": null,
+				"defeatedOnDay": 38,
+				"timestamp": 1765644185014
 			}
 		]
 	},
@@ -53,18 +60,20 @@
 			"seed": 1747991238,
 			"userHandle": "Hm Derdoc",
 			"dayTurns": 5,
-			"flags": {},
-			"xp": 184,
+			"flags": {
+				"hasSeenSportsAgentIntro": true
+			},
+			"xp": 204,
 			"level": 2,
-			"gamesPlayed": 23,
-			"wins": 18,
-			"losses": 4,
+			"gamesPlayed": 26,
+			"wins": 20,
+			"losses": 5,
 			"name": "Derdok",
 			"archetype": "enforcer",
 			"special": "intimidation",
 			"background": "streetball",
-			"cash": 50,
-			"rep": 58,
+			"cash": 255,
+			"rep": 62,
 			"perks": [
 				"blacktop_encounters"
 			],
@@ -175,6 +184,12 @@
 					"type": "nba",
 					"status": "signed",
 					"dateAcquired": 1765319588645
+				},
+				{
+					"id": "nikola_jokic",
+					"type": "nba",
+					"status": "contact",
+					"dateAcquired": 1765585603175
 				}
 			],
 			"crew": [
@@ -196,7 +211,7 @@
 			"streetTurns": 15,
 			"gymSessions": 9,
 			"barActions": 9,
-			"lastPlayedTimestamp": 1765515758431,
+			"lastPlayedTimestamp": 1765644185053,
 			"dayStats": {
 				"gamesPlayed": 0,
 				"wins": 0,
@@ -206,19 +221,19 @@
 			},
 			"restUsedToday": false,
 			"careerStats": {
-				"gamesPlayed": 18,
+				"gamesPlayed": 21,
 				"totals": {
-					"points": 218,
-					"rebounds": 32,
+					"points": 249,
+					"rebounds": 36,
 					"assists": 0,
 					"steals": 7,
-					"blocks": 32,
+					"blocks": 44,
 					"turnovers": 3,
-					"fgm": 96,
-					"fga": 133,
-					"tpm": 26,
-					"tpa": 49,
-					"dunks": 70,
+					"fgm": 110,
+					"fga": 151,
+					"tpm": 29,
+					"tpa": 56,
+					"dunks": 81,
 					"injuries": 0
 				}
 			},
@@ -425,8 +440,923 @@
 			},
 			"dailyBetting": null,
 			"attributePoints": 0,
+			"playoffAvailability": {
+				"presetName": "custom",
+				"blocks": [
+					{
+						"dayOfWeek": 0,
+						"startMinuteUTC": 0
+					},
+					{
+						"dayOfWeek": 0,
+						"startMinuteUTC": 30
+					},
+					{
+						"dayOfWeek": 0,
+						"startMinuteUTC": 60
+					},
+					{
+						"dayOfWeek": 0,
+						"startMinuteUTC": 90
+					},
+					{
+						"dayOfWeek": 0,
+						"startMinuteUTC": 120
+					},
+					{
+						"dayOfWeek": 0,
+						"startMinuteUTC": 150
+					},
+					{
+						"dayOfWeek": 0,
+						"startMinuteUTC": 180
+					},
+					{
+						"dayOfWeek": 0,
+						"startMinuteUTC": 210
+					},
+					{
+						"dayOfWeek": 0,
+						"startMinuteUTC": 240
+					},
+					{
+						"dayOfWeek": 0,
+						"startMinuteUTC": 270
+					},
+					{
+						"dayOfWeek": 0,
+						"startMinuteUTC": 300
+					},
+					{
+						"dayOfWeek": 0,
+						"startMinuteUTC": 330
+					},
+					{
+						"dayOfWeek": 0,
+						"startMinuteUTC": 360
+					},
+					{
+						"dayOfWeek": 0,
+						"startMinuteUTC": 390
+					},
+					{
+						"dayOfWeek": 0,
+						"startMinuteUTC": 990
+					},
+					{
+						"dayOfWeek": 0,
+						"startMinuteUTC": 1020
+					},
+					{
+						"dayOfWeek": 0,
+						"startMinuteUTC": 1050
+					},
+					{
+						"dayOfWeek": 0,
+						"startMinuteUTC": 1080
+					},
+					{
+						"dayOfWeek": 0,
+						"startMinuteUTC": 1110
+					},
+					{
+						"dayOfWeek": 0,
+						"startMinuteUTC": 1140
+					},
+					{
+						"dayOfWeek": 0,
+						"startMinuteUTC": 1170
+					},
+					{
+						"dayOfWeek": 0,
+						"startMinuteUTC": 1200
+					},
+					{
+						"dayOfWeek": 0,
+						"startMinuteUTC": 1230
+					},
+					{
+						"dayOfWeek": 0,
+						"startMinuteUTC": 1260
+					},
+					{
+						"dayOfWeek": 0,
+						"startMinuteUTC": 1290
+					},
+					{
+						"dayOfWeek": 0,
+						"startMinuteUTC": 1320
+					},
+					{
+						"dayOfWeek": 0,
+						"startMinuteUTC": 1350
+					},
+					{
+						"dayOfWeek": 0,
+						"startMinuteUTC": 1380
+					},
+					{
+						"dayOfWeek": 0,
+						"startMinuteUTC": 1410
+					},
+					{
+						"dayOfWeek": 1,
+						"startMinuteUTC": 0
+					},
+					{
+						"dayOfWeek": 1,
+						"startMinuteUTC": 30
+					},
+					{
+						"dayOfWeek": 1,
+						"startMinuteUTC": 60
+					},
+					{
+						"dayOfWeek": 1,
+						"startMinuteUTC": 90
+					},
+					{
+						"dayOfWeek": 1,
+						"startMinuteUTC": 120
+					},
+					{
+						"dayOfWeek": 1,
+						"startMinuteUTC": 150
+					},
+					{
+						"dayOfWeek": 1,
+						"startMinuteUTC": 180
+					},
+					{
+						"dayOfWeek": 1,
+						"startMinuteUTC": 210
+					},
+					{
+						"dayOfWeek": 1,
+						"startMinuteUTC": 240
+					},
+					{
+						"dayOfWeek": 1,
+						"startMinuteUTC": 270
+					},
+					{
+						"dayOfWeek": 1,
+						"startMinuteUTC": 300
+					},
+					{
+						"dayOfWeek": 1,
+						"startMinuteUTC": 330
+					},
+					{
+						"dayOfWeek": 1,
+						"startMinuteUTC": 360
+					},
+					{
+						"dayOfWeek": 1,
+						"startMinuteUTC": 390
+					},
+					{
+						"dayOfWeek": 1,
+						"startMinuteUTC": 990
+					},
+					{
+						"dayOfWeek": 1,
+						"startMinuteUTC": 1020
+					},
+					{
+						"dayOfWeek": 1,
+						"startMinuteUTC": 1050
+					},
+					{
+						"dayOfWeek": 1,
+						"startMinuteUTC": 1080
+					},
+					{
+						"dayOfWeek": 1,
+						"startMinuteUTC": 1110
+					},
+					{
+						"dayOfWeek": 1,
+						"startMinuteUTC": 1140
+					},
+					{
+						"dayOfWeek": 1,
+						"startMinuteUTC": 1170
+					},
+					{
+						"dayOfWeek": 1,
+						"startMinuteUTC": 1200
+					},
+					{
+						"dayOfWeek": 1,
+						"startMinuteUTC": 1230
+					},
+					{
+						"dayOfWeek": 1,
+						"startMinuteUTC": 1260
+					},
+					{
+						"dayOfWeek": 1,
+						"startMinuteUTC": 1290
+					},
+					{
+						"dayOfWeek": 1,
+						"startMinuteUTC": 1320
+					},
+					{
+						"dayOfWeek": 1,
+						"startMinuteUTC": 1350
+					},
+					{
+						"dayOfWeek": 1,
+						"startMinuteUTC": 1380
+					},
+					{
+						"dayOfWeek": 1,
+						"startMinuteUTC": 1410
+					},
+					{
+						"dayOfWeek": 2,
+						"startMinuteUTC": 0
+					},
+					{
+						"dayOfWeek": 2,
+						"startMinuteUTC": 30
+					},
+					{
+						"dayOfWeek": 2,
+						"startMinuteUTC": 60
+					},
+					{
+						"dayOfWeek": 2,
+						"startMinuteUTC": 90
+					},
+					{
+						"dayOfWeek": 2,
+						"startMinuteUTC": 120
+					},
+					{
+						"dayOfWeek": 2,
+						"startMinuteUTC": 150
+					},
+					{
+						"dayOfWeek": 2,
+						"startMinuteUTC": 180
+					},
+					{
+						"dayOfWeek": 2,
+						"startMinuteUTC": 210
+					},
+					{
+						"dayOfWeek": 2,
+						"startMinuteUTC": 240
+					},
+					{
+						"dayOfWeek": 2,
+						"startMinuteUTC": 270
+					},
+					{
+						"dayOfWeek": 2,
+						"startMinuteUTC": 300
+					},
+					{
+						"dayOfWeek": 2,
+						"startMinuteUTC": 330
+					},
+					{
+						"dayOfWeek": 2,
+						"startMinuteUTC": 360
+					},
+					{
+						"dayOfWeek": 2,
+						"startMinuteUTC": 390
+					},
+					{
+						"dayOfWeek": 2,
+						"startMinuteUTC": 990
+					},
+					{
+						"dayOfWeek": 2,
+						"startMinuteUTC": 1020
+					},
+					{
+						"dayOfWeek": 2,
+						"startMinuteUTC": 1050
+					},
+					{
+						"dayOfWeek": 2,
+						"startMinuteUTC": 1080
+					},
+					{
+						"dayOfWeek": 2,
+						"startMinuteUTC": 1110
+					},
+					{
+						"dayOfWeek": 2,
+						"startMinuteUTC": 1140
+					},
+					{
+						"dayOfWeek": 2,
+						"startMinuteUTC": 1170
+					},
+					{
+						"dayOfWeek": 2,
+						"startMinuteUTC": 1200
+					},
+					{
+						"dayOfWeek": 2,
+						"startMinuteUTC": 1230
+					},
+					{
+						"dayOfWeek": 2,
+						"startMinuteUTC": 1260
+					},
+					{
+						"dayOfWeek": 2,
+						"startMinuteUTC": 1290
+					},
+					{
+						"dayOfWeek": 2,
+						"startMinuteUTC": 1320
+					},
+					{
+						"dayOfWeek": 2,
+						"startMinuteUTC": 1350
+					},
+					{
+						"dayOfWeek": 2,
+						"startMinuteUTC": 1380
+					},
+					{
+						"dayOfWeek": 2,
+						"startMinuteUTC": 1410
+					},
+					{
+						"dayOfWeek": 3,
+						"startMinuteUTC": 0
+					},
+					{
+						"dayOfWeek": 3,
+						"startMinuteUTC": 30
+					},
+					{
+						"dayOfWeek": 3,
+						"startMinuteUTC": 60
+					},
+					{
+						"dayOfWeek": 3,
+						"startMinuteUTC": 90
+					},
+					{
+						"dayOfWeek": 3,
+						"startMinuteUTC": 120
+					},
+					{
+						"dayOfWeek": 3,
+						"startMinuteUTC": 150
+					},
+					{
+						"dayOfWeek": 3,
+						"startMinuteUTC": 180
+					},
+					{
+						"dayOfWeek": 3,
+						"startMinuteUTC": 210
+					},
+					{
+						"dayOfWeek": 3,
+						"startMinuteUTC": 240
+					},
+					{
+						"dayOfWeek": 3,
+						"startMinuteUTC": 270
+					},
+					{
+						"dayOfWeek": 3,
+						"startMinuteUTC": 300
+					},
+					{
+						"dayOfWeek": 3,
+						"startMinuteUTC": 330
+					},
+					{
+						"dayOfWeek": 3,
+						"startMinuteUTC": 360
+					},
+					{
+						"dayOfWeek": 3,
+						"startMinuteUTC": 390
+					},
+					{
+						"dayOfWeek": 3,
+						"startMinuteUTC": 990
+					},
+					{
+						"dayOfWeek": 3,
+						"startMinuteUTC": 1020
+					},
+					{
+						"dayOfWeek": 3,
+						"startMinuteUTC": 1050
+					},
+					{
+						"dayOfWeek": 3,
+						"startMinuteUTC": 1080
+					},
+					{
+						"dayOfWeek": 3,
+						"startMinuteUTC": 1110
+					},
+					{
+						"dayOfWeek": 3,
+						"startMinuteUTC": 1140
+					},
+					{
+						"dayOfWeek": 3,
+						"startMinuteUTC": 1170
+					},
+					{
+						"dayOfWeek": 3,
+						"startMinuteUTC": 1200
+					},
+					{
+						"dayOfWeek": 3,
+						"startMinuteUTC": 1230
+					},
+					{
+						"dayOfWeek": 3,
+						"startMinuteUTC": 1260
+					},
+					{
+						"dayOfWeek": 3,
+						"startMinuteUTC": 1290
+					},
+					{
+						"dayOfWeek": 3,
+						"startMinuteUTC": 1320
+					},
+					{
+						"dayOfWeek": 3,
+						"startMinuteUTC": 1350
+					},
+					{
+						"dayOfWeek": 3,
+						"startMinuteUTC": 1380
+					},
+					{
+						"dayOfWeek": 3,
+						"startMinuteUTC": 1410
+					},
+					{
+						"dayOfWeek": 4,
+						"startMinuteUTC": 0
+					},
+					{
+						"dayOfWeek": 4,
+						"startMinuteUTC": 30
+					},
+					{
+						"dayOfWeek": 4,
+						"startMinuteUTC": 60
+					},
+					{
+						"dayOfWeek": 4,
+						"startMinuteUTC": 90
+					},
+					{
+						"dayOfWeek": 4,
+						"startMinuteUTC": 120
+					},
+					{
+						"dayOfWeek": 4,
+						"startMinuteUTC": 150
+					},
+					{
+						"dayOfWeek": 4,
+						"startMinuteUTC": 180
+					},
+					{
+						"dayOfWeek": 4,
+						"startMinuteUTC": 210
+					},
+					{
+						"dayOfWeek": 4,
+						"startMinuteUTC": 240
+					},
+					{
+						"dayOfWeek": 4,
+						"startMinuteUTC": 270
+					},
+					{
+						"dayOfWeek": 4,
+						"startMinuteUTC": 300
+					},
+					{
+						"dayOfWeek": 4,
+						"startMinuteUTC": 330
+					},
+					{
+						"dayOfWeek": 4,
+						"startMinuteUTC": 360
+					},
+					{
+						"dayOfWeek": 4,
+						"startMinuteUTC": 390
+					},
+					{
+						"dayOfWeek": 4,
+						"startMinuteUTC": 990
+					},
+					{
+						"dayOfWeek": 4,
+						"startMinuteUTC": 1020
+					},
+					{
+						"dayOfWeek": 4,
+						"startMinuteUTC": 1050
+					},
+					{
+						"dayOfWeek": 4,
+						"startMinuteUTC": 1080
+					},
+					{
+						"dayOfWeek": 4,
+						"startMinuteUTC": 1110
+					},
+					{
+						"dayOfWeek": 4,
+						"startMinuteUTC": 1140
+					},
+					{
+						"dayOfWeek": 4,
+						"startMinuteUTC": 1170
+					},
+					{
+						"dayOfWeek": 4,
+						"startMinuteUTC": 1200
+					},
+					{
+						"dayOfWeek": 4,
+						"startMinuteUTC": 1230
+					},
+					{
+						"dayOfWeek": 4,
+						"startMinuteUTC": 1260
+					},
+					{
+						"dayOfWeek": 4,
+						"startMinuteUTC": 1290
+					},
+					{
+						"dayOfWeek": 4,
+						"startMinuteUTC": 1320
+					},
+					{
+						"dayOfWeek": 4,
+						"startMinuteUTC": 1350
+					},
+					{
+						"dayOfWeek": 4,
+						"startMinuteUTC": 1380
+					},
+					{
+						"dayOfWeek": 4,
+						"startMinuteUTC": 1410
+					},
+					{
+						"dayOfWeek": 5,
+						"startMinuteUTC": 0
+					},
+					{
+						"dayOfWeek": 5,
+						"startMinuteUTC": 30
+					},
+					{
+						"dayOfWeek": 5,
+						"startMinuteUTC": 60
+					},
+					{
+						"dayOfWeek": 5,
+						"startMinuteUTC": 90
+					},
+					{
+						"dayOfWeek": 5,
+						"startMinuteUTC": 120
+					},
+					{
+						"dayOfWeek": 5,
+						"startMinuteUTC": 150
+					},
+					{
+						"dayOfWeek": 5,
+						"startMinuteUTC": 180
+					},
+					{
+						"dayOfWeek": 5,
+						"startMinuteUTC": 210
+					},
+					{
+						"dayOfWeek": 5,
+						"startMinuteUTC": 240
+					},
+					{
+						"dayOfWeek": 5,
+						"startMinuteUTC": 270
+					},
+					{
+						"dayOfWeek": 5,
+						"startMinuteUTC": 300
+					},
+					{
+						"dayOfWeek": 5,
+						"startMinuteUTC": 330
+					},
+					{
+						"dayOfWeek": 5,
+						"startMinuteUTC": 360
+					},
+					{
+						"dayOfWeek": 5,
+						"startMinuteUTC": 390
+					},
+					{
+						"dayOfWeek": 5,
+						"startMinuteUTC": 990
+					},
+					{
+						"dayOfWeek": 5,
+						"startMinuteUTC": 1020
+					},
+					{
+						"dayOfWeek": 5,
+						"startMinuteUTC": 1050
+					},
+					{
+						"dayOfWeek": 5,
+						"startMinuteUTC": 1080
+					},
+					{
+						"dayOfWeek": 5,
+						"startMinuteUTC": 1110
+					},
+					{
+						"dayOfWeek": 5,
+						"startMinuteUTC": 1140
+					},
+					{
+						"dayOfWeek": 5,
+						"startMinuteUTC": 1170
+					},
+					{
+						"dayOfWeek": 5,
+						"startMinuteUTC": 1200
+					},
+					{
+						"dayOfWeek": 5,
+						"startMinuteUTC": 1230
+					},
+					{
+						"dayOfWeek": 5,
+						"startMinuteUTC": 1260
+					},
+					{
+						"dayOfWeek": 5,
+						"startMinuteUTC": 1290
+					},
+					{
+						"dayOfWeek": 5,
+						"startMinuteUTC": 1320
+					},
+					{
+						"dayOfWeek": 5,
+						"startMinuteUTC": 1350
+					},
+					{
+						"dayOfWeek": 5,
+						"startMinuteUTC": 1380
+					},
+					{
+						"dayOfWeek": 5,
+						"startMinuteUTC": 1410
+					},
+					{
+						"dayOfWeek": 6,
+						"startMinuteUTC": 0
+					},
+					{
+						"dayOfWeek": 6,
+						"startMinuteUTC": 30
+					},
+					{
+						"dayOfWeek": 6,
+						"startMinuteUTC": 60
+					},
+					{
+						"dayOfWeek": 6,
+						"startMinuteUTC": 90
+					},
+					{
+						"dayOfWeek": 6,
+						"startMinuteUTC": 120
+					},
+					{
+						"dayOfWeek": 6,
+						"startMinuteUTC": 150
+					},
+					{
+						"dayOfWeek": 6,
+						"startMinuteUTC": 180
+					},
+					{
+						"dayOfWeek": 6,
+						"startMinuteUTC": 210
+					},
+					{
+						"dayOfWeek": 6,
+						"startMinuteUTC": 240
+					},
+					{
+						"dayOfWeek": 6,
+						"startMinuteUTC": 270
+					},
+					{
+						"dayOfWeek": 6,
+						"startMinuteUTC": 300
+					},
+					{
+						"dayOfWeek": 6,
+						"startMinuteUTC": 330
+					},
+					{
+						"dayOfWeek": 6,
+						"startMinuteUTC": 360
+					},
+					{
+						"dayOfWeek": 6,
+						"startMinuteUTC": 390
+					},
+					{
+						"dayOfWeek": 6,
+						"startMinuteUTC": 990
+					},
+					{
+						"dayOfWeek": 6,
+						"startMinuteUTC": 1020
+					},
+					{
+						"dayOfWeek": 6,
+						"startMinuteUTC": 1050
+					},
+					{
+						"dayOfWeek": 6,
+						"startMinuteUTC": 1080
+					},
+					{
+						"dayOfWeek": 6,
+						"startMinuteUTC": 1110
+					},
+					{
+						"dayOfWeek": 6,
+						"startMinuteUTC": 1140
+					},
+					{
+						"dayOfWeek": 6,
+						"startMinuteUTC": 1170
+					},
+					{
+						"dayOfWeek": 6,
+						"startMinuteUTC": 1200
+					},
+					{
+						"dayOfWeek": 6,
+						"startMinuteUTC": 1230
+					},
+					{
+						"dayOfWeek": 6,
+						"startMinuteUTC": 1260
+					},
+					{
+						"dayOfWeek": 6,
+						"startMinuteUTC": 1290
+					},
+					{
+						"dayOfWeek": 6,
+						"startMinuteUTC": 1320
+					},
+					{
+						"dayOfWeek": 6,
+						"startMinuteUTC": 1350
+					},
+					{
+						"dayOfWeek": 6,
+						"startMinuteUTC": 1380
+					},
+					{
+						"dayOfWeek": 6,
+						"startMinuteUTC": 1410
+					}
+				],
+				"updatedAt": 1765586105001
+			},
+			"seasonStats": {
+				"7": {
+					"gamesPlayed": 3,
+					"wins": 2,
+					"losses": 1,
+					"totals": {
+						"points": 31,
+						"rebounds": 4,
+						"assists": 0,
+						"steals": 0,
+						"blocks": 12,
+						"turnovers": 0,
+						"fgm": 14,
+						"fga": 18,
+						"tpm": 3,
+						"tpa": 7,
+						"dunks": 11,
+						"injuries": 0
+					}
+				}
+			},
+			"seasonRecords": {
+				"7": {
+					"points": {
+						"value": 13,
+						"date": 1765585279945,
+						"opponent": "Carmelo Anthony",
+						"court": "Court 6"
+					},
+					"rebounds": {
+						"value": 2,
+						"date": 1765585279945,
+						"opponent": "Carmelo Anthony",
+						"court": "Court 6"
+					},
+					"assists": {
+						"value": 0,
+						"date": null,
+						"opponent": null,
+						"court": null
+					},
+					"steals": {
+						"value": 0,
+						"date": null,
+						"opponent": null,
+						"court": null
+					},
+					"blocks": {
+						"value": 5,
+						"date": 1765585603175,
+						"opponent": "Nikola Jokic",
+						"court": "Court 6"
+					},
+					"turnovers": {
+						"value": 0,
+						"date": null,
+						"opponent": null,
+						"court": null
+					},
+					"fgm": {
+						"value": 6,
+						"date": 1765585279945,
+						"opponent": "Carmelo Anthony",
+						"court": "Court 6"
+					},
+					"fga": {
+						"value": 8,
+						"date": 1765585279945,
+						"opponent": "Carmelo Anthony",
+						"court": "Court 6"
+					},
+					"tpm": {
+						"value": 2,
+						"date": 1765585471252,
+						"opponent": "Nikola Jokic",
+						"court": "Court 6"
+					},
+					"tpa": {
+						"value": 3,
+						"date": 1765585279945,
+						"opponent": "Carmelo Anthony",
+						"court": "Court 6"
+					},
+					"dunks": {
+						"value": 5,
+						"date": 1765585279945,
+						"opponent": "Carmelo Anthony",
+						"court": "Court 6"
+					},
+					"injuries": {
+						"value": 0,
+						"date": null,
+						"opponent": null,
+						"court": null
+					}
+				}
+			},
 			"_globalId": "futureld_1",
-			"_lastSave": 1765515763533,
+			"_lastSave": 1765644343904,
 			"_bbsId": "FUTURELD",
 			"_bbsName": "futureland.today"
 		},
@@ -696,7 +1626,9 @@
 			"seed": 16794314,
 			"userHandle": "HM Derdok",
 			"dayTurns": 5,
-			"flags": {},
+			"flags": {
+				"hasSeenSportsAgentIntro": true
+			},
 			"xp": 0,
 			"level": 1,
 			"gamesPlayed": 4,
@@ -771,7 +1703,7 @@
 			"streetTurns": 15,
 			"gymSessions": 9,
 			"barActions": 9,
-			"lastPlayedTimestamp": 1765522727223,
+			"lastPlayedTimestamp": 1765644368570,
 			"dayStats": {
 				"gamesPlayed": 0,
 				"wins": 0,
@@ -962,8 +1894,286 @@
 					"score": "10-6"
 				}
 			},
+			"playoffAvailability": {
+				"presetName": "custom",
+				"blocks": [
+					{
+						"dayOfWeek": 0,
+						"startMinuteUTC": 0
+					},
+					{
+						"dayOfWeek": 0,
+						"startMinuteUTC": 30
+					},
+					{
+						"dayOfWeek": 0,
+						"startMinuteUTC": 60
+					},
+					{
+						"dayOfWeek": 0,
+						"startMinuteUTC": 90
+					},
+					{
+						"dayOfWeek": 0,
+						"startMinuteUTC": 120
+					},
+					{
+						"dayOfWeek": 0,
+						"startMinuteUTC": 150
+					},
+					{
+						"dayOfWeek": 0,
+						"startMinuteUTC": 180
+					},
+					{
+						"dayOfWeek": 0,
+						"startMinuteUTC": 210
+					},
+					{
+						"dayOfWeek": 0,
+						"startMinuteUTC": 240
+					},
+					{
+						"dayOfWeek": 0,
+						"startMinuteUTC": 270
+					},
+					{
+						"dayOfWeek": 0,
+						"startMinuteUTC": 300
+					},
+					{
+						"dayOfWeek": 0,
+						"startMinuteUTC": 330
+					},
+					{
+						"dayOfWeek": 0,
+						"startMinuteUTC": 360
+					},
+					{
+						"dayOfWeek": 0,
+						"startMinuteUTC": 390
+					},
+					{
+						"dayOfWeek": 0,
+						"startMinuteUTC": 960
+					},
+					{
+						"dayOfWeek": 0,
+						"startMinuteUTC": 990
+					},
+					{
+						"dayOfWeek": 0,
+						"startMinuteUTC": 1020
+					},
+					{
+						"dayOfWeek": 0,
+						"startMinuteUTC": 1050
+					},
+					{
+						"dayOfWeek": 0,
+						"startMinuteUTC": 1080
+					},
+					{
+						"dayOfWeek": 0,
+						"startMinuteUTC": 1110
+					},
+					{
+						"dayOfWeek": 0,
+						"startMinuteUTC": 1140
+					},
+					{
+						"dayOfWeek": 0,
+						"startMinuteUTC": 1170
+					},
+					{
+						"dayOfWeek": 0,
+						"startMinuteUTC": 1200
+					},
+					{
+						"dayOfWeek": 0,
+						"startMinuteUTC": 1230
+					},
+					{
+						"dayOfWeek": 0,
+						"startMinuteUTC": 1260
+					},
+					{
+						"dayOfWeek": 0,
+						"startMinuteUTC": 1290
+					},
+					{
+						"dayOfWeek": 0,
+						"startMinuteUTC": 1320
+					},
+					{
+						"dayOfWeek": 0,
+						"startMinuteUTC": 1350
+					},
+					{
+						"dayOfWeek": 0,
+						"startMinuteUTC": 1380
+					},
+					{
+						"dayOfWeek": 0,
+						"startMinuteUTC": 1410
+					},
+					{
+						"dayOfWeek": 1,
+						"startMinuteUTC": 0
+					},
+					{
+						"dayOfWeek": 1,
+						"startMinuteUTC": 30
+					},
+					{
+						"dayOfWeek": 1,
+						"startMinuteUTC": 60
+					},
+					{
+						"dayOfWeek": 1,
+						"startMinuteUTC": 90
+					},
+					{
+						"dayOfWeek": 1,
+						"startMinuteUTC": 120
+					},
+					{
+						"dayOfWeek": 1,
+						"startMinuteUTC": 150
+					},
+					{
+						"dayOfWeek": 1,
+						"startMinuteUTC": 180
+					},
+					{
+						"dayOfWeek": 1,
+						"startMinuteUTC": 210
+					},
+					{
+						"dayOfWeek": 1,
+						"startMinuteUTC": 240
+					},
+					{
+						"dayOfWeek": 1,
+						"startMinuteUTC": 270
+					},
+					{
+						"dayOfWeek": 1,
+						"startMinuteUTC": 300
+					},
+					{
+						"dayOfWeek": 1,
+						"startMinuteUTC": 330
+					},
+					{
+						"dayOfWeek": 1,
+						"startMinuteUTC": 360
+					},
+					{
+						"dayOfWeek": 1,
+						"startMinuteUTC": 390
+					},
+					{
+						"dayOfWeek": 2,
+						"startMinuteUTC": 0
+					},
+					{
+						"dayOfWeek": 2,
+						"startMinuteUTC": 120
+					},
+					{
+						"dayOfWeek": 3,
+						"startMinuteUTC": 0
+					},
+					{
+						"dayOfWeek": 3,
+						"startMinuteUTC": 120
+					},
+					{
+						"dayOfWeek": 4,
+						"startMinuteUTC": 0
+					},
+					{
+						"dayOfWeek": 4,
+						"startMinuteUTC": 120
+					},
+					{
+						"dayOfWeek": 5,
+						"startMinuteUTC": 0
+					},
+					{
+						"dayOfWeek": 5,
+						"startMinuteUTC": 120
+					},
+					{
+						"dayOfWeek": 6,
+						"startMinuteUTC": 960
+					},
+					{
+						"dayOfWeek": 6,
+						"startMinuteUTC": 990
+					},
+					{
+						"dayOfWeek": 6,
+						"startMinuteUTC": 1020
+					},
+					{
+						"dayOfWeek": 6,
+						"startMinuteUTC": 1050
+					},
+					{
+						"dayOfWeek": 6,
+						"startMinuteUTC": 1080
+					},
+					{
+						"dayOfWeek": 6,
+						"startMinuteUTC": 1110
+					},
+					{
+						"dayOfWeek": 6,
+						"startMinuteUTC": 1140
+					},
+					{
+						"dayOfWeek": 6,
+						"startMinuteUTC": 1170
+					},
+					{
+						"dayOfWeek": 6,
+						"startMinuteUTC": 1200
+					},
+					{
+						"dayOfWeek": 6,
+						"startMinuteUTC": 1230
+					},
+					{
+						"dayOfWeek": 6,
+						"startMinuteUTC": 1260
+					},
+					{
+						"dayOfWeek": 6,
+						"startMinuteUTC": 1290
+					},
+					{
+						"dayOfWeek": 6,
+						"startMinuteUTC": 1320
+					},
+					{
+						"dayOfWeek": 6,
+						"startMinuteUTC": 1350
+					},
+					{
+						"dayOfWeek": 6,
+						"startMinuteUTC": 1380
+					},
+					{
+						"dayOfWeek": 6,
+						"startMinuteUTC": 1410
+					}
+				],
+				"updatedAt": 1765644328316
+			},
 			"_globalId": "futureld_36",
-			"_lastSave": 1765522996114,
+			"_lastSave": 1765645391324,
 			"_bbsId": "FUTURELD",
 			"_bbsName": "futureland.today"
 		},
@@ -1969,6 +3179,188 @@
 				"level": 1,
 				"repScore": 369
 			}
+		},
+		"7": {
+			"futureld_1": {
+				"playerId": "futureld_1",
+				"seasonNumber": 7,
+				"createdAt": 1765644185003,
+				"name": "Derdok",
+				"nickname": "DERDOK",
+				"stats": {
+					"speed": 10,
+					"threePt": 10,
+					"power": 9,
+					"steal": 5,
+					"block": 8,
+					"dunk": 10
+				},
+				"equipment": {},
+				"perks": [],
+				"meta": null,
+				"activeTeammate": "michael_jordan",
+				"teammateData": {
+					"id": "michael_jordan",
+					"stats": {}
+				},
+				"wins": 20,
+				"losses": 5,
+				"rep": 62,
+				"level": 2,
+				"repScore": 226
+			},
+			"futureld_3": {
+				"playerId": "futureld_3",
+				"seasonNumber": 7,
+				"createdAt": 1765644185004,
+				"name": "derpy",
+				"nickname": "DERPY",
+				"stats": {
+					"speed": 9,
+					"threePt": 9,
+					"power": 7,
+					"steal": 5,
+					"block": 4,
+					"dunk": 6
+				},
+				"equipment": {},
+				"perks": [],
+				"meta": null,
+				"activeTeammate": "shrek_ogre",
+				"teammateData": {
+					"id": "shrek_ogre",
+					"name": "Shrek",
+					"stats": {
+						"speed": 4,
+						"threePt": 2,
+						"dunk": 6,
+						"block": 5,
+						"power": 8,
+						"steal": 3
+					},
+					"skin": "shrek",
+					"shortNick": "SHREK"
+				},
+				"wins": 0,
+				"losses": 7,
+				"rep": 0,
+				"level": 1,
+				"repScore": 0
+			},
+			"futureld_35": {
+				"playerId": "futureld_35",
+				"seasonNumber": 7,
+				"createdAt": 1765644185006,
+				"name": "t0ti",
+				"nickname": "T0TI",
+				"stats": {
+					"speed": 7,
+					"threePt": 5,
+					"power": 8,
+					"steal": 9,
+					"block": 6,
+					"dunk": 3
+				},
+				"equipment": {},
+				"perks": [],
+				"meta": null,
+				"activeTeammate": "barney_dinosaur",
+				"teammateData": {
+					"id": "barney_dinosaur",
+					"name": "Barney Dinosaur",
+					"stats": {
+						"speed": 3,
+						"threePt": 2,
+						"dunk": 5,
+						"block": 6,
+						"power": 9,
+						"steal": 2
+					},
+					"skin": "barney",
+					"shortNick": "BARNY"
+				},
+				"wins": 0,
+				"losses": 0,
+				"rep": 0,
+				"level": 1,
+				"repScore": 0
+			},
+			"futureld_36": {
+				"playerId": "futureld_36",
+				"seasonNumber": 7,
+				"createdAt": 1765644185007,
+				"name": "FOOL",
+				"nickname": "THRIL",
+				"stats": {
+					"speed": 7,
+					"threePt": 8,
+					"power": 3,
+					"steal": 4,
+					"block": 4,
+					"dunk": 10
+				},
+				"equipment": {},
+				"perks": [],
+				"meta": null,
+				"activeTeammate": "air_bud",
+				"teammateData": {
+					"id": "air_bud",
+					"name": "Air Bud",
+					"stats": {
+						"speed": 6,
+						"threePt": 7,
+						"dunk": 3,
+						"block": 2,
+						"power": 3,
+						"steal": 5
+					},
+					"skin": "airbud",
+					"shortNick": "AIRBUD"
+				},
+				"wins": 3,
+				"losses": 0,
+				"rep": 121,
+				"level": 1,
+				"repScore": 369
+			},
+			"futureld_17": {
+				"playerId": "futureld_17",
+				"seasonNumber": 7,
+				"createdAt": 1765644185009,
+				"name": "LLbgD",
+				"nickname": "CHOAD",
+				"stats": {
+					"speed": 8,
+					"threePt": 5,
+					"power": 6,
+					"steal": 4,
+					"block": 4,
+					"dunk": 10
+				},
+				"equipment": {},
+				"perks": [],
+				"meta": null,
+				"activeTeammate": "donatello_tmnt",
+				"teammateData": {
+					"id": "donatello_tmnt",
+					"name": "Donatello",
+					"stats": {
+						"speed": 5,
+						"threePt": 5,
+						"dunk": 5,
+						"block": 5,
+						"power": 5,
+						"steal": 5
+					},
+					"skin": "donatello",
+					"shortNick": "DONNIE"
+				},
+				"wins": 0,
+				"losses": 0,
+				"rep": -5,
+				"level": 1,
+				"repScore": -15
+			}
 		}
 	},
 	"playoffBrackets": {
@@ -2548,15 +3940,30 @@
 						"repScore": 0,
 						"isBye": false
 					},
-					"status": "pending",
-					"winner": null,
-					"loser": null,
-					"score": null,
-					"resolution": null,
+					"status": "completed",
+					"winner": {
+						"seed": 1,
+						"playerId": "futureld_36",
+						"name": "FOOL",
+						"repScore": 369,
+						"isBye": false
+					},
+					"loser": {
+						"seed": 4,
+						"playerId": "futureld_35",
+						"name": "t0ti",
+						"repScore": 0,
+						"isBye": false
+					},
+					"score": {
+						"winner": 28,
+						"loser": 23
+					},
+					"resolution": "cpu_sim",
 					"createdAt": 1765509986629,
 					"softDeadline": 1765563986629,
 					"hardDeadline": 1765590986629,
-					"completedAt": null
+					"completedAt": 1765586065705
 				},
 				{
 					"id": "semifinals_2",
@@ -2577,22 +3984,317 @@
 						"repScore": 0,
 						"isBye": false
 					},
-					"status": "pending",
+					"status": "completed",
+					"winner": {
+						"seed": 2,
+						"playerId": "futureld_1",
+						"name": "Derdok",
+						"repScore": 210,
+						"isBye": false
+					},
+					"loser": {
+						"seed": 3,
+						"playerId": "futureld_3",
+						"name": "derpy",
+						"repScore": 0,
+						"isBye": false
+					},
+					"score": {
+						"winner": 15,
+						"loser": 12
+					},
+					"resolution": "ghost",
+					"createdAt": 1765509986629,
+					"softDeadline": 1765563986629,
+					"hardDeadline": 1765590986629,
+					"completedAt": 1765586052278
+				},
+				{
+					"id": "finals_1",
+					"round": "finals",
+					"roundNumber": 2,
+					"matchNumber": 1,
+					"player1": {
+						"seed": 1,
+						"playerId": "futureld_36",
+						"name": "FOOL",
+						"repScore": 369,
+						"isBye": false
+					},
+					"player2": {
+						"seed": 2,
+						"playerId": "futureld_1",
+						"name": "Derdok",
+						"repScore": 210,
+						"isBye": false
+					},
+					"status": "scheduled",
 					"winner": null,
 					"loser": null,
 					"score": null,
 					"resolution": null,
-					"createdAt": 1765509986629,
-					"softDeadline": 1765563986629,
-					"hardDeadline": 1765590986629,
-					"completedAt": null
+					"createdAt": 1765586065705,
+					"softDeadline": 1765617986629,
+					"hardDeadline": 1765644986629,
+					"completedAt": null,
+					"scheduling": {
+						"scheduledStartUTC": 1765641600000,
+						"scheduledEndUTC": 1765643400000,
+						"graceEndsUTC": 1765642800000,
+						"scheduledBy": "auto",
+						"pvpWindowEndsUTC": 1765845265705,
+						"deferUsed": {}
+					}
 				}
 			],
-			"currentRound": "semifinals",
+			"currentRound": "finals",
+			"roundNumber": 2,
+			"championPlayerId": null,
+			"championName": null,
+			"completedAt": null
+		},
+		"7": {
+			"id": "playoff_s7",
+			"seasonNumber": 7,
+			"status": "active",
+			"bracketSize": 8,
+			"createdAt": 1765644185010,
+			"seeds": [
+				{
+					"seed": 1,
+					"playerId": "futureld_36",
+					"name": "FOOL",
+					"repScore": 369,
+					"isBye": false
+				},
+				{
+					"seed": 2,
+					"playerId": "futureld_1",
+					"name": "Derdok",
+					"repScore": 226,
+					"isBye": false
+				},
+				{
+					"seed": 3,
+					"playerId": "futureld_35",
+					"name": "t0ti",
+					"repScore": 0,
+					"isBye": false
+				},
+				{
+					"seed": 4,
+					"playerId": "futureld_3",
+					"name": "derpy",
+					"repScore": 0,
+					"isBye": false
+				},
+				{
+					"seed": 5,
+					"playerId": "futureld_17",
+					"name": "LLbgD",
+					"repScore": -15,
+					"isBye": false
+				},
+				{
+					"seed": 6,
+					"playerId": null,
+					"name": "BYE",
+					"repScore": 0,
+					"isBye": true
+				},
+				{
+					"seed": 7,
+					"playerId": null,
+					"name": "BYE",
+					"repScore": 0,
+					"isBye": true
+				},
+				{
+					"seed": 8,
+					"playerId": null,
+					"name": "BYE",
+					"repScore": 0,
+					"isBye": true
+				}
+			],
+			"matches": [
+				{
+					"id": "quarterfinals_1",
+					"round": "quarterfinals",
+					"roundNumber": 1,
+					"matchNumber": 1,
+					"player1": {
+						"seed": 1,
+						"playerId": "futureld_36",
+						"name": "FOOL",
+						"repScore": 369,
+						"isBye": false
+					},
+					"player2": {
+						"seed": 8,
+						"playerId": null,
+						"name": "BYE",
+						"repScore": 0,
+						"isBye": true
+					},
+					"status": "bye",
+					"winner": {
+						"seed": 1,
+						"playerId": "futureld_36",
+						"name": "FOOL",
+						"repScore": 369,
+						"isBye": false
+					},
+					"loser": {
+						"seed": 8,
+						"playerId": null,
+						"name": "BYE",
+						"repScore": 0,
+						"isBye": true
+					},
+					"score": null,
+					"resolution": "bye",
+					"createdAt": 1765644185010,
+					"softDeadline": 1765680185010,
+					"hardDeadline": 1765698185010,
+					"completedAt": 1765644185010
+				},
+				{
+					"id": "quarterfinals_2",
+					"round": "quarterfinals",
+					"roundNumber": 1,
+					"matchNumber": 2,
+					"player1": {
+						"seed": 4,
+						"playerId": "futureld_3",
+						"name": "derpy",
+						"repScore": 0,
+						"isBye": false
+					},
+					"player2": {
+						"seed": 5,
+						"playerId": "futureld_17",
+						"name": "LLbgD",
+						"repScore": -15,
+						"isBye": false
+					},
+					"status": "scheduled",
+					"winner": null,
+					"loser": null,
+					"score": null,
+					"resolution": null,
+					"createdAt": 1765644185010,
+					"softDeadline": 1765680185010,
+					"hardDeadline": 1765698185010,
+					"completedAt": null,
+					"scheduling": {
+						"scheduledStartUTC": 1765648800000,
+						"scheduledEndUTC": 1765650600000,
+						"graceEndsUTC": 1765650000000,
+						"scheduledBy": "auto",
+						"pvpWindowEndsUTC": 1765903385010,
+						"deferUsed": {}
+					}
+				},
+				{
+					"id": "quarterfinals_3",
+					"round": "quarterfinals",
+					"roundNumber": 1,
+					"matchNumber": 3,
+					"player1": {
+						"seed": 3,
+						"playerId": "futureld_35",
+						"name": "t0ti",
+						"repScore": 0,
+						"isBye": false
+					},
+					"player2": {
+						"seed": 6,
+						"playerId": null,
+						"name": "BYE",
+						"repScore": 0,
+						"isBye": true
+					},
+					"status": "bye",
+					"winner": {
+						"seed": 3,
+						"playerId": "futureld_35",
+						"name": "t0ti",
+						"repScore": 0,
+						"isBye": false
+					},
+					"loser": {
+						"seed": 6,
+						"playerId": null,
+						"name": "BYE",
+						"repScore": 0,
+						"isBye": true
+					},
+					"score": null,
+					"resolution": "bye",
+					"createdAt": 1765644185010,
+					"softDeadline": 1765680185010,
+					"hardDeadline": 1765698185010,
+					"completedAt": 1765644185010
+				},
+				{
+					"id": "quarterfinals_4",
+					"round": "quarterfinals",
+					"roundNumber": 1,
+					"matchNumber": 4,
+					"player1": {
+						"seed": 2,
+						"playerId": "futureld_1",
+						"name": "Derdok",
+						"repScore": 226,
+						"isBye": false
+					},
+					"player2": {
+						"seed": 7,
+						"playerId": null,
+						"name": "BYE",
+						"repScore": 0,
+						"isBye": true
+					},
+					"status": "bye",
+					"winner": {
+						"seed": 2,
+						"playerId": "futureld_1",
+						"name": "Derdok",
+						"repScore": 226,
+						"isBye": false
+					},
+					"loser": {
+						"seed": 7,
+						"playerId": null,
+						"name": "BYE",
+						"repScore": 0,
+						"isBye": true
+					},
+					"score": null,
+					"resolution": "bye",
+					"createdAt": 1765644185010,
+					"softDeadline": 1765680185010,
+					"hardDeadline": 1765698185010,
+					"completedAt": 1765644185010
+				}
+			],
+			"currentRound": "quarterfinals",
 			"roundNumber": 1,
 			"championPlayerId": null,
 			"championName": null,
 			"completedAt": null
 		}
+	},
+	"ballerdexNews": {
+		"entries": [
+			{
+				"playerName": "Derdok",
+				"contactName": "Nikola Jokic",
+				"contactTeam": "Denver Nuggets",
+				"timestamp": 1765585603175
+			}
+		],
+		"lastUpdated": 1765585603176
 	}
 }
