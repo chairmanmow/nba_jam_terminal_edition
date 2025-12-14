@@ -79,7 +79,7 @@
 			"archetype": "enforcer",
 			"special": "intimidation",
 			"background": "streetball",
-			"cash": 22700,
+			"cash": 700,
 			"rep": 66,
 			"perks": [
 				"blacktop_encounters"
@@ -147,19 +147,19 @@
 				{
 					"id": "chris_webber",
 					"type": "nba",
-					"status": "contact",
+					"status": "signed",
 					"dateAcquired": 1765259970035
 				},
 				{
 					"id": "klay_thompson",
 					"type": "nba",
-					"status": "contact",
+					"status": "signed",
 					"dateAcquired": 1765262268397
 				},
 				{
 					"id": "anthony_davis",
 					"type": "nba",
-					"status": "contact",
+					"status": "signed",
 					"dateAcquired": 1765265561310
 				},
 				{
@@ -183,7 +183,7 @@
 				{
 					"id": "kevin_durant",
 					"type": "nba",
-					"status": "contact",
+					"status": "signed",
 					"dateAcquired": 1765304320736
 				},
 				{
@@ -201,19 +201,24 @@
 			],
 			"crew": [
 				{
-					"contactId": "sonic_hedgehog"
+					"contactId": "sonic_hedgehog",
+					"slot": 0
 				},
 				{
 					"contactId": "michael_jordan",
 					"slot": 1
 				},
 				{
-					"contactId": "jalen_brunson",
+					"contactId": "kevin_durant",
 					"slot": 2
 				},
 				{
-					"contactId": "kevin_durant",
+					"contactId": "chris_webber",
 					"slot": 3
+				},
+				{
+					"contactId": "klay_thompson",
+					"slot": 4
 				}
 			],
 			"position": "C",
@@ -223,10 +228,10 @@
 			"joinedTimestamp": 1764831359348,
 			"joinedOnDay": 1,
 			"joinedInCity": "bos",
-			"streetTurns": 13,
+			"streetTurns": 15,
 			"gymSessions": 9,
 			"barActions": 9,
-			"lastPlayedTimestamp": 1765749168379,
+			"lastPlayedTimestamp": 1765749744798,
 			"dayStats": {
 				"gamesPlayed": 0,
 				"wins": 0,
@@ -1464,7 +1469,7 @@
 				}
 			},
 			"_globalId": "futureld_1",
-			"_lastSave": 1765749379809,
+			"_lastSave": 1765754814605,
 			"_bbsId": "FUTURELD",
 			"_bbsName": "futureland.today"
 		},
