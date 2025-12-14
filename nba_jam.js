@@ -23,7 +23,7 @@ if (!multiplayerEnabled) {
 
 function initFrames(systems) {
     if (typeof console !== 'undefined' && typeof console.clear === 'function') {
-        console.clear();
+        console.clear(BG_BLACK, false);
     }
 
     FrameManager.define("announcer", function () {

@@ -7,8 +7,20 @@ We don't seem to notify the user they or the other person missed a match and we 
 ## Live match availability as a concept in the Crib menu, not just playoffs
 we should probably just have this as "my schedule" in the crib, ideally we pre-populate with some values but really we don't want people to have to set these values at the time playoffs start, but ahead of time so once playoffs start matches are scheduled.
 
-## Red Bull Challenge
-How do we say in our schema that a challenge for Jordan or Red Bull has been completed, pending or failed.   We want to validate the challenge works hopefully when our latest playoffs complete.  Maybe we can have a way to mock it so I can test this out.
+## Red Bull Challenge ✓ IMPLEMENTED
+Challenge flow is now accessible from:
+- **Playoffs menu** - Shows "Challenge the Red Bull (S#)" for any season where you're champion
+- **Crib menu** - "Champion's Challenge" option (with DEBUG_ENABLE_BOSS_TEST flag)
+
+The flow includes:
+- Rich intro screens with figlet headers (CHALLENGER!, VS AIRNESS, etc.)
+- Jordan + Pippen warm-up match
+- Victory/defeat transition screens
+- Satan + Iceman final boss with full buffs (permanent fire, enhanced stats)
+- LEGENDARY! victory screen
+
+Schema tracks in bracket.challengeState: `{ triesUsed, jordanDefeated, redBullDefeated, victories[] }`
+getPlayerChampionships() returns completed brackets where player won and has unclaimed challenges.
 
 ## End game benefits to beating Red Bull
 Can unlock either devil or ice man skin, player picks.  We want to introduce the concept of a player being able to use custom sprites, not just the same basic ones that get masked, but ones like devil, iceman, sonic, barney, etc.  Basically our end of season rollover for now doesn't have any sort of punitive / reset effect for other players for now, just some cool unlocks for the winner.
