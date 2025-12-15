@@ -51,6 +51,7 @@ Domain | Keys | Notes |
 | Inbound cadence | `INBOUND.SETUP_DURATION_MS` | `lib/game-logic/phase-handler.js` uses it for `PHASE_INBOUND_SETUP` length; `startSecondHalfInbound` references it so halftime restarts share the same animation window as post-score inbounds. |
 | Jump ball | `JUMP_BALL.COUNTDOWN_MS`, `.DROP_DURATION_FRAMES`, `.DROP_START_Y`, `.CONTEST_WINDOW_FRAMES`, `.ARC_MIN_DURATION_MS`, `.HANDOFF_DURATION_MS`, `.CPU_OFFSET_MAX_RATIO`, `.CPU_OFFSET_EARLY_RATIO`, `.JUMP_ANIMATION_DURATION_RATIO`, `.JUMP_ANIMATION_MIN_MS`, `.JUMP_ANIMATION_MAX_MS` | `jump-ball-system.js` drives announcer cadence, ball arc timing, CPU jump scheduling, jumper animation bounds, and the handoff-to-wing tween; the same constants are consumed in both authority and client contexts to keep the tipoff deterministic. |
 | Live challenge lobby (LORB) | `LORB_CHALLENGES.pendingAcceptanceGraceMs`, `.lobbyTimeoutMs`, `.pollTickMs` | `lib/lorb/multiplayer/challenge_lobby.js` paces lobby polling, extends acceptance grace, and caps total lobby wait to keep invites from timing out before the UI surfaces them. |
+| Substitution | `SUBSTITUTION.CPU_TURBO_THRESHOLD`, `.FRESH_PLAYER_TURBO_PERCENT`, `.REQUIRE_AVAILABLE_SUB`, `.SCREEN_TIMEOUT_MS` | `lib/ui/halftime.js` uses these for CPU auto-substitution decisions (based on turbo depletion) and human substitution screen behavior. CPU subs out players below the turbo threshold; fresh players enter with the configured percentage of max turbo. |
 
 Timing, cadence, and animation math belong here.
 
