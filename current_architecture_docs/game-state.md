@@ -25,6 +25,8 @@
 | `regulationOvertimeAnchorTeam` | `jumpBallSystem`, `resetGameState` | Overtime helper | Remembers the opening jump winner as the anchor for first-overtime possession. |
 | `overtimeIntroActive`, `overtimeIntroRemainingSeconds`, `overtimeIntroEndsAt` | `maybeStartOvertime`, `phase-handler` | `game-loop-core`, `ui/overtime-intro` | Flags the pre-overtime banner, stores countdown, and gives the loop a cutoff timestamp so timers/AI stay paused until the intro finishes. |
 | `pendingOvertimeInboundTeam`, `pendingOvertimeInboundContext` | `maybeStartOvertime`, `phase-handler` | Possession system | Caches the inbound metadata captured at regulation end; once the intro completes the finalizer passes it into `startOvertimeInbound` so the inbound animation starts cleanly. |
+| `availablePlayers` | `initSprites`, `initSpritesFromDynamic` | `halftime.js` substitution UI | Object with `teamA` and `teamB` arrays containing bench player entries. Each entry has `playerInfo`, `inGame` flag, and either `rosterIndex` (arcade) or `contactId` (LORB). Populated at match start from full roster/crew. |
+| `activePlayerIndices` | `initSprites`, `initSpritesFromDynamic` | `performSubstitution` | Object with `teamA` and `teamB` arrays of indices [0,1] tracking which roster positions are currently on court. Updated when substitutions occur. |
 
 ## Lifecycle & Reset Points
 
