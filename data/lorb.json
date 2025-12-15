@@ -72,15 +72,15 @@
 			},
 			"xp": 312,
 			"level": 3,
-			"gamesPlayed": 42,
+			"gamesPlayed": 44,
 			"wins": 32,
-			"losses": 6,
+			"losses": 7,
 			"name": "Derdok",
 			"archetype": "enforcer",
 			"special": "intimidation",
 			"background": "streetball",
-			"cash": 1589,
-			"rep": 147,
+			"cash": 1538,
+			"rep": 141,
 			"perks": [
 				"blacktop_encounters"
 			],
@@ -249,7 +249,7 @@
 			"streetTurns": 15,
 			"gymSessions": 9,
 			"barActions": 9,
-			"lastPlayedTimestamp": 1765768009007,
+			"lastPlayedTimestamp": 1765769559163,
 			"dayStats": {
 				"gamesPlayed": 0,
 				"wins": 0,
@@ -386,10 +386,10 @@
 				"spouseCityId": null
 			},
 			"pvpStats": {
-				"gamesPlayed": 15,
+				"gamesPlayed": 17,
 				"wins": 7,
-				"losses": 4,
-				"ties": 4,
+				"losses": 5,
+				"ties": 5,
 				"totals": {
 					"points": 0,
 					"rebounds": 0,
@@ -1319,7 +1319,7 @@
 				"9": {
 					"gamesPlayed": 10,
 					"wins": 12,
-					"losses": 1,
+					"losses": 2,
 					"totals": {
 						"points": 114,
 						"rebounds": 23,
@@ -1487,7 +1487,7 @@
 				}
 			},
 			"_globalId": "futureld_1",
-			"_lastSave": 1765768152553,
+			"_lastSave": 1765769803203,
 			"_bbsId": "FUTURELD",
 			"_bbsName": "futureland.today"
 		},
@@ -1994,15 +1994,15 @@
 			},
 			"xp": 0,
 			"level": 1,
-			"gamesPlayed": 7,
-			"wins": 4,
+			"gamesPlayed": 9,
+			"wins": 5,
 			"losses": 0,
 			"name": "FOOL",
 			"archetype": "underdog",
 			"special": "chip_on_shoulder",
 			"background": "streetball",
-			"cash": 501,
-			"rep": 182,
+			"cash": 552,
+			"rep": 238,
 			"perks": [
 				"blacktop_encounters"
 			],
@@ -2066,7 +2066,7 @@
 			"streetTurns": 15,
 			"gymSessions": 9,
 			"barActions": 9,
-			"lastPlayedTimestamp": 1765765540299,
+			"lastPlayedTimestamp": 1765769568985,
 			"dayStats": {
 				"gamesPlayed": 0,
 				"wins": 0,
@@ -2167,10 +2167,10 @@
 			},
 			"restUsedToday": false,
 			"pvpStats": {
-				"gamesPlayed": 6,
-				"wins": 3,
+				"gamesPlayed": 8,
+				"wins": 4,
 				"losses": 0,
-				"ties": 3,
+				"ties": 4,
 				"totals": {
 					"points": 0,
 					"rebounds": 0,
@@ -2251,10 +2251,10 @@
 					"opponent": null
 				},
 				"winMargin": {
-					"value": 5,
-					"date": 1765763842040,
-					"opponent": "Derdok",
-					"score": "5-0"
+					"value": 6,
+					"date": 1765768539721,
+					"opponent": "Opponent",
+					"score": "6-0"
 				}
 			},
 			"playoffAvailability": {
@@ -2437,36 +2437,572 @@
 						"startMinuteUTC": 390
 					},
 					{
-						"dayOfWeek": 2,
-						"startMinuteUTC": 0
+						"dayOfWeek": 1,
+						"startMinuteUTC": 960
+					},
+					{
+						"dayOfWeek": 1,
+						"startMinuteUTC": 990
+					},
+					{
+						"dayOfWeek": 1,
+						"startMinuteUTC": 1020
+					},
+					{
+						"dayOfWeek": 1,
+						"startMinuteUTC": 1050
+					},
+					{
+						"dayOfWeek": 1,
+						"startMinuteUTC": 1080
+					},
+					{
+						"dayOfWeek": 1,
+						"startMinuteUTC": 1110
+					},
+					{
+						"dayOfWeek": 1,
+						"startMinuteUTC": 1140
+					},
+					{
+						"dayOfWeek": 1,
+						"startMinuteUTC": 1170
+					},
+					{
+						"dayOfWeek": 1,
+						"startMinuteUTC": 1200
+					},
+					{
+						"dayOfWeek": 1,
+						"startMinuteUTC": 1230
+					},
+					{
+						"dayOfWeek": 1,
+						"startMinuteUTC": 1260
+					},
+					{
+						"dayOfWeek": 1,
+						"startMinuteUTC": 1290
+					},
+					{
+						"dayOfWeek": 1,
+						"startMinuteUTC": 1320
+					},
+					{
+						"dayOfWeek": 1,
+						"startMinuteUTC": 1350
+					},
+					{
+						"dayOfWeek": 1,
+						"startMinuteUTC": 1380
+					},
+					{
+						"dayOfWeek": 1,
+						"startMinuteUTC": 1410
 					},
 					{
 						"dayOfWeek": 2,
-						"startMinuteUTC": 120
+						"startMinuteUTC": 30
+					},
+					{
+						"dayOfWeek": 2,
+						"startMinuteUTC": 60
+					},
+					{
+						"dayOfWeek": 2,
+						"startMinuteUTC": 90
+					},
+					{
+						"dayOfWeek": 2,
+						"startMinuteUTC": 150
+					},
+					{
+						"dayOfWeek": 2,
+						"startMinuteUTC": 180
+					},
+					{
+						"dayOfWeek": 2,
+						"startMinuteUTC": 210
+					},
+					{
+						"dayOfWeek": 2,
+						"startMinuteUTC": 240
+					},
+					{
+						"dayOfWeek": 2,
+						"startMinuteUTC": 270
+					},
+					{
+						"dayOfWeek": 2,
+						"startMinuteUTC": 300
+					},
+					{
+						"dayOfWeek": 2,
+						"startMinuteUTC": 330
+					},
+					{
+						"dayOfWeek": 2,
+						"startMinuteUTC": 360
+					},
+					{
+						"dayOfWeek": 2,
+						"startMinuteUTC": 390
+					},
+					{
+						"dayOfWeek": 2,
+						"startMinuteUTC": 960
+					},
+					{
+						"dayOfWeek": 2,
+						"startMinuteUTC": 990
+					},
+					{
+						"dayOfWeek": 2,
+						"startMinuteUTC": 1020
+					},
+					{
+						"dayOfWeek": 2,
+						"startMinuteUTC": 1050
+					},
+					{
+						"dayOfWeek": 2,
+						"startMinuteUTC": 1080
+					},
+					{
+						"dayOfWeek": 2,
+						"startMinuteUTC": 1110
+					},
+					{
+						"dayOfWeek": 2,
+						"startMinuteUTC": 1140
+					},
+					{
+						"dayOfWeek": 2,
+						"startMinuteUTC": 1170
+					},
+					{
+						"dayOfWeek": 2,
+						"startMinuteUTC": 1200
+					},
+					{
+						"dayOfWeek": 2,
+						"startMinuteUTC": 1230
+					},
+					{
+						"dayOfWeek": 2,
+						"startMinuteUTC": 1260
+					},
+					{
+						"dayOfWeek": 2,
+						"startMinuteUTC": 1290
+					},
+					{
+						"dayOfWeek": 2,
+						"startMinuteUTC": 1320
+					},
+					{
+						"dayOfWeek": 2,
+						"startMinuteUTC": 1350
+					},
+					{
+						"dayOfWeek": 2,
+						"startMinuteUTC": 1380
+					},
+					{
+						"dayOfWeek": 2,
+						"startMinuteUTC": 1410
 					},
 					{
 						"dayOfWeek": 3,
-						"startMinuteUTC": 0
+						"startMinuteUTC": 30
 					},
 					{
 						"dayOfWeek": 3,
-						"startMinuteUTC": 120
+						"startMinuteUTC": 60
+					},
+					{
+						"dayOfWeek": 3,
+						"startMinuteUTC": 90
+					},
+					{
+						"dayOfWeek": 3,
+						"startMinuteUTC": 150
+					},
+					{
+						"dayOfWeek": 3,
+						"startMinuteUTC": 180
+					},
+					{
+						"dayOfWeek": 3,
+						"startMinuteUTC": 210
+					},
+					{
+						"dayOfWeek": 3,
+						"startMinuteUTC": 240
+					},
+					{
+						"dayOfWeek": 3,
+						"startMinuteUTC": 270
+					},
+					{
+						"dayOfWeek": 3,
+						"startMinuteUTC": 300
+					},
+					{
+						"dayOfWeek": 3,
+						"startMinuteUTC": 330
+					},
+					{
+						"dayOfWeek": 3,
+						"startMinuteUTC": 360
+					},
+					{
+						"dayOfWeek": 3,
+						"startMinuteUTC": 390
+					},
+					{
+						"dayOfWeek": 3,
+						"startMinuteUTC": 960
+					},
+					{
+						"dayOfWeek": 3,
+						"startMinuteUTC": 990
+					},
+					{
+						"dayOfWeek": 3,
+						"startMinuteUTC": 1020
+					},
+					{
+						"dayOfWeek": 3,
+						"startMinuteUTC": 1050
+					},
+					{
+						"dayOfWeek": 3,
+						"startMinuteUTC": 1080
+					},
+					{
+						"dayOfWeek": 3,
+						"startMinuteUTC": 1110
+					},
+					{
+						"dayOfWeek": 3,
+						"startMinuteUTC": 1140
+					},
+					{
+						"dayOfWeek": 3,
+						"startMinuteUTC": 1170
+					},
+					{
+						"dayOfWeek": 3,
+						"startMinuteUTC": 1200
+					},
+					{
+						"dayOfWeek": 3,
+						"startMinuteUTC": 1230
+					},
+					{
+						"dayOfWeek": 3,
+						"startMinuteUTC": 1260
+					},
+					{
+						"dayOfWeek": 3,
+						"startMinuteUTC": 1290
+					},
+					{
+						"dayOfWeek": 3,
+						"startMinuteUTC": 1320
+					},
+					{
+						"dayOfWeek": 3,
+						"startMinuteUTC": 1350
+					},
+					{
+						"dayOfWeek": 3,
+						"startMinuteUTC": 1380
+					},
+					{
+						"dayOfWeek": 3,
+						"startMinuteUTC": 1410
 					},
 					{
 						"dayOfWeek": 4,
-						"startMinuteUTC": 0
+						"startMinuteUTC": 30
 					},
 					{
 						"dayOfWeek": 4,
-						"startMinuteUTC": 120
+						"startMinuteUTC": 60
+					},
+					{
+						"dayOfWeek": 4,
+						"startMinuteUTC": 90
+					},
+					{
+						"dayOfWeek": 4,
+						"startMinuteUTC": 150
+					},
+					{
+						"dayOfWeek": 4,
+						"startMinuteUTC": 180
+					},
+					{
+						"dayOfWeek": 4,
+						"startMinuteUTC": 210
+					},
+					{
+						"dayOfWeek": 4,
+						"startMinuteUTC": 240
+					},
+					{
+						"dayOfWeek": 4,
+						"startMinuteUTC": 270
+					},
+					{
+						"dayOfWeek": 4,
+						"startMinuteUTC": 300
+					},
+					{
+						"dayOfWeek": 4,
+						"startMinuteUTC": 330
+					},
+					{
+						"dayOfWeek": 4,
+						"startMinuteUTC": 360
+					},
+					{
+						"dayOfWeek": 4,
+						"startMinuteUTC": 390
+					},
+					{
+						"dayOfWeek": 4,
+						"startMinuteUTC": 960
+					},
+					{
+						"dayOfWeek": 4,
+						"startMinuteUTC": 990
+					},
+					{
+						"dayOfWeek": 4,
+						"startMinuteUTC": 1020
+					},
+					{
+						"dayOfWeek": 4,
+						"startMinuteUTC": 1050
+					},
+					{
+						"dayOfWeek": 4,
+						"startMinuteUTC": 1080
+					},
+					{
+						"dayOfWeek": 4,
+						"startMinuteUTC": 1110
+					},
+					{
+						"dayOfWeek": 4,
+						"startMinuteUTC": 1140
+					},
+					{
+						"dayOfWeek": 4,
+						"startMinuteUTC": 1170
+					},
+					{
+						"dayOfWeek": 4,
+						"startMinuteUTC": 1200
+					},
+					{
+						"dayOfWeek": 4,
+						"startMinuteUTC": 1230
+					},
+					{
+						"dayOfWeek": 4,
+						"startMinuteUTC": 1260
+					},
+					{
+						"dayOfWeek": 4,
+						"startMinuteUTC": 1290
+					},
+					{
+						"dayOfWeek": 4,
+						"startMinuteUTC": 1320
+					},
+					{
+						"dayOfWeek": 4,
+						"startMinuteUTC": 1350
+					},
+					{
+						"dayOfWeek": 4,
+						"startMinuteUTC": 1380
+					},
+					{
+						"dayOfWeek": 4,
+						"startMinuteUTC": 1410
 					},
 					{
 						"dayOfWeek": 5,
+						"startMinuteUTC": 30
+					},
+					{
+						"dayOfWeek": 5,
+						"startMinuteUTC": 60
+					},
+					{
+						"dayOfWeek": 5,
+						"startMinuteUTC": 90
+					},
+					{
+						"dayOfWeek": 5,
+						"startMinuteUTC": 150
+					},
+					{
+						"dayOfWeek": 5,
+						"startMinuteUTC": 180
+					},
+					{
+						"dayOfWeek": 5,
+						"startMinuteUTC": 210
+					},
+					{
+						"dayOfWeek": 5,
+						"startMinuteUTC": 240
+					},
+					{
+						"dayOfWeek": 5,
+						"startMinuteUTC": 270
+					},
+					{
+						"dayOfWeek": 5,
+						"startMinuteUTC": 300
+					},
+					{
+						"dayOfWeek": 5,
+						"startMinuteUTC": 330
+					},
+					{
+						"dayOfWeek": 5,
+						"startMinuteUTC": 360
+					},
+					{
+						"dayOfWeek": 5,
+						"startMinuteUTC": 390
+					},
+					{
+						"dayOfWeek": 5,
+						"startMinuteUTC": 960
+					},
+					{
+						"dayOfWeek": 5,
+						"startMinuteUTC": 990
+					},
+					{
+						"dayOfWeek": 5,
+						"startMinuteUTC": 1020
+					},
+					{
+						"dayOfWeek": 5,
+						"startMinuteUTC": 1050
+					},
+					{
+						"dayOfWeek": 5,
+						"startMinuteUTC": 1080
+					},
+					{
+						"dayOfWeek": 5,
+						"startMinuteUTC": 1110
+					},
+					{
+						"dayOfWeek": 5,
+						"startMinuteUTC": 1140
+					},
+					{
+						"dayOfWeek": 5,
+						"startMinuteUTC": 1170
+					},
+					{
+						"dayOfWeek": 5,
+						"startMinuteUTC": 1200
+					},
+					{
+						"dayOfWeek": 5,
+						"startMinuteUTC": 1230
+					},
+					{
+						"dayOfWeek": 5,
+						"startMinuteUTC": 1260
+					},
+					{
+						"dayOfWeek": 5,
+						"startMinuteUTC": 1290
+					},
+					{
+						"dayOfWeek": 5,
+						"startMinuteUTC": 1320
+					},
+					{
+						"dayOfWeek": 5,
+						"startMinuteUTC": 1350
+					},
+					{
+						"dayOfWeek": 5,
+						"startMinuteUTC": 1380
+					},
+					{
+						"dayOfWeek": 5,
+						"startMinuteUTC": 1410
+					},
+					{
+						"dayOfWeek": 6,
 						"startMinuteUTC": 0
 					},
 					{
-						"dayOfWeek": 5,
+						"dayOfWeek": 6,
+						"startMinuteUTC": 30
+					},
+					{
+						"dayOfWeek": 6,
+						"startMinuteUTC": 60
+					},
+					{
+						"dayOfWeek": 6,
+						"startMinuteUTC": 90
+					},
+					{
+						"dayOfWeek": 6,
 						"startMinuteUTC": 120
+					},
+					{
+						"dayOfWeek": 6,
+						"startMinuteUTC": 150
+					},
+					{
+						"dayOfWeek": 6,
+						"startMinuteUTC": 180
+					},
+					{
+						"dayOfWeek": 6,
+						"startMinuteUTC": 210
+					},
+					{
+						"dayOfWeek": 6,
+						"startMinuteUTC": 240
+					},
+					{
+						"dayOfWeek": 6,
+						"startMinuteUTC": 270
+					},
+					{
+						"dayOfWeek": 6,
+						"startMinuteUTC": 300
+					},
+					{
+						"dayOfWeek": 6,
+						"startMinuteUTC": 330
+					},
+					{
+						"dayOfWeek": 6,
+						"startMinuteUTC": 360
+					},
+					{
+						"dayOfWeek": 6,
+						"startMinuteUTC": 390
 					},
 					{
 						"dayOfWeek": 6,
@@ -2533,13 +3069,13 @@
 						"startMinuteUTC": 1410
 					}
 				],
-				"updatedAt": 1765644328316
+				"updatedAt": 1765769512402
 			},
 			"dailyBetting": null,
 			"seasonStats": {
 				"9": {
 					"gamesPlayed": 0,
-					"wins": 1,
+					"wins": 2,
 					"losses": 0,
 					"totals": {
 						"points": 0,
@@ -2558,7 +3094,7 @@
 				}
 			},
 			"_globalId": "futureld_36",
-			"_lastSave": 1765765671347,
+			"_lastSave": 1765769806226,
 			"_bbsId": "FUTURELD",
 			"_bbsName": "futureland.today"
 		},
@@ -2729,6 +3265,31 @@
 	},
 	"pvpNews": {
 		"entries": [
+			{
+				"type": "pvp_match",
+				"timestamp": 1765769797266,
+				"gameDay": 6,
+				"city": "cle",
+				"winnerName": "Opponent",
+				"loserName": "Derdok",
+				"winnerScore": 2,
+				"loserScore": 2,
+				"isTie": true,
+				"topScorer": "Air Bud",
+				"topScorerPoints": 2,
+				"topScorerTeam": "teamB"
+			},
+			{
+				"type": "pvp_match",
+				"timestamp": 1765769790168,
+				"gameDay": 6,
+				"city": "cle",
+				"winnerName": "Derdok",
+				"loserName": "FOOL",
+				"winnerScore": 2,
+				"loserScore": 2,
+				"isTie": true
+			},
 			{
 				"type": "pvp_match",
 				"timestamp": 1765768539824,
@@ -3024,34 +3585,9 @@
 				"winnerScore": 6,
 				"loserScore": 4,
 				"isTie": false
-			},
-			{
-				"type": "pvp_match",
-				"timestamp": 1765035008837,
-				"gameDay": 25,
-				"city": "gsw",
-				"winnerName": "Opponent",
-				"loserName": "derpy",
-				"winnerScore": 6,
-				"loserScore": 4,
-				"isTie": false,
-				"topScorer": "Shrek",
-				"topScorerPoints": 4,
-				"topScorerTeam": "teamA"
-			},
-			{
-				"type": "pvp_match",
-				"timestamp": 1765001709134,
-				"gameDay": 16,
-				"city": "mem",
-				"winnerName": "Derdok",
-				"loserName": "Beta Tester",
-				"winnerScore": 3,
-				"loserScore": 0,
-				"isTie": false
 			}
 		],
-		"lastUpdated": 1765768539828
+		"lastUpdated": 1765769797269
 	},
 	"graffiti": {
 		"entries": [
