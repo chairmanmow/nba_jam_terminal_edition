@@ -17,9 +17,6 @@ if (!loadResult.success) {
 }
 
 var multiplayerEnabled = loadResult.multiplayerEnabled;
-if (!multiplayerEnabled) {
-    log(LOG_INFO, "NBA JAM: Running in single-player mode (multiplayer not available)");
-}
 
 function initFrames(systems) {
     if (typeof console !== 'undefined' && typeof console.clear === 'function') {
@@ -190,6 +187,12 @@ function gameLoop(systems) {
             ballFrame.top();
         }
 
+        // Wave 24: Apply clock speed multiplier to gameplay timing (for betting sims)
+        // This makes sprites move faster and AI react faster, not just the clock
+        var clockMultiplier = stateManager.get("clockSpeedMultiplier") || 1;
+        var effectiveFrameDelay = Math.max(1, Math.floor(tempo.frameDelayMs / clockMultiplier));
+        var effectiveAiInterval = Math.max(1, Math.floor(tempo.aiIntervalMs / clockMultiplier));
+
         // Configure for single-player mode
         var config = {
             isAuthority: true, // SP is always authoritative
@@ -197,8 +200,8 @@ function gameLoop(systems) {
                 var key = console.inkey(K_NONE, 5);
                 if (key) handleInput(key, systems);
             },
-            aiInterval: tempo.aiIntervalMs, // Throttled AI for performance
-            frameDelay: tempo.frameDelayMs  // Variable frame rate
+            aiInterval: effectiveAiInterval, // Throttled AI for performance (scaled by clockMultiplier)
+            frameDelay: effectiveFrameDelay  // Variable frame rate (scaled by clockMultiplier)
         };
 
         if (systems.jumpBallSystem && typeof systems.jumpBallSystem.startOpeningTipoff === "function") {
@@ -966,7 +969,6 @@ function main() {
                 var sprite = map[gid];
                 for (var i = 0; i < spriteValues.length; i++) {
                     if (spriteValues[i] === sprite) {
-                        log(LOG_ERR, "NBA JAM: DUPLICATE SPRITE IN MAP! GlobalID " + gid + " maps to same sprite as another player");
                         duplicateFound = true;
                     }
                 }
@@ -974,7 +976,6 @@ function main() {
             }
         }
 
-        log(LOG_DEBUG, "NBA JAM: Sprite map created - " + debugInfo.join(", "));
 
         return map;
     }
@@ -1176,6 +1177,15 @@ function main() {
     cleanupScoreFrames();
     if (typeof scoreFrame !== "undefined" && scoreFrame) scoreFrame.close();
     if (typeof announcerFrame !== "undefined" && announcerFrame) announcerFrame.close();
+    
+    // Cleanup JSONClient singleton (unsubscribes all, disconnects)
+    if (typeof NBA_JAM !== "undefined" && NBA_JAM.JsonClient && NBA_JAM.JsonClient.disconnect) {
+        try {
+            NBA_JAM.JsonClient.disconnect();
+        } catch (e) {
+            // Ignore disconnect errors during cleanup
+        }
+    }
 }
 
 // Wrap main() with error handler for automatic error logging

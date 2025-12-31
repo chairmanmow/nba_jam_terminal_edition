@@ -8,6 +8,7 @@
     "bannerBin": "bos_banner.bin",
     "detailBin": "bos_detail.bin",
     "nightclubName": "The Shamrock Social",
+    "mallName": "Faneuil Hall Marketplace",
     "buffs": {
       "three": 1,
       "repMultiplier": 1.05
@@ -29,7 +30,8 @@
         "rarity": "rare"
       }
     ],
-    "notes": "Historic shooting city; minor bonus to 3-point oriented builds."
+    "notes": "Historic shooting city; minor bonus to 3-point oriented builds.",
+    "mascots": ["Patriots", "Red Sox", "Bruins", "Revolution"]
   },
   {
     "id": "nyk",
@@ -40,6 +42,7 @@
     "bannerBin": "nyk_banner.bin",
     "detailBin": "nyk_detail.bin",
     "nightclubName": "Empire After Hours",
+    "mallName": "Manhattan Mall",
     "buffs": {
       "repMultiplier": 1.1
     },
@@ -60,7 +63,8 @@
         "rarity": "rare"
       }
     ],
-    "notes": "Bright lights, big stage; reputation gains slightly boosted."
+    "notes": "Bright lights, big stage; reputation gains slightly boosted.",
+    "mascots": ["Giants", "Yankees", "Rangers", "Jets"]
   },
   {
     "id": "bkn",
@@ -71,6 +75,7 @@
     "bannerBin": "bkn_banner.bin",
     "detailBin": "bkn_detail.bin",
     "nightclubName": "Bridge & Beats",
+    "mallName": "Atlantic Terminal Mall",
     "buffs": {
       "steal": 1
     },
@@ -91,7 +96,8 @@
         "rarity": "rare"
       }
     ],
-    "notes": "Streetball vibe; crafty perimeter defenders feel at home."
+    "notes": "Streetball vibe; crafty perimeter defenders feel at home.",
+    "mascots": ["Cyclones", "Nets", "Liberty", "Islanders"]
   },
   {
     "id": "phi",
@@ -102,6 +108,7 @@
     "bannerBin": "phi_banner.bin",
     "detailBin": "phi_detail.bin",
     "nightclubName": "The Process Lounge",
+    "mallName": "King of Prussia",
     "buffs": {
       "power": 1
     },
@@ -122,7 +129,8 @@
         "rarity": "rare"
       }
     ],
-    "notes": "Physical play and toughness get a small power bump."
+    "notes": "Physical play and toughness get a small power bump.",
+    "mascots": ["Eagles", "Phillies", "Flyers", "Union"]
   },
   {
     "id": "tor",
@@ -133,6 +141,7 @@
     "bannerBin": "tor_banner.bin",
     "detailBin": "tor_detail.bin",
     "nightclubName": "Northern Lights Club",
+    "mallName": "Eaton Centre",
     "buffs": {
       "stamina": 1
     },
@@ -153,7 +162,8 @@
         "rarity": "rare"
       }
     ],
-    "notes": "Cold weather conditioning; tiny stamina bonus."
+    "notes": "Cold weather conditioning; tiny stamina bonus.",
+    "mascots": ["Blue Jays", "Maple Leafs", "Argonauts", "Raptors"]
   },
   {
     "id": "cle",
@@ -164,6 +174,7 @@
     "bannerBin": "cle_banner.bin",
     "detailBin": "cle_detail.bin",
     "nightclubName": "Lake Effect Lounge",
+    "mallName": "Tower City Center",
     "buffs": {
       "block": 1
     },
@@ -184,7 +195,8 @@
         "rarity": "rare"
       }
     ],
-    "notes": "Gritty interior play; small block bonus."
+    "notes": "Gritty interior play; small block bonus.",
+    "mascots": ["Browns", "Guardians", "Cavaliers", "Monsters"]
   },
   {
     "id": "det",
@@ -195,6 +207,7 @@
     "bannerBin": "det_banner.bin",
     "detailBin": "det_detail.bin",
     "nightclubName": "Motor City Groove",
+    "mallName": "Somerset Collection",
     "buffs": {
       "power": 1,
       "foulTolerance": 1
@@ -216,7 +229,8 @@
         "rarity": "rare"
       }
     ],
-    "notes": "Bad Boys energy; encourages physical frontcourt play."
+    "notes": "Bad Boys energy; encourages physical frontcourt play.",
+    "mascots": ["Lions", "Tigers", "Red Wings", "Wolverines"]
   },
   {
     "id": "chi",
@@ -227,6 +241,7 @@
     "bannerBin": "chi_banner.bin",
     "detailBin": "chi_detail.bin",
     "nightclubName": "The Madhouse Lounge",
+    "mallName": "Water Tower Place",
     "buffs": {
       "dunk": 1
     },
@@ -247,7 +262,8 @@
         "rarity": "rare"
       }
     ],
-    "notes": "Air-obsessed city; slight dunk and rim-attack emphasis."
+    "notes": "Air-obsessed city; slight dunk and rim-attack emphasis.",
+    "mascots": ["Bears", "Cubs", "Blackhawks", "White Sox"]
   },
   {
     "id": "mil",
@@ -258,6 +274,7 @@
     "bannerBin": "mil_banner.bin",
     "detailBin": "mil_detail.bin",
     "nightclubName": "Cream City After Dark",
+    "mallName": "Mayfair Mall",
     "buffs": {
       "stamina": 1
     },
@@ -278,7 +295,8 @@
         "rarity": "rare"
       }
     ],
-    "notes": "Blue-collar grind culture; minor stamina bump."
+    "notes": "Blue-collar grind culture; minor stamina bump.",
+    "mascots": ["Brewers", "Packers", "Badgers", "Admirals"]
   },
   {
     "id": "ind",
@@ -289,6 +307,7 @@
     "bannerBin": "ind_banner.bin",
     "detailBin": "ind_detail.bin",
     "nightclubName": "Hoosier House",
+    "mallName": "Circle Centre Mall",
     "buffs": {
       "three": 1
     },
@@ -309,7 +328,8 @@
         "rarity": "rare"
       }
     ],
-    "notes": "Heartland shooters; small 3-point bonus."
+    "notes": "Heartland shooters; small 3-point bonus.",
+    "mascots": ["Colts", "Pacers", "Hoosiers", "Fever"]
   },
   {
     "id": "atl",
@@ -320,6 +340,7 @@
     "bannerBin": "atl_banner.bin",
     "detailBin": "atl_detail.bin",
     "nightclubName": "Peachtree Nights",
+    "mallName": "Lenox Square",
     "buffs": {
       "speed": 1
     },
@@ -340,7 +361,8 @@
         "rarity": "rare"
       }
     ],
-    "notes": "Up-tempo, flashy guards get a tiny speed bump."
+    "notes": "Up-tempo, flashy guards get a tiny speed bump.",
+    "mascots": ["Falcons", "Braves", "United", "Dream"]
   },
   {
     "id": "cha",
@@ -351,6 +373,7 @@
     "bannerBin": "cha_banner.bin",
     "detailBin": "cha_detail.bin",
     "nightclubName": "Buzz City Social",
+    "mallName": "SouthPark Mall",
     "buffs": {
       "steal": 1
     },
@@ -371,7 +394,8 @@
         "rarity": "rare"
       }
     ],
-    "notes": "Scrappy guards and wings; small steal bonus."
+    "notes": "Scrappy guards and wings; small steal bonus.",
+    "mascots": ["Panthers", "Knights", "Checkers", "Hurricanes"]
   },
   {
     "id": "mia",
@@ -382,6 +406,7 @@
     "bannerBin": "mia_banner.bin",
     "detailBin": "mia_detail.bin",
     "nightclubName": "Club Heatwave",
+    "mallName": "Aventura Mall",
     "buffs": {
       "dunk": 1,
       "repMultiplier": 1.05
@@ -403,7 +428,8 @@
         "rarity": "rare"
       }
     ],
-    "notes": "Party central; spectacular plays and highlight dunks rewarded."
+    "notes": "Party central; spectacular plays and highlight dunks rewarded.",
+    "mascots": ["Dolphins", "Marlins", "Panthers", "Inter"]
   },
   {
     "id": "orl",
@@ -414,6 +440,7 @@
     "bannerBin": "orl_banner.bin",
     "detailBin": "orl_detail.bin",
     "nightclubName": "Illusion Lounge",
+    "mallName": "Florida Mall",
     "buffs": {
       "steal": 1,
       "luck": 1
@@ -435,7 +462,8 @@
         "rarity": "rare"
       }
     ],
-    "notes": "Theme-park magic; slightly swingy event luck."
+    "notes": "Theme-park magic; slightly swingy event luck.",
+    "mascots": ["Lions", "Solar Bears", "Pride", "Apollos"]
   },
   {
     "id": "was",
@@ -446,6 +474,7 @@
     "bannerBin": "was_banner.bin",
     "detailBin": "was_detail.bin",
     "nightclubName": "Capital After Dark",
+    "mallName": "Tysons Corner",
     "buffs": {
       "repMultiplier": 1.05
     },
@@ -466,7 +495,8 @@
         "rarity": "rare"
       }
     ],
-    "notes": "Politics and media; reputation swings a bit stronger."
+    "notes": "Politics and media; reputation swings a bit stronger.",
+    "mascots": ["Commanders", "Nationals", "Capitals", "Mystics"]
   },
   {
     "id": "mem",
@@ -477,6 +507,7 @@
     "bannerBin": "mem_banner.bin",
     "detailBin": "mem_detail.bin",
     "nightclubName": "Beale Street Blues Bar",
+    "mallName": "Wolfchase Galleria",
     "buffs": {
       "power": 1,
       "stamina": 1
@@ -498,7 +529,8 @@
         "rarity": "rare"
       }
     ],
-    "notes": "Grit-and-grind city; physical and resilient players benefit."
+    "notes": "Grit-and-grind city; physical and resilient players benefit.",
+    "mascots": ["Grizzlies", "Redbirds", "Tigers", "Express"]
   },
   {
     "id": "nop",
@@ -509,6 +541,7 @@
     "bannerBin": "nop_banner.bin",
     "detailBin": "nop_detail.bin",
     "nightclubName": "Bayou Bounce Club",
+    "mallName": "Riverwalk Marketplace",
     "buffs": {
       "cashMultiplier": 1.1
     },
@@ -529,7 +562,8 @@
         "rarity": "rare"
       }
     ],
-    "notes": "Party economy; cash rewards slightly increased."
+    "notes": "Party economy; cash rewards slightly increased.",
+    "mascots": ["Saints", "Baby Cakes", "Pelicans", "Jesters"]
   },
   {
     "id": "hou",
@@ -540,6 +574,7 @@
     "bannerBin": "hou_banner.bin",
     "detailBin": "hou_detail.bin",
     "nightclubName": "Space City Lounge",
+    "mallName": "The Galleria",
     "buffs": {
       "three": 1
     },
@@ -560,7 +595,8 @@
         "rarity": "rare"
       }
     ],
-    "notes": "Analytics and threes; shooters get small 3-point bump."
+    "notes": "Analytics and threes; shooters get small 3-point bump.",
+    "mascots": ["Texans", "Astros", "Dynamo", "Dash"]
   },
   {
     "id": "sas",
@@ -571,6 +607,7 @@
     "bannerBin": "sas_banner.bin",
     "detailBin": "sas_detail.bin",
     "nightclubName": "Riverwalk Retreat",
+    "mallName": "North Star Mall",
     "buffs": {
       "fundamentals": 1
     },
@@ -591,7 +628,8 @@
         "rarity": "rare"
       }
     ],
-    "notes": "Disciplined play; boosts balanced, low-turnover styles."
+    "notes": "Disciplined play; boosts balanced, low-turnover styles.",
+    "mascots": ["Spurs", "Missions", "Brahmas", "FC"]
   },
   {
     "id": "dal",
@@ -602,6 +640,7 @@
     "bannerBin": "dal_banner.bin",
     "detailBin": "dal_detail.bin",
     "nightclubName": "Big D Skyline Club",
+    "mallName": "NorthPark Center",
     "buffs": {
       "three": 1,
       "repMultiplier": 1.05
@@ -623,7 +662,8 @@
         "rarity": "rare"
       }
     ],
-    "notes": "Scoring fireworks; prolific scorers and gunners benefit."
+    "notes": "Scoring fireworks; prolific scorers and gunners benefit.",
+    "mascots": ["Cowboys", "Rangers", "Stars", "FC"]
   },
   {
     "id": "den",
@@ -634,6 +674,7 @@
     "bannerBin": "den_banner.bin",
     "detailBin": "den_detail.bin",
     "nightclubName": "Altitude 5280",
+    "mallName": "Cherry Creek Mall",
     "buffs": {
       "stamina": 1,
       "dunk": 1
@@ -655,7 +696,8 @@
         "rarity": "rare"
       }
     ],
-    "notes": "Thin air; jumping and conditioning both get a small lift."
+    "notes": "Thin air; jumping and conditioning both get a small lift.",
+    "mascots": ["Broncos", "Rockies", "Avalanche", "Rapids"]
   },
   {
     "id": "uta",
@@ -666,6 +708,7 @@
     "bannerBin": "uta_banner.bin",
     "detailBin": "uta_detail.bin",
     "nightclubName": "Wasatch Night Session",
+    "mallName": "City Creek Center",
     "buffs": {
       "defense": 1
     },
@@ -686,7 +729,8 @@
         "rarity": "rare"
       }
     ],
-    "notes": "Team defense emphasis; minor defensive synergy bonus."
+    "notes": "Team defense emphasis; minor defensive synergy bonus.",
+    "mascots": ["Real Salt Lake", "Grizzlies", "Bees", "Roadrunners"]
   },
   {
     "id": "phx",
@@ -697,6 +741,7 @@
     "bannerBin": "phx_banner.bin",
     "detailBin": "phx_detail.bin",
     "nightclubName": "Club Sunburn",
+    "mallName": "Scottsdale Fashion Square",
     "buffs": {
       "speed": 1,
       "stamina": 1
@@ -718,7 +763,8 @@
         "rarity": "rare"
       }
     ],
-    "notes": "Run-and-gun heritage; pace-friendly bonuses."
+    "notes": "Run-and-gun heritage; pace-friendly bonuses.",
+    "mascots": ["Cardinals", "Diamondbacks", "Coyotes", "Mercury"]
   },
   {
     "id": "sac",
@@ -729,6 +775,7 @@
     "bannerBin": "sac_banner.bin",
     "detailBin": "sac_detail.bin",
     "nightclubName": "River City Rhythm",
+    "mallName": "Arden Fair Mall",
     "buffs": {
       "repMultiplier": 1.05
     },
@@ -749,7 +796,8 @@
         "rarity": "rare"
       }
     ],
-    "notes": "Underdog narrative; strong performances stand out more."
+    "notes": "Underdog narrative; strong performances stand out more.",
+    "mascots": ["Kings", "River Cats", "Republic", "Gold"]
   },
   {
     "id": "gsw",
@@ -760,6 +808,7 @@
     "bannerBin": "gsw_banner.bin",
     "detailBin": "gsw_detail.bin",
     "nightclubName": "Bay Area Splash Lounge",
+    "mallName": "Westfield Centre",
     "buffs": {
       "three": 1,
       "repMultiplier": 1.1
@@ -781,7 +830,8 @@
         "rarity": "rare"
       }
     ],
-    "notes": "Splash culture; elite shooters and flashy play get a boost."
+    "notes": "Splash culture; elite shooters and flashy play get a boost.",
+    "mascots": ["49ers", "Giants", "Sharks", "Earthquakes"]
   },
   {
     "id": "lal",
@@ -792,6 +842,7 @@
     "bannerBin": "lal_banner.bin",
     "detailBin": "lal_detail.bin",
     "nightclubName": "Hollywood Skyline",
+    "mallName": "The Grove",
     "buffs": {
       "repMultiplier": 1.15
     },
@@ -812,7 +863,8 @@
         "rarity": "rare"
       }
     ],
-    "notes": "Brightest spotlight; reputation swings strongest here."
+    "notes": "Brightest spotlight; reputation swings strongest here.",
+    "mascots": ["Rams", "Dodgers", "Kings", "Galaxy"]
   },
   {
     "id": "lac",
@@ -823,6 +875,7 @@
     "bannerBin": "lac_banner.bin",
     "detailBin": "lac_detail.bin",
     "nightclubName": "Lob City After Hours",
+    "mallName": "Beverly Center",
     "buffs": {
       "dunk": 1
     },
@@ -843,7 +896,8 @@
         "rarity": "rare"
       }
     ],
-    "notes": "High-flying alley-oop energy."
+    "notes": "High-flying alley-oop energy.",
+    "mascots": ["Chargers", "Angels", "Ducks", "LAFC"]
   },
   {
     "id": "por",
@@ -854,6 +908,7 @@
     "bannerBin": "por_banner.bin",
     "detailBin": "por_detail.bin",
     "nightclubName": "Rip City Underground",
+    "mallName": "Pioneer Place",
     "buffs": {
       "clutch": 1
     },
@@ -874,7 +929,8 @@
         "rarity": "rare"
       }
     ],
-    "notes": "Dame Time spirit; clutch performances slightly boosted."
+    "notes": "Dame Time spirit; clutch performances slightly boosted.",
+    "mascots": ["Timbers", "Thorns", "Winterhawks", "Pilots"]
   },
   {
     "id": "min",
@@ -885,6 +941,7 @@
     "bannerBin": "min_banner.bin",
     "detailBin": "min_detail.bin",
     "nightclubName": "Twin Cities Chill",
+    "mallName": "Mall of America",
     "buffs": {
       "stamina": 1,
       "defense": 1
@@ -906,7 +963,8 @@
         "rarity": "rare"
       }
     ],
-    "notes": "Cold grind; defense and endurance get a bump."
+    "notes": "Cold grind; defense and endurance get a bump.",
+    "mascots": ["Vikings", "Twins", "Wild", "Lynx"]
   },
   {
     "id": "okc",
@@ -917,6 +975,7 @@
     "bannerBin": "okc_banner.bin",
     "detailBin": "okc_detail.bin",
     "nightclubName": "Thunder Roadhouse",
+    "mallName": "Penn Square Mall",
     "buffs": {
       "speed": 1,
       "repMultiplier": 1.05
@@ -938,6 +997,7 @@
         "rarity": "rare"
       }
     ],
-    "notes": "Fast, energetic playstyle gets a boost."
+    "notes": "Fast, energetic playstyle gets a boost.",
+    "mascots": ["Thunder", "Dodgers", "Energy", "Blue"]
   }
 ]
